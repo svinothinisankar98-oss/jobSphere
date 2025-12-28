@@ -1,0 +1,42 @@
+.nav-link {
+  font-size: 16px;
+  color: #333
+}
+
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 999;      /* keeps header on top of all elements */
+}
+
+.navbar-nav {
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+/* .nav-link:hover {
+  text-decoration: underline;
+} */
+
+.navbar-brand {
+  color: #3173de 
+}
+
+.vr {
+  height: 22px;
+  width: 1px;
+  background-color: #ccc;
+}
+.main-nav {
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+}
+
+.nav-link {
+  white-space: nowrap;
+}
+.brand-logo {
+  font-size: 1.1rem; /* adjust: 0.9rem – 1.2rem */
+}

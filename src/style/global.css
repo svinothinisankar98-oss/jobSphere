@@ -1,0 +1,33 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-content {
+  flex: 1; 
+  margin-top: 70px;      /* pushes footer down */
+}
+
+.search-group:focus-within {
+  border: 2px solid #86b7fe;
+  border-radius: 50px;
+}
+
+/* Remove default input focus */
+.search-group .form-control:focus {
+  box-shadow: none;
+}
+
+/* Align icon properly */
+.search-group .input-group-text {
+  background: transparent;
+}
+
+

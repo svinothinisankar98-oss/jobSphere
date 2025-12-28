@@ -1,0 +1,55 @@
+/* Base Sidebar */
+.sidebar {
+  width: 220px;
+  height: 100vh;
+  background: #f6f7f8;
+  position: fixed;
+  left: 0;
+  top: 0;
+  padding-top: 10px;
+  transition: width 0.3s ease;
+  overflow-x: hidden;
+  z-index: 1000;
+}
+
+/* Collapsed */
+.sidebar.collapsed {
+  width: 70px;
+}
+
+/* Toggle Button */
+.toggle-btn {
+  border: none;
+  background: transparent;
+  font-size: 1.5rem;
+  margin-left: 15px;
+  cursor: pointer;
+}
+
+/* Nav links */
+.sidebar .nav-link {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px 20px;
+  color: #4e4ef2;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.sidebar .nav-link:hover {
+  background: #e9ecef;
+  border-radius: 8px;
+}
+
+/* Icons */
+.sidebar i {
+  font-size: 1.3rem;
+  min-width: 24px;
+  text-align: center;
+}
+
+/* Hide text when collapsed */
+.sidebar.collapsed .link-text {
+  display: none;
+}
