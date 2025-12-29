@@ -1,6 +1,8 @@
 import { Controller, useFormContext, get } from "react-hook-form";
 import TextField from "@mui/material/TextField";
 
+//props types//
+
 type  MyTextFieldProps ={
   name: string;
   label: string;
@@ -9,8 +11,9 @@ type  MyTextFieldProps ={
   placeholder?: string;
   inputMode?: "text" | "numeric" | "decimal";
   rows?: number;
+  helpertext?:string;
   size?: "small" | "medium";
-  sx?: object;
+  sx?: object;                      //custom mui styling//
 }
 
 const MyTextField = ({
@@ -20,35 +23,37 @@ const MyTextField = ({
   type = "text",
   placeholder,
   inputMode,
+  helpertext,
   rows,
   size = "small",
   sx,
 }: MyTextFieldProps) => {
-  const {
+  const {                           //accessing form context//
     control,
     formState: { errors },
   } = useFormContext();
 
-  const error = get(errors, name);
+  const error = get(errors, name);    
 
   return (
-    <Controller
+    <Controller                   //controller usage//
       name={name}
       control={control}
-      render={({ field }) => (
+      render={({ field }) => (    //value onchange onblur ref//
         <TextField
           {...field}
           fullWidth
           label={label}
           type={type}
           placeholder={placeholder}
+         
           required={required}
           size={size}
           inputMode={inputMode}
           multiline={Boolean(rows)}
           rows={rows}
-          error={!!error}
-          helperText={error?.message as string}
+          error={!!error}         //shows red border error handling//
+          helperText={error?.message as string}  //display yup validation message//
           sx={{
             "& .MuiFormLabel-asterisk": {
               color: "red",

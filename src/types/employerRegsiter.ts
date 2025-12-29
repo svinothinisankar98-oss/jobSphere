@@ -1,0 +1,25 @@
+export type CompanyForm = {
+  companyName: string;
+  email: string;
+  phone: string;
+  website: string;
+  industry: string;
+  companySize: string;
+  foundedYear: number;
+
+  address1: string;
+  address2: string;
+  city: string;
+  state: string;
+  country: string;
+  zip: string;
+
+  recruiterName: string;
+  recruiterEmail: string;
+  recruiterPhone: string;
+  designation: string;
+
+  password: string;
+  confirmPassword: string;
+  userType: number;
+};

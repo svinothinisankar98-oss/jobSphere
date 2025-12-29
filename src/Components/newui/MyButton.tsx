@@ -5,18 +5,13 @@ import Icon from "@mui/material/Icon";
 type ButtonProps = {
   label: string;
   type?: "button" | "submit" | "reset";
+  sx?: object;
 
   // MUI variants
-  variant?: "contained" | "outlined" | "text" ;
+  variant?: "contained" | "outlined" | "text";
 
   // MUI colors
-  color?:
-    | "primary"
-    | "secondary"
-    | "success"
-    | "error"
-    | "warning"
-    | "info";
+  color?: "primary" | "secondary" | "success" | "error" | "warning" | "info";
 
   size?: "small" | "medium" | "large";
   disabled?: boolean;
@@ -36,6 +31,7 @@ const MyButton: React.FC<ButtonProps> = ({
   className = "",
   onClick,
   icon,
+  sx,
 }) => {
   return (
     <Button
@@ -48,8 +44,9 @@ const MyButton: React.FC<ButtonProps> = ({
       className={className}
       startIcon={icon ? <Icon>{icon}</Icon> : null}
       sx={{
-    textTransform: "none", 
-  }}
+        textTransform: "none",
+        ...sx,
+      }}
     >
       {label}
     </Button>

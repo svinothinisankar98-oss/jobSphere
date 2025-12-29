@@ -40,8 +40,10 @@ export type JobSeeker = {
   experience: string;
   skills: string;
   fileName?: string;
+  
+   portfolio?: string | null;
 
-  resume?: File | null;          // ✅ allow null
+  resume?: File | null;          
   resumeBase64?: string;
 
   userType?: number;

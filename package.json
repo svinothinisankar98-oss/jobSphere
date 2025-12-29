@@ -18,6 +18,7 @@
     "@mui/icons-material": "^7.3.6",
     "@mui/material": "^7.3.6",
     "@mui/styled-engine-sc": "^7.3.6",
+    "@mui/system": "^7.3.6",
     "axios": "^1.13.2",
     "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",

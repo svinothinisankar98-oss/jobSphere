@@ -11,11 +11,11 @@ type Props = {
   error?:string;
   inputMode?: "text" | "numeric" | "decimal";
   rows?: number; //  textarea
-  onChange: (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement
-    >
-  ) => void;
+  onChange?: (
+  e: React.ChangeEvent<
+    HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+  >
+) => void;
 };
 
 const CommonTextField: React.FC<Props> = ({

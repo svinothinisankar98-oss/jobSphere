@@ -1,64 +1,29 @@
 import { useState } from "react";
-import CommonButton from "../../Components/ui/CommonButton";
-import CommonTextField from "../../Components/ui/CommonTextField";
-import CommonDropdown from "../../Components/ui/CommonDropdown";
-import CommonHeading from "../../Components/ui/CommonHeading";
-import { useForm } from "react-hook-form";
+import { Box, Card, CardContent, Stack } from "@mui/material";
+import { FormProvider, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 
-/* ================= TYPES ================= */
+import MyHeading from "../../Components/newui/MyHeading";
+import MyButton from "../../Components/newui/MyButton";
+import MyTabs from "../../Components/newui/MyTab";
 
-type CompanyForm = {
-  companyName: string;
-  email: string;
-  phone: string;
-  website: string;
-  industry: string;
-  companySize: string;
-  foundedYear: string;
+import CompanyDetails from "./EmployerRegisterDetails/CompanyDetails";
+import AddressDetails from "./EmployerRegisterDetails/AddressDetails";
+import RecruiterDetails from "./EmployerRegisterDetails/RecruiterDetails";
 
-  address1: string;
-  address2: string;
-  city: string;
-  state: string;
-  country: string;
-  zip: string;
+import { employerSchema } from "../../schemas/employerSchema";
+import type { CompanyForm } from "../../schemas/employerSchema";
 
-  recruiterName: string;
-  recruiterEmail: string;
-  recruiterPhone: string;
-  designation: string;
+/* ================= DEFAULT VALUES ================= */
 
-  password: string;
-  confirmPassword: string;
-  userType?: number;
-};
-
-/* ================= CONSTANTS ================= */
-
-const INDUSTRY_OPTIONS = [
-  { id: 1, item: "IT" },
-  { id: 2, item: "Finance" },
-  { id: 3, item: "Healthcare" },
-  { id: 4, item: "Education" },
-];
-
-const COMPANY_SIZE_OPTIONS = [
-  { id: 1, item: "1–10" },
-  { id: 2, item: "11–50" },
-  { id: 3, item: "51–200" },
-  { id: 4, item: "200+" },
-];
-
-/* ================= INITIAL STATE ================= */
-
-const initialForm: CompanyForm = {
+const defaultValues: CompanyForm = {
   companyName: "",
   email: "",
   phone: "",
   website: "",
   industry: "",
   companySize: "",
-  foundedYear: "",
+  foundedYear: null,
 
   address1: "",
   address2: "",
@@ -80,348 +45,146 @@ const initialForm: CompanyForm = {
 /* ================= COMPONENT ================= */
 
 const EmployerRegister = () => {
-  const [activeTab, setActiveTab] = useState(1);
-  const [form, setForm] = useState<CompanyForm>(initialForm);
+  const [activeTab, setActiveTab] = useState(0);
 
-  /* ================= HANDLERS ================= */
+  const methods = useForm<CompanyForm>({
+    resolver: yupResolver(employerSchema),
+    defaultValues,
+    mode: "onChange",
+    shouldUnregister: false,
+  });
 
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+  const { handleSubmit, trigger } = methods;
+
+  /* ---------------- SUBMIT ---------------- */
+  const onSubmit = async (data: CompanyForm) => {
+    console.log("FORM DATA:", data);
   };
 
-  const nextTab = () => setActiveTab((prev) => prev + 1);
-  const prevTab = () => setActiveTab((prev) => prev - 1);
+  /* ---------------- STEP VALIDATION ---------------- */
+  const stepFields: (keyof CompanyForm)[][] = [
+    ["companyName", "email", "phone", "website", "industry", "companySize"],
+    ["address1", "city", "state", "country", "zip"],
+    [
+      "recruiterName",
+      "recruiterEmail",
+      "recruiterPhone",
+      "designation",
+      "password",
+      "confirmPassword",
+    ],
+  ];
 
-  const handleReset = () => {
-    setForm(initialForm);
-    setActiveTab(1);
+  /* ---------------- NEXT ---------------- */
+  const handleNext = async () => {
+    const isValid = await trigger(stepFields[activeTab]);
+    if (isValid) setActiveTab((prev) => prev + 1);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Company Register Data:", form);
+  /* ---------------- BACK ---------------- */
+  const handleBack = () => {
+    setActiveTab((prev) => Math.max(prev - 1, 0));
   };
 
-  /* ================= UI ================= */
+  /* ---------------- TAB CLICK ---------------- */
+  const handleTabChange = async (nextTab: number) => {
+    // Allow backward freely
+    if (nextTab < activeTab) {
+      setActiveTab(nextTab);
+      return;
+    }
+
+    // Validate before moving forward
+    const isValid = await trigger(stepFields[activeTab]);
+    if (isValid) {
+      setActiveTab(nextTab);
+    }
+  };
 
   return (
-    <div className="container py-5">
-      <div className="row justify-content-center">
-        <div className="col-12 col-lg-8">
-          <div className="card shadow-lg border-0 rounded-4">
-            <div className="card-body p-4">
-              <CommonHeading
-                title="Company Registration"
-                subtitle="Register your company to start hiring"
-                center
-              />
+    <Box display="flex" justifyContent="center" py={5}>
+      <Box width="100%" maxWidth={900}>
+        <Card elevation={6}>
+          <CardContent>
+            <MyHeading
+              title="Company Registration"
+              subtitle="Register your company to start hiring"
+              center
+            />
 
-              {/* ================= TABS HEADER ================= */}
-              <ul className="nav nav-tabs mb-4">
-                {["Company", "Address", "Recruiter"].map((tab, index) => (
-                  <li className="nav-item" key={tab}>
-                    <button
-                      type="button"
-                      className={`nav-link ${
-                        activeTab === index + 1 ? "active" : ""
-                      }`}
-                      onClick={() => setActiveTab(index + 1)}
-                    >
-                      {tab}
-                    </button>
-                  </li>
-                ))}
-              </ul>
+            <FormProvider {...methods}>
+              <form onSubmit={handleSubmit(onSubmit)} noValidate>
+                {/* TABS */}
+                <MyTabs
+                  activeTab={activeTab}
+                  onTabChange={handleTabChange}
+                  tabs={[
+                    { tabName: "Company", tabContent: <CompanyDetails /> },
+                    { tabName: "Address", tabContent: <AddressDetails /> },
+                    { tabName: "Recruiter", tabContent: <RecruiterDetails /> },
+                  ]}
+                />
 
-              <form onSubmit={handleSubmit}>
-                {/* ================= TAB 1 – COMPANY ================= */}
-                {activeTab === 1 && (
-                  <>
-                    <CommonHeading title="Company Details" level={5} />
-
-                    <div className="row g-3">
-                      <div className="col-md-6">
-                        <CommonTextField
-                          label="Company Name"
-                          name="companyName"
-                          value={form.companyName}
-                          required
-                          onChange={handleChange}
-                        />
-                      </div>
-
-                      <div className="col-md-6">
-                        <CommonTextField
-                          label="Company Email"
-                          name="email"
-                          type="email"
-                          value={form.email}
-                          required
-                          onChange={handleChange}
-                        />
-                      </div>
-
-                      <div className="col-md-6">
-                        <CommonTextField
-                          label="Company Phone"
-                          name="phone"
-                          value={form.phone}
-                          required
-                          onChange={handleChange}
-                        />
-                      </div>
-
-                      <div className="col-md-6">
-                        <CommonTextField
-                          label="Company Website"
-                          name="website"
-                          value={form.website}
-                          required
-                          onChange={handleChange}
-                        />
-                      </div>
-
-                      <div className="col-md-4">
-                        <CommonDropdown
-                          label="Industry"
-                          name="industry"
-                          value={form.industry}
-                          options={INDUSTRY_OPTIONS}
-                          onChange={handleChange}
-                        />
-                      </div>
-
-                      <div className="col-md-4">
-                        <CommonDropdown
-                          label="Company Size"
-                          name="companySize"
-                          value={form.companySize}
-                          options={COMPANY_SIZE_OPTIONS}
-                          onChange={handleChange}
-                        />
-                      </div>
-
-                      <div className="col-md-4">
-                        <CommonTextField
-                          label="Founded Year"
-                          name="foundedYear"
-                          value={form.foundedYear}
-                          required
-                          onChange={handleChange}
-                        />
-                      </div>
-                    </div>
-                  </>
-                )}
-
-                {/* ================= TAB 2 – ADDRESS ================= */}
-                {activeTab === 2 && (
-                  <>
-                    <CommonHeading title="Address Details" level={5} />
-
-                    <div className="row g-3">
-                      <div className="col-md-6">
-                        <CommonTextField
-                          label="Address 1"
-                          name="address1"
-                          value={form.address1}
-                          required
-                          onChange={handleChange}
-                        />
-                      </div>
-
-                      <div className="col-md-6">
-                        <CommonTextField
-                          label="Address2"
-                          name="address2"
-                          value={form.address2}
-                          onChange={handleChange}
-                        />
-                      </div>
-
-                      <div className="col-md-4">
-                        <CommonTextField
-                          label="City"
-                          name="city"
-                          value={form.city}
-                          required
-                          onChange={handleChange}
-                        />
-                      </div>
-
-                      <div className="col-md-4">
-                        <CommonTextField
-                          label="State"
-                          name="state"
-                          value={form.state}
-                          required
-                          onChange={handleChange}
-                        />
-                      </div>
-
-                      <div className="col-md-4">
-                        <CommonTextField
-                          label="ZIP Code"
-                          name="zip"
-                          value={form.zip}
-                          required
-                          onChange={handleChange}
-                        />
-                      </div>
-
-                      <div className="col-md-6">
-                        <CommonTextField
-                          label="Country"
-                          name="country"
-                          value={form.country}
-                          required
-                          onChange={handleChange}
-                        />
-                      </div>
-                    </div>
-                  </>
-                )}
-
-                {/* ================= TAB 3 – RECRUITER + PASSWORD ================= */}
-                {activeTab === 3 && (
-                  <>
-                    <CommonHeading
-                      title="Recruiter & Login Details"
-                      level={5}
-                    />
-
-                    <div className="row g-3">
-                      <div className="col-md-6">
-                        <CommonTextField
-                          label="Recruiter Name"
-                          name="recruiterName"
-                          value={form.recruiterName}
-                          required
-                          onChange={handleChange}
-                        />
-                      </div>
-
-                      <div className="col-md-6">
-                        <CommonTextField
-                          label="Recruiter Email"
-                          name="recruiterEmail"
-                          type="email"
-                          value={form.recruiterEmail}
-                          required
-                          onChange={handleChange}
-                        />
-                      </div>
-
-                      <div className="col-md-6">
-                        <CommonTextField
-                          label="Recruiter Phone"
-                          name="recruiterPhone"
-                          value={form.recruiterPhone}
-                          required
-                          onChange={handleChange}
-                        />
-                      </div>
-
-                      <div className="col-md-6">
-                        <CommonTextField
-                          label="Designation"
-                          name="designation"
-                          value={form.designation}
-                          required
-                          onChange={handleChange}
-                        />
-                      </div>
-
-                      <div className="col-md-6">
-                        <CommonTextField
-                          label="Password"
-                          name="password"
-                          type="password"
-                          value={form.password}
-                          required
-                          onChange={handleChange}
-                        />
-                      </div>
-
-                      <div className="col-md-6">
-                        <CommonTextField
-                          label="Confirm Password"
-                          name="confirmPassword"
-                          type="password"
-                          value={form.confirmPassword}
-                          required
-                          onChange={handleChange}
-                        />
-                      </div>
-                    </div>
-                  </>
-                )}
-
-                {/* ================= TAB NAVIGATION ================= */}
-                <div className="d-flex justify-content-between mt-4">
-                  {activeTab > 1 && (
-                    <CommonButton
+                {/* NAV BUTTONS */}
+                <Stack direction="row" justifyContent="space-between" mt={2}>
+                  {activeTab > 0 && (
+                    <MyButton
                       label="Back"
                       type="button"
-                      variant="secondary"
-                      onClick={prevTab}
+                      variant="outlined"
+                      onClick={handleBack}
                     />
                   )}
 
-                  {activeTab < 3 && (
-                    <CommonButton
+                  {activeTab < 2 && (
+                    <MyButton
                       label="Next"
                       type="button"
-                      variant="primary"
-                      onClick={nextTab}
+                      variant="contained"
+                      onClick={handleNext}
                     />
                   )}
-                </div>
+                </Stack>
 
-                {/* ================= FINAL ACTIONS ================= */}
-                <hr className="my-4" />
-
-                <div className="d-flex justify-content-center gap-2">
-                  
-                  <CommonButton
+                {/* FINAL BUTTONS */}
+                <Stack
+                  direction="row"
+                  justifyContent="center"
+                  spacing={2}
+                  mt={4}
+                >
+                  <MyButton
                     label="Register"
                     type="submit"
-                    variant="primary"
-                    size="md"
-                    className="w-20 py-2 fw-semibold"
-
-                    onClick={handleSubmit}
+                    variant="contained"
+                    color="primary"
+                    sx={{ minWidth: 250 }}
                   />
 
-                  <CommonButton
+                  <MyButton
                     label="Reset"
-                    type="button"
-                    variant="secondary"
-                    className="w-20 py-2 fw-semibold"
-                    size="md"
-                    onClick={handleReset}
+                    type="reset"
+                    variant="contained"
+                    color="info"
+                    sx={{ minWidth: 250 }}
+                    onClick={() => methods.reset(defaultValues)}
                   />
 
-                  <CommonButton
+                  <MyButton
                     label="Cancel"
                     type="button"
-                    variant="info"
-                    size="md"
-                    className="w-20 py-2 fw-semibold"
+                    variant="contained"
+                    color="error"
+                    sx={{ minWidth: 250 }}
                     onClick={() => window.history.back()}
                   />
-                </div>
+                </Stack>
               </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+            </FormProvider>
+          </CardContent>
+        </Card>
+      </Box>
+    </Box>
   );
 };
 

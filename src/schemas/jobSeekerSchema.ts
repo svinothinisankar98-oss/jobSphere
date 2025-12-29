@@ -29,9 +29,11 @@ export const jobSeekerSchema = yup.object({
   experience: yup.string().required("Experience is required"),
 
   skills: yup.string().required("Skills are required"),
-
-  // resume: yup
-  //   .mixed<File>()
-  //   .nullable()
-  //   .required("Resume is required"),
+   portfolio: yup
+    .string()
+    .transform((value) => (value === "" ? null : value))
+    .nullable(),
+  
+  
+      resume: yup.mixed<File>().nullable(),
 });
