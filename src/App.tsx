@@ -12,10 +12,8 @@ import JobSeekerRegister from "./pages/register/jobSeekerRegister";
 import JobList from "./pages/joblist/Joblist";
 import CommonToast from "./Components/ui/CommonToast";
 import Login from "./pages/login/Login";
-import Dashboard from "./pages/login/Dashboard/Dashboard";
-import Sample from "./pages/register/Sample";
-import EmployerRegisterWithMUI from "./pages/register/EmployerRegisterWithMUI";
-import YupSample from "./pages/register/YupSample";
+import EmployerRegister from "./pages/register/EmployerRegister";
+
 
 
 
@@ -41,11 +39,9 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/jobs" element={<JobList />} />
-          <Route path="/employer-register" element={<Register />} />
+          <Route path="/employer-register" element={<EmployerRegister />} />
           <Route path="/job-list" element={<Joblist />} />
           <Route path="/job-seeker-register" element={<JobSeekerRegister />} />
-          <Route path="/dashboard" element={<Sample/>} />
-          <Route path="/dashboard1" element={<YupSample/>} />
           
           
           

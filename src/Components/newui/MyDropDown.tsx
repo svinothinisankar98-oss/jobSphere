@@ -31,6 +31,7 @@ const MyDropDown = ({ name, label, options, required = false, sx }: Props) => {
           {...field}
           select
           fullWidth
+          size="small"       // ✅ same as other inputs
           label={label}
           required={required}
           error={!!error}

@@ -23,7 +23,7 @@ const MyTextField = ({
   type = "text",
   placeholder,
   inputMode,
-  helpertext,
+ 
   rows,
   size = "small",
   sx,

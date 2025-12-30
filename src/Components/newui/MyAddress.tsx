@@ -1,5 +1,7 @@
 import React from "react";
-import { Stack, TextField, MenuItem } from "@mui/material";
+import { Box, TextField, MenuItem } from "@mui/material";
+// import Grid from "@mui/material/Grid2";
+import Grid from '@mui/material/Grid';
 import { Controller, useFormContext } from "react-hook-form";
 
 const COUNTRY_OPTIONS = [
@@ -16,10 +18,11 @@ const MyAddress = () => {
   } = useFormContext();
 
   return (
-    <Stack spacing={2}>
-      {/* Row 1 */}
-      <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
-        <Stack flex={1} maxWidth={420}>
+    <Box sx={{ flexGrow: 1 }}>
+      <Grid container spacing={2}>
+
+        {/* Address Line 1 */}
+        <Grid size={{ xs: 12, md: 6 }}>
           <Controller
             name="address1"
             control={control}
@@ -28,15 +31,17 @@ const MyAddress = () => {
                 {...field}
                 label="Address Line 1"
                 size="small"
+                fullWidth
                 required
                 error={!!errors.address1}
                 helperText={errors.address1?.message as string}
               />
             )}
           />
-        </Stack>
+        </Grid>
 
-        <Stack flex={1} maxWidth={420}>
+        {/* Address Line 2 */}
+        <Grid size={{ xs: 12, md: 6 }}>
           <Controller
             name="address2"
             control={control}
@@ -44,18 +49,17 @@ const MyAddress = () => {
               <TextField
                 {...field}
                 label="Address Line 2"
-                error={!!errors.address2}
                 size="small"
+                fullWidth
+                error={!!errors.address2}
                 helperText={errors.address2?.message as string}
               />
             )}
           />
-        </Stack>
-      </Stack>
+        </Grid>
 
-      {/* Row 2 */}
-      <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
-        <Stack flex={1} maxWidth={420}>
+        {/* City */}
+        <Grid size={{ xs: 12, md: 6 }}>
           <Controller
             name="city"
             control={control}
@@ -64,15 +68,17 @@ const MyAddress = () => {
                 {...field}
                 label="City"
                 size="small"
-                error={!!errors.city}
+                fullWidth
                 required
+                error={!!errors.city}
                 helperText={errors.city?.message as string}
               />
             )}
           />
-        </Stack>
+        </Grid>
 
-        <Stack flex={1} maxWidth={420}>
+        {/* State */}
+        <Grid size={{ xs: 12, md: 6 }}>
           <Controller
             name="state"
             control={control}
@@ -81,23 +87,36 @@ const MyAddress = () => {
                 {...field}
                 label="State"
                 size="small"
+                fullWidth
                 required
                 error={!!errors.state}
                 helperText={errors.state?.message as string}
               />
             )}
           />
-        </Stack>
-      </Stack>
+        </Grid>
 
-      {/* Row 3 */}
-      <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
-        <Stack flex={1} maxWidth={420}>
+        {/* Country */}
+        <Grid size={{ xs: 12, md: 6 }}>
           <Controller
             name="country"
             control={control}
             render={({ field }) => (
-              <TextField select label="Country" {...field}>
+              <TextField
+                {...field}
+                select
+                label="Country"
+                size="small"
+                fullWidth
+                required
+                error={!!errors.country}
+                helperText={errors.country?.message as string}
+                sx={{
+                  "& .MuiFormLabel-asterisk": {
+                    color: "red",
+                  },
+                }}
+              >
                 {COUNTRY_OPTIONS.map((option) => (
                   <MenuItem key={option.id} value={option.label}>
                     {option.label}
@@ -106,9 +125,10 @@ const MyAddress = () => {
               </TextField>
             )}
           />
-        </Stack>
+        </Grid>
 
-        <Stack flex={1} maxWidth={420}>
+        {/* ZIP */}
+        <Grid size={{ xs: 12, md: 6 }}>
           <Controller
             name="zip"
             control={control}
@@ -117,15 +137,17 @@ const MyAddress = () => {
                 {...field}
                 label="ZIP / PIN"
                 size="small"
+                fullWidth
                 required
                 error={!!errors.zip}
                 helperText={errors.zip?.message as string}
               />
             )}
           />
-        </Stack>
-      </Stack>
-    </Stack>
+        </Grid>
+
+      </Grid>
+    </Box>
   );
 };
 

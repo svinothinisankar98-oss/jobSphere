@@ -37,7 +37,7 @@ const JobSeekerRegister = () => {
 
   const jobseeker = useForm({
     resolver: yupResolver(jobSeekerSchema), 
-    mode: "onSubmit",
+    mode: "onChange",
     reValidateMode: "onChange",
     shouldUnregister: false,
     defaultValues: {

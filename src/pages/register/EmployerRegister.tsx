@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Card, CardContent, Stack } from "@mui/material";
+import { Box, Card, CardContent, Grid } from "@mui/material";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
@@ -7,14 +7,14 @@ import MyHeading from "../../Components/newui/MyHeading";
 import MyButton from "../../Components/newui/MyButton";
 import MyTabs from "../../Components/newui/MyTab";
 
-import CompanyDetails from "./EmployerRegisterDetails/CompanyDetails";
-import AddressDetails from "./EmployerRegisterDetails/AddressDetails";
-import RecruiterDetails from "./EmployerRegisterDetails/RecruiterDetails";
+import CompanyDetails from "./employerregisterdetails/CompanyDetails";
+import AddressDetails from "./employerregisterdetails/AddressDetails";
+import RecruiterDetails from "./employerregisterdetails/RecruiterDetails";
 
 import { employerSchema } from "../../schemas/employerSchema";
 import type { CompanyForm } from "../../schemas/employerSchema";
 
-/* ================= DEFAULT VALUES ================= */
+// DEFAULT VALUES  //
 
 const defaultValues: CompanyForm = {
   companyName: "",
@@ -42,26 +42,33 @@ const defaultValues: CompanyForm = {
   userType: 2,
 };
 
-/* ================= COMPONENT ================= */
+//component//
 
 const EmployerRegister = () => {
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(0); //state management active tab =0//
 
-  const methods = useForm<CompanyForm>({
+  const [completedTabs, setCompletedTabs] = useState<number[]>([]); //store tabs are success validated//
+
+  const [errorTabs, setErrorTabs] = useState<number[]>([]); //store tabs that have validation errors//
+
+  //Hook form setup//
+
+  const employerregister = useForm<CompanyForm>({
     resolver: yupResolver(employerSchema),
     defaultValues,
     mode: "onChange",
     shouldUnregister: false,
+    reValidateMode: "onChange",
   });
 
-  const { handleSubmit, trigger } = methods;
+  //helpers//
 
-  /* ---------------- SUBMIT ---------------- */
-  const onSubmit = async (data: CompanyForm) => {
-    console.log("FORM DATA:", data);
-  };
+  const {
+    handleSubmit,
+    formState: { isValid },
+    trigger,
+  } = employerregister;
 
-  /* ---------------- STEP VALIDATION ---------------- */
   const stepFields: (keyof CompanyForm)[][] = [
     ["companyName", "email", "phone", "website", "industry", "companySize"],
     ["address1", "city", "state", "country", "zip"],
@@ -74,36 +81,72 @@ const EmployerRegister = () => {
       "confirmPassword",
     ],
   ];
+  //all steps are valid and user clicks Register//
 
-  /* ---------------- NEXT ---------------- */
-  const handleNext = async () => {
-    const isValid = await trigger(stepFields[activeTab]);
-    if (isValid) setActiveTab((prev) => prev + 1);
+  const onSubmit = async (data: CompanyForm) => {
+    console.log("FORM DATA:", data);
   };
 
-  /* ---------------- BACK ---------------- */
+  //handle next button//
+
+  const handleNext = async () => {
+    const fields = stepFields[activeTab];
+    const isValid = await trigger(fields);
+
+    if (isValid) 
+      {
+      setCompletedTabs((prev) => {
+        if (prev.includes(activeTab)) {
+          return prev;
+        } else {
+          return [...prev, activeTab];
+        }
+      });
+      
+
+      setErrorTabs((prev) => prev.filter((t) => t !== activeTab));
+      console.log(errorTabs, "errorTabs", activeTab);
+    }
+     else {
+      setErrorTabs((prev) =>
+        prev.includes(activeTab) ? prev : [...prev, activeTab]
+      );
+    }
+
+    if (activeTab < stepFields.length - 1) {
+      setActiveTab((prev) => prev + 1);
+    }
+  };
+
   const handleBack = () => {
     setActiveTab((prev) => Math.max(prev - 1, 0));
   };
 
-  /* ---------------- TAB CLICK ---------------- */
   const handleTabChange = async (nextTab: number) => {
-    // Allow backward freely
-    if (nextTab < activeTab) {
-      setActiveTab(nextTab);
-      return;
+    const fields = stepFields[activeTab];
+    const isValid = await trigger(fields);
+
+    //if isvalid setcompletedtabs for previous for duplicate remove//
+
+    if (isValid) {
+      setCompletedTabs((prev) =>
+        prev.includes(activeTab) ? prev : [...prev, activeTab]
+      );
+      setErrorTabs((prev) => prev.filter((t) => t !== activeTab)); //completed tab error color//
+    } 
+    
+    else {                                                          
+      setErrorTabs((prev) =>
+        prev.includes(activeTab) ? prev : [...prev, activeTab]       //active tab error heighlight//
+      );
     }
 
-    // Validate before moving forward
-    const isValid = await trigger(stepFields[activeTab]);
-    if (isValid) {
-      setActiveTab(nextTab);
-    }
+    setActiveTab(nextTab);
   };
 
   return (
-    <Box display="flex" justifyContent="center" py={5}>
-      <Box width="100%" maxWidth={900}>
+    <Grid container justifyContent="center" py={5}>
+      <Grid size={{ xs: 12, md: 10, lg: 8 }}>
         <Card elevation={6}>
           <CardContent>
             <MyHeading
@@ -112,79 +155,103 @@ const EmployerRegister = () => {
               center
             />
 
-            <FormProvider {...methods}>
+            <FormProvider {...employerregister}>
               <form onSubmit={handleSubmit(onSubmit)} noValidate>
-                {/* TABS */}
-                <MyTabs
-                  activeTab={activeTab}
-                  onTabChange={handleTabChange}
-                  tabs={[
-                    { tabName: "Company", tabContent: <CompanyDetails /> },
-                    { tabName: "Address", tabContent: <AddressDetails /> },
-                    { tabName: "Recruiter", tabContent: <RecruiterDetails /> },
-                  ]}
-                />
+                {/* ---------------- TABS ---------------- */}
+                <Grid container>
+                  <Grid size={{ xs: 12 }}>
+                    <MyTabs
+                      activeTab={activeTab}
+                      onTabChange={handleTabChange}
+                      completedTabs={completedTabs}
+                      errorTabs={errorTabs}
+                      tabs={[
+                        { tabName: "Company", tabContent: <CompanyDetails /> },
+                        { tabName: "Address", tabContent: <AddressDetails /> },
+                        {
+                          tabName: "Recruiter",
+                          tabContent: <RecruiterDetails />,
+                        },
+                      ]}
+                    />
+                  </Grid>
+                </Grid>
 
-                {/* NAV BUTTONS */}
-                <Stack direction="row" justifyContent="space-between" mt={2}>
-                  {activeTab > 0 && (
+                {/* ---------------- NAV BUTTONS ---------------- */}
+                <Grid
+                  container
+                  spacing={2}
+                  justifyContent="space-between"
+                  mt={2}
+                >
+                  <Grid>
                     <MyButton
                       label="Back"
                       type="button"
                       variant="outlined"
                       onClick={handleBack}
+                      disabled={activeTab === 0}
                     />
-                  )}
+                  </Grid>
 
-                  {activeTab < 2 && (
+                  <Grid>
                     <MyButton
                       label="Next"
                       type="button"
                       variant="contained"
                       onClick={handleNext}
+                      disabled={activeTab === stepFields.length - 1}
                     />
-                  )}
-                </Stack>
+                  </Grid>
+                </Grid>
 
-                {/* FINAL BUTTONS */}
-                <Stack
-                  direction="row"
-                  justifyContent="center"
-                  spacing={2}
-                  mt={4}
-                >
-                  <MyButton
-                    label="Register"
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    sx={{ minWidth: 250 }}
-                  />
+                {/* ---------------- FINAL ACTIONS ---------------- */}
+                <Grid container spacing={2} justifyContent="center" mt={4}>
+                  <Grid>
+                    <MyButton
+                      label="Register"
+                      type="submit"
+                      variant="contained"
+                      color="primary"
+                      sx={{ minWidth: 250 }}
+                      disabled={!isValid}
+                    />
+                  </Grid>
 
-                  <MyButton
-                    label="Reset"
-                    type="reset"
-                    variant="contained"
-                    color="info"
-                    sx={{ minWidth: 250 }}
-                    onClick={() => methods.reset(defaultValues)}
-                  />
+                  <Grid>
+                    <MyButton
+                      label="Reset"
+                      type="button"
+                      variant="contained"
+                      color="info"
+                      sx={{ minWidth: 250 }}
+                      onClick={() => {
+                        employerregister.reset(defaultValues);
+                        employerregister.clearErrors();
+                        setActiveTab(0);
+                        setCompletedTabs([]);
+                        setErrorTabs([]);
+                      }}
+                    />
+                  </Grid>
 
-                  <MyButton
-                    label="Cancel"
-                    type="button"
-                    variant="contained"
-                    color="error"
-                    sx={{ minWidth: 250 }}
-                    onClick={() => window.history.back()}
-                  />
-                </Stack>
+                  <Grid>
+                    <MyButton
+                      label="Cancel"
+                      type="button"
+                      variant="contained"
+                      color="error"
+                      sx={{ minWidth: 250 }}
+                      onClick={() => window.history.back()}
+                    />
+                  </Grid>
+                </Grid>
               </form>
             </FormProvider>
           </CardContent>
         </Card>
-      </Box>
-    </Box>
+      </Grid>
+    </Grid>
   );
 };
 

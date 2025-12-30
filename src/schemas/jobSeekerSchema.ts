@@ -29,10 +29,19 @@ export const jobSeekerSchema = yup.object({
   experience: yup.string().required("Experience is required"),
 
   skills: yup.string().required("Skills are required"),
+
    portfolio: yup
-    .string()
-    .transform((value) => (value === "" ? null : value))
-    .nullable(),
+  .string()
+  .trim()
+  .nullable()
+  .test(
+    "valid-url",
+    "Please enter a valid website URL",
+    (value) =>
+      !value ||
+      /^(https?:\/\/)?(www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}/.test(value)
+  ),
+
   
   
       resume: yup.mixed<File>().nullable(),

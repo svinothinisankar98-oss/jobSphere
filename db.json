@@ -371,6 +371,48 @@
       "email": "priya@gmail.com",
       "Name": "priya",
       "userType": 1
+    },
+    {
+      "id": "0585",
+      "resume": null,
+      "portfolio": null,
+      "skills": "TTT",
+      "experience": "1–3 Years",
+      "location": "Karnataka",
+      "phoneno": "7894561232",
+      "confirmPassword": "123456",
+      "password": "123456",
+      "email": "vinothini@gmail.com",
+      "Name": "karthi",
+      "userType": 1
+    },
+    {
+      "id": "6c20",
+      "Name": "karthi",
+      "email": "mangalapradhabini@egrovesys.com",
+      "password": "123456",
+      "confirmPassword": "123456",
+      "phoneno": "9876543210",
+      "location": "Kerala",
+      "experience": "1–3 Years",
+      "skills": "TTT",
+      "portfolio": "https://www.ewall",
+      "resume": null,
+      "userType": 1
+    },
+    {
+      "id": "b716",
+      "Name": "karthi",
+      "email": "karthi1@gmail.com",
+      "password": "112233",
+      "confirmPassword": "112233",
+      "phoneno": "9876543210",
+      "location": "Tamil Nadu",
+      "experience": "0–1 Years",
+      "skills": "TTT",
+      "portfolio": "https://www.ewallhost.com",
+      "resume": null,
+      "userType": 1
     }
   ]
 }
