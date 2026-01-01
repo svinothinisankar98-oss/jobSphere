@@ -12,35 +12,40 @@ import AddressDetails from "./employerregisterdetails/AddressDetails";
 import RecruiterDetails from "./employerregisterdetails/RecruiterDetails";
 
 import { employerSchema } from "../../schemas/employerSchema";
-import type { CompanyForm } from "../../schemas/employerSchema";
+import type { EmployerRegister } from "../../schemas/employerSchema";
+import employerDefaultValues from "../../config/EmployerRegister";
+
+
+
+
 
 // DEFAULT VALUES  //
 
-const defaultValues: CompanyForm = {
-  companyName: "",
-  email: "",
-  phone: "",
-  website: "",
-  industry: "",
-  companySize: "",
-  foundedYear: null,
+// const defaultValues: EmployerRegister = {
+//   companyName: "",
+//   email: "",
+//   phone: "",
+//   website: "",
+//   industry: "",
+//   companySize: "",
+//   foundedYear: null,
 
-  address1: "",
-  address2: "",
-  city: "",
-  state: "",
-  country: "",
-  zip: "",
+//   address1: "",
+//   address2: "",
+//   city: "",
+//   state: "",
+//   country: "",
+//   zip: "",
 
-  recruiterName: "",
-  recruiterEmail: "",
-  recruiterPhone: "",
-  designation: "",
+//   recruiterName: "",
+//   recruiterEmail: "",
+//   recruiterPhone: "",
+//   designation: "",
 
-  password: "",
-  confirmPassword: "",
-  userType: 2,
-};
+//   password: "",
+//   confirmPassword: "",
+//   userType: 2,
+// };
 
 //component//
 
@@ -53,9 +58,9 @@ const EmployerRegister = () => {
 
   //Hook form setup//
 
-  const employerregister = useForm<CompanyForm>({
+  const employerregister = useForm<EmployerRegister>({
     resolver: yupResolver(employerSchema),
-    defaultValues,
+    defaultValues: employerDefaultValues,
     mode: "onChange",
     shouldUnregister: false,
     reValidateMode: "onChange",
@@ -69,7 +74,7 @@ const EmployerRegister = () => {
     trigger,
   } = employerregister;
 
-  const stepFields: (keyof CompanyForm)[][] = [
+  const stepFields: (keyof EmployerRegister)[][] = [
     ["companyName", "email", "phone", "website", "industry", "companySize"],
     ["address1", "city", "state", "country", "zip"],
     [
@@ -83,7 +88,7 @@ const EmployerRegister = () => {
   ];
   //all steps are valid and user clicks Register//
 
-  const onSubmit = async (data: CompanyForm) => {
+  const onSubmit = async (data: EmployerRegister) => {
     console.log("FORM DATA:", data);
   };
 
@@ -93,8 +98,7 @@ const EmployerRegister = () => {
     const fields = stepFields[activeTab];
     const isValid = await trigger(fields);
 
-    if (isValid) 
-      {
+    if (isValid) {
       setCompletedTabs((prev) => {
         if (prev.includes(activeTab)) {
           return prev;
@@ -102,12 +106,10 @@ const EmployerRegister = () => {
           return [...prev, activeTab];
         }
       });
-      
 
       setErrorTabs((prev) => prev.filter((t) => t !== activeTab));
       console.log(errorTabs, "errorTabs", activeTab);
-    }
-     else {
+    } else {
       setErrorTabs((prev) =>
         prev.includes(activeTab) ? prev : [...prev, activeTab]
       );
@@ -118,9 +120,38 @@ const EmployerRegister = () => {
     }
   };
 
-  const handleBack = () => {
-    setActiveTab((prev) => Math.max(prev - 1, 0));
+  //handle back//
+
+  // const handleBack = () => {
+  //   setActiveTab((prev) => Math.max(prev - 1, 0));
+  // };
+
+  const handleBack = async () => {
+    const fields = stepFields[activeTab];
+    const isValid = await trigger(fields);
+
+    if (isValid) {
+      setCompletedTabs((prev) => {
+        if (prev.includes(activeTab)) {
+          return prev;
+        } else {
+          return [...prev, activeTab];
+        }
+      });
+
+      setErrorTabs((prev) => prev.filter((t) => t !== activeTab));
+      console.log(errorTabs, "errorTabs", activeTab);
+    } else {
+      setErrorTabs((prev) =>
+        prev.includes(activeTab) ? prev : [...prev, activeTab]
+      );
+    }
+
+    
+      setActiveTab((prev) => Math.max(prev - 1, 0));
+    
   };
+  
 
   const handleTabChange = async (nextTab: number) => {
     const fields = stepFields[activeTab];
@@ -132,12 +163,10 @@ const EmployerRegister = () => {
       setCompletedTabs((prev) =>
         prev.includes(activeTab) ? prev : [...prev, activeTab]
       );
-      setErrorTabs((prev) => prev.filter((t) => t !== activeTab)); //completed tab error color//
-    } 
-    
-    else {                                                          
-      setErrorTabs((prev) =>
-        prev.includes(activeTab) ? prev : [...prev, activeTab]       //active tab error heighlight//
+      setErrorTabs((prev) => prev.filter((t) => t !== activeTab)); //Remove tab from error list//
+    } else {
+      setErrorTabs(
+        (prev) => (prev.includes(activeTab) ? prev : [...prev, activeTab]) //If invalid → mark error//
       );
     }
 
@@ -147,7 +176,14 @@ const EmployerRegister = () => {
   return (
     <Grid container justifyContent="center" py={5}>
       <Grid size={{ xs: 12, md: 10, lg: 8 }}>
-        <Card elevation={6}>
+        <Card
+          sx={{
+            maxWidth: 800,
+            width: "100%",
+            margin: "0 auto",
+            padding: 2,
+          }}
+        >
           <CardContent>
             <MyHeading
               title="Company Registration"
@@ -206,27 +242,29 @@ const EmployerRegister = () => {
                 </Grid>
 
                 {/* ---------------- FINAL ACTIONS ---------------- */}
-                <Grid container spacing={2} justifyContent="center" mt={4}>
-                  <Grid>
-                    <MyButton
-                      label="Register"
-                      type="submit"
-                      variant="contained"
-                      color="primary"
-                      sx={{ minWidth: 250 }}
-                      disabled={!isValid}
-                    />
-                  </Grid>
+                <Grid
+                  container
+                  justifyContent="center"
+                  alignItems="center"
+                  spacing={2}
+                  mt={3}
+                >
+                 
 
+                  {/* RESET */}
                   <Grid>
                     <MyButton
                       label="Reset"
                       type="button"
                       variant="contained"
                       color="info"
-                      sx={{ minWidth: 250 }}
+                      sx={{
+                        minWidth: 160,
+                        height: 45,
+                        fontWeight: 600,
+                      }}
                       onClick={() => {
-                        employerregister.reset(defaultValues);
+                        employerregister.reset(employerDefaultValues);
                         employerregister.clearErrors();
                         setActiveTab(0);
                         setCompletedTabs([]);
@@ -234,14 +272,33 @@ const EmployerRegister = () => {
                       }}
                     />
                   </Grid>
+                  <Grid>
+                    <MyButton
+                      label="Register"
+                      type="submit"
+                      variant="contained"
+                      color="primary"
+                      sx={{
+                        minWidth: 160,
+                        height: 45,
+                        fontWeight: 600,
+                      }}
+                      disabled={!isValid}
+                    />
+                  </Grid>
 
+                  {/* CANCEL */}
                   <Grid>
                     <MyButton
                       label="Cancel"
                       type="button"
                       variant="contained"
                       color="error"
-                      sx={{ minWidth: 250 }}
+                      sx={{
+                        minWidth: 160,
+                        height: 45,
+                        fontWeight: 600,
+                      }}
                       onClick={() => window.history.back()}
                     />
                   </Grid>

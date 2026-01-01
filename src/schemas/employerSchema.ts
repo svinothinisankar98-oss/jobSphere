@@ -35,4 +35,4 @@ export const employerSchema = yup.object({
   userType: yup.number().defined(),
 });
 
-export type CompanyForm = yup.InferType<typeof employerSchema>;
+export type EmployerRegister = yup.InferType<typeof employerSchema>;

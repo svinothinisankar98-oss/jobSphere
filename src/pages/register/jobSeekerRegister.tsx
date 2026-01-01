@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useForm, FormProvider, type SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { Box, Stack, Card, CardContent } from "@mui/material";
+import { Box, Stack, Card, CardContent, Grid } from "@mui/material";
 
 import MyTextField from "../../Components/newui/MyTextField";
 import MyDropDown from "../../Components/newui/MyDropDown";
@@ -17,6 +17,7 @@ import { fileToBase64 } from "../../utils/fileTOBse64Convert";
 import type { JobSeeker, Option } from "../../types/jobSeeker";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { jobSeekerSchema } from "../../schemas/jobSeekerSchema";
+import jobseekerDefaultValues from "../../config/JobSeeker";
 
 // const defaultValues: JobSeeker = {
 //   Name: "",
@@ -36,22 +37,11 @@ const JobSeekerRegister = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const jobseeker = useForm({
-    resolver: yupResolver(jobSeekerSchema), 
+    resolver: yupResolver(jobSeekerSchema),
     mode: "onChange",
     reValidateMode: "onChange",
     shouldUnregister: false,
-    defaultValues: {
-      Name: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-      phoneno: "",
-      location: "",
-      experience: "",
-      skills: "",
-      portfolio: "",
-      resume: null,
-    },
+    defaultValues: jobseekerDefaultValues,
   });
 
   const { handleSubmit, reset } = jobseeker;
@@ -103,17 +93,11 @@ const JobSeekerRegister = () => {
     }
   };
 
-  const handleReset = () => reset();
+  // const handleReset = () => reset();
 
   // ================= UI =================
   return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      minHeight="100vh"
-      px={2}
-    >
+    <Box display="flex" justifyContent="center" minHeight="100vh" px={2}>
       <Box maxWidth={700} width="100%">
         <Card elevation={4} sx={{ borderRadius: 4 }}>
           <CardContent sx={{ p: { xs: 3, md: 5 } }}>
@@ -124,56 +108,52 @@ const JobSeekerRegister = () => {
             />
 
             <FormProvider {...jobseeker}>
-              <Box
-                component="form"
-                onSubmit={handleSubmit(onSubmit)}
-                noValidate
-              >
-                <Stack spacing={2.5}>
-                  <MyTextField
-                    name="Name"
-                    label="Full Name"
-                    placeholder="Enter your name"
-                    required
-                  />
+              <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+                <Grid container spacing={2.5}>
+                  <Grid size={12}>
+                    <MyTextField name="Name" label="Full Name" required />
+                  </Grid>
 
-                  <MyTextField
-                    name="email"
-                    label="Email"
-                    placeholder="Enter your email"
-                    required
-                  />
+                  <Grid size={12}>
+                    <MyTextField name="email" label="Email" required />
+                  </Grid>
 
-                  <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <MyTextField
                       name="password"
                       label="Password"
                       type="password"
                       required
                     />
+                  </Grid>
+
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <MyTextField
                       name="confirmPassword"
                       label="Confirm Password"
                       type="password"
                       required
                     />
-                  </Stack>
+                  </Grid>
 
-                  <MyTextField
-                    name="phoneno"
-                    label="Mobile Number"
-                    placeholder="Enter your mobile number"
-                    required
-                  />
+                  <Grid size={12}>
+                    <MyTextField
+                      name="phoneno"
+                      label="Mobile Number"
+                      required
+                    />
+                  </Grid>
 
-                  <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <MyDropDown
                       name="location"
                       label="Current Location"
                       options={locations}
                       required
                     />
+                  </Grid>
 
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <MyDropDown
                       name="experience"
                       label="Work Experience"
@@ -186,55 +166,65 @@ const JobSeekerRegister = () => {
                         { id: 5, item: "5+ Years" },
                       ]}
                     />
-                  </Stack>
+                  </Grid>
 
-                  <MyTextField
-                    name="skills"
-                    label="Key Skills"
-                    placeholder="React, Node, SQL..."
-                    required
-                  />
-                  <MyTextField
-                    name="portfolio"
-                    label="Portfolio Website "
-                    placeholder="https://yourportfolio.com"
-                  />
+                  <Grid size={12}>
+                    <MyTextField name="skills" label="Key Skills" required />
+                  </Grid>
 
-                  <MyFileUpload
-                    name="resume"
-                    required
-                    accept=".pdf,.doc"
-                    color="secondary"
-                  />
+                  <Grid size={12}>
+                    <MyTextField name="portfolio" label="Portfolio Website" />
+                  </Grid>
 
-                  <Stack direction="row" spacing={2} >
-                    <MyButton
-                      label="Register"
-                      type="submit"
-                      variant="contained"
-                      color="primary"
-                      className="w-100 py-2 fw-semibold"
-                    />
+                  <Grid size={12}>
+                    <MyFileUpload name="resume" required accept=".pdf,.doc" />
+                  </Grid>
 
-                    <MyButton
-                      label="Reset"
-                      type="reset"
-                      variant="contained"
-                      color="info"
-                      className="w-100 py-2 fw-semibold"
-                      onClick={handleReset}
-                    />
+                  {/* ACTION BUTTONS */}
+                  <Grid
+                    container
+                    spacing={2}
+                    justifyContent="space-between"
+                    alignItems="center"
+                    mt={2}
+                    sx={{
+                      margin: "0 auto", // centers container
+                    }}
+                  >
+                   
 
-                    <MyButton
-                      label="Cancel"
-                      type="button"
-                      variant="contained"
-                      color="error"
-                      className="w-100 py-2 fw-semibold"
-                      onClick={() => navigate("/")}
-                    />
-                  </Stack>
-                </Stack>
+                    <Grid>
+                      <MyButton
+                        label="Reset"
+                        type="button"
+                        variant="contained"
+                        color="info"
+                        sx={{ minWidth: 160, height: 45,fontWeight: 600 }}
+                        onClick={() => reset()}
+                      />
+                    </Grid>
+                     <Grid>
+                      <MyButton
+                        label="Register"
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                        sx={{ minWidth: 160, height: 45 , fontWeight: 600}}
+                      />
+                    </Grid>
+
+                    <Grid>
+                      <MyButton
+                        label="Cancel"
+                        type="button"
+                        variant="contained"
+                        color="error"
+                        sx={{ minWidth: 160, height: 45 ,fontWeight: 600}}
+                        onClick={() => navigate("/")}
+                      />
+                    </Grid>
+                  </Grid>
+                </Grid>
               </Box>
             </FormProvider>
           </CardContent>

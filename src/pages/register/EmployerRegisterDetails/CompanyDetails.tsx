@@ -1,9 +1,7 @@
-
-import {  Stack } from "@mui/material";
-
-import MyHeading from "../../../Components/newui/MyHeading";
+import Grid from "@mui/material/Grid";
 import MyTextField from "../../../Components/newui/MyTextField";
 import MyDropDown from "../../../Components/newui/MyDropDown";
+import MyYearPicker from "../../../Components/newui/MyDatePicker";
 
 const INDUSTRY_OPTIONS = [
   { id: 1, item: "IT" },
@@ -21,42 +19,54 @@ const COMPANY_SIZE_OPTIONS = [
 
 function CompanyDetails() {
   return (
-    <div>
-      {/* <TabPanel value={1} index={0}> */}
-        {/* <MyHeading title="Company Details" /> */}
+    <Grid container spacing={2}>
+      {/* Row 1 */}
+      <Grid size={{ xs: 12, md: 6 }}>
+        <MyTextField name="companyName" label="Company Name" required />
+      </Grid>
 
-        <Stack spacing={2}>
-          <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
-            <MyTextField name="companyName" label="Company Name" required />
-            <MyTextField name="email" label="Company Email" required />
-          </Stack>
+      <Grid size={{ xs: 12, md: 6 }}>
+        <MyTextField name="email" label="Company Email" required />
+      </Grid>
 
-          <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
-            <MyTextField name="phone" label="Company Phone" required />
-            <MyTextField name="website" label="Company Website" required />
-          </Stack>
-          <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
-            <MyTextField name="foundedYear" label="Founded Year" />
-            <MyTextField name="gstNumber" label="GST Number" />
-          </Stack>
+      {/* Row 2 */}
+      <Grid size={{ xs: 12, md: 6 }}>
+        <MyTextField name="phone" label="Company Phone" required />
+      </Grid>
 
-          <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
-            <MyDropDown
-              name="industry"
-              label="Industry"
-              options={INDUSTRY_OPTIONS}
-            />
-            <MyDropDown
-              name="companySize"
-              label="Company Size"
-              options={COMPANY_SIZE_OPTIONS}
-            />
-            {/* <MyTextField name="foundedYear" label="Founded Year" />
-                      <MyTextField name="gstNumber" label="GST Number" /> */}
-          </Stack>
-        </Stack>
-      {/* </TabPanel> */}
-    </div>
+      <Grid size={{ xs: 12, md: 6 }}>
+        <MyTextField name="website" label="Company Website" required />
+      </Grid>
+
+      {/* Row 3 */}
+      <Grid size={{ xs: 12, md: 6 }}>
+        {/* <MyTextField name="foundedYear" label="Founded Year" /> */}
+        <MyYearPicker name="foundedYear" label="Founded Year" pickerType="year" />
+      </Grid>
+
+      <Grid size={{ xs: 12, md: 6 }}>
+        <MyTextField name="gstNumber" label="GST Number" />
+      </Grid>
+
+      {/* Row 4 */}
+      <Grid size={{ xs: 12, md: 6 }}>
+        <MyDropDown
+          name="industry"
+          label="Industry"
+          required
+          options={INDUSTRY_OPTIONS}
+        />
+      </Grid>
+
+      <Grid size={{ xs: 12, md: 6 }}>
+        <MyDropDown
+          name="companySize"
+          label="Company Size"
+          required
+          options={COMPANY_SIZE_OPTIONS}
+        />
+      </Grid>
+    </Grid>
   );
 }
 

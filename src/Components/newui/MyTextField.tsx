@@ -54,6 +54,16 @@ const MyTextField = ({
           rows={rows}
           error={!!error}         //shows red border error handling//
           helperText={error?.message as string}  //display yup validation message//
+
+           slotProps={{                 //aligns helper text perfectly under the input//
+    formHelperText: {
+      sx: {
+        marginLeft: 0,
+        marginRight: 0,
+      },
+    },
+  }}
+
           sx={{
             "& .MuiFormLabel-asterisk": {
               color: "red",

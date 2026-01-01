@@ -31,11 +31,19 @@ const MyDropDown = ({ name, label, options, required = false, sx }: Props) => {
           {...field}
           select
           fullWidth
-          size="small"       // ✅ same as other inputs
+          size="small"       
           label={label}
           required={required}
           error={!!error}
           helperText={error?.message as string}
+           slotProps={{                 //aligns helper text perfectly under the input//
+    formHelperText: {
+      sx: {
+        marginLeft: 0,
+        marginRight: 0,
+      },
+    },
+  }}
           sx={{
             "& .MuiFormLabel-asterisk": {
               color: "red",
