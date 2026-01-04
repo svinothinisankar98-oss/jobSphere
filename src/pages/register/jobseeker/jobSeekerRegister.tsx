@@ -3,21 +3,22 @@ import { useForm, FormProvider, type SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { Box, Stack, Card, CardContent, Grid } from "@mui/material";
 
-import MyTextField from "../../Components/newui/MyTextField";
-import MyDropDown from "../../Components/newui/MyDropDown";
-import MyButton from "../../Components/newui/MyButton";
-import MyHeading from "../../Components/newui/MyHeading";
-import MyFileUpload from "../../Components/newui/MyFileupLoad";
 
-import { locationService } from "../../service/locationService";
-import { userService } from "../../service/userService";
-import { toastService } from "../../utils/Toast";
-import { fileToBase64 } from "../../utils/fileTOBse64Convert";
+import MyDropDown from "../../../Components/newui/MyDropDown";
+import MyButton from "../../../Components/newui/MyButton";
+import MyHeading from "../../../Components/newui/MyHeading";
+import MyFileUpload from "../../../Components/newui/MyFileupLoad";
 
-import type { JobSeeker, Option } from "../../types/jobSeeker";
+import { locationService } from "../../../service/locationService";
+import { userService } from "../../../service/userService";
+import { toastService } from "../../../utils/Toast";
+import { fileToBase64 } from "../../../utils/fileTOBse64Convert";
+
+import type { JobSeeker, Option } from "../../../types/jobSeeker";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { jobSeekerSchema } from "../../schemas/jobSeekerSchema";
-import jobseekerDefaultValues from "../../config/JobSeeker";
+import { jobSeekerSchema } from "../../../schemas/jobSeekerSchema";
+import jobseekerDefaultValues from "../jobseeker/defaultvalues/JobSeeker";
+import MyTextField from "../../../Components/newui/MyTextField";
 
 // const defaultValues: JobSeeker = {
 //   Name: "",
@@ -108,7 +109,7 @@ const JobSeekerRegister = () => {
             />
 
             <FormProvider {...jobseeker}>
-              <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+              <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
                 <Grid container spacing={2.5}>
                   <Grid size={12}>
                     <MyTextField name="Name" label="Full Name" required />

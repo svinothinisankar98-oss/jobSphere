@@ -1,4 +1,6 @@
 
+
+
 const employerDefaultValues = {
   companyName: "",
   email: "",
@@ -6,7 +8,7 @@ const employerDefaultValues = {
   website: "",
   industry: "",
   companySize: "",
-  foundedYear: null,
+  foundedYear: 0,
 
   address1: "",
   address2: "",
@@ -22,6 +24,8 @@ const employerDefaultValues = {
 
   password: "",
   confirmPassword: "",
+  remoteopportunity:"",
+  employmentType:[],
   userType: 2,
 };
 

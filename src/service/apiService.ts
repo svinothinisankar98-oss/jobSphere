@@ -14,6 +14,7 @@ const api = axios.create({
 // API service
 export const apiService = {
   async get<T>(url: string, params?: any): Promise<T> {
+    console.log(url,'url',params)
     const response = await api.get<T>(url, { params });
     return response.data;
   },

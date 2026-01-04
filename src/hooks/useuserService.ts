@@ -27,10 +27,22 @@ export const useUserService = () => {
       return null;
     }
   };
+  
+  const getEmployerByEmail = async (recruiterEmail: string): Promise<User | null> => {
+    try {
+      return await userService.getEmployerByEmail(recruiterEmail);
+    } catch (error) {
+      console.error("Failed to get user by email", error);
+      return null;
+    }
+  };
+
+
 
   return {
     getAllUsers,
     createUser,
     getUserByEmail,
+    getEmployerByEmail
   };
 };

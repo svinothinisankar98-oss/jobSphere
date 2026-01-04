@@ -5,14 +5,16 @@ import "./style/global.css";
 // import sideBar from "./layouts/Sidebar";
 import Sidebar from "./layouts/Sidebar";
 import { Route, Routes } from "react-router-dom";
-import Register from "./pages/register/EmployerRegister";
+
 import Home from "./pages/home/Home";
 import Joblist from "./pages/joblist/Joblist";
-import JobSeekerRegister from "./pages/register/jobSeekerRegister";
+import JobSeekerRegister from "./pages/register/jobseeker/jobSeekerRegister";
 import JobList from "./pages/joblist/Joblist";
 import CommonToast from "./Components/ui/CommonToast";
 import Login from "./pages/login/Login";
-import EmployerRegister from "./pages/register/EmployerRegister";
+// import {EmployerRegister} from "./pages/register/employerregisterdetails/EmployerRegister";
+import EmployerRegister from "./pages/register/employerregisterdetails/EmployerRegister";
+
 
 
 
@@ -39,7 +41,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/jobs" element={<JobList />} />
-          <Route path="/employer-register" element={<EmployerRegister />} />
+          <Route path="/employer-register" element={<EmployerRegister/>} />
           <Route path="/job-list" element={<Joblist />} />
           <Route path="/job-seeker-register" element={<JobSeekerRegister />} />
           

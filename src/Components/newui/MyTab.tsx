@@ -22,9 +22,16 @@ const MyTabs = ({
   tabs,
 }: TabsProps) => {
   const getTabColor = (index: number) => {
-    if (errorTabs.includes(index)) return "error.main"; 
-    if (completedTabs.includes(index)) return "#11b124ff";
-    return "text.primary"; 
+    if (activeTab === index) return "primary.main";
+    if (errorTabs.includes(index)) return "error.main";
+    if (completedTabs.includes(index)) return "#28ae38ff";
+    return "text.primary";
+  };
+
+  const getFontWeight = (index: number) => {
+    if (activeTab === index) return 600;
+    if (completedTabs.includes(index)) return 700;
+    return 400;
   };
 
   return (
@@ -32,7 +39,6 @@ const MyTabs = ({
       <Tabs
         value={activeTab}
         onChange={(_, newValue) => onTabChange(newValue)}
-        // variant="fullWidth"
         sx={{
           mb: 3,
           "& .MuiTabs-indicator": {
@@ -46,15 +52,18 @@ const MyTabs = ({
             label={tab.tabName}
             sx={{
               color: getTabColor(index),
-              fontWeight: activeTab === index ? 600 : 400,
+              fontWeight: getFontWeight(index),
               textTransform: "none",
-              border:"1px",
+
+              "&.Mui-selected": {
+                color: "primary.main",
+                fontWeight: 600,
+              },
             }}
           />
         ))}
       </Tabs>
 
-      {/* Tab Content */}
       <Box mt={2}>{tabs[activeTab]?.tabContent}</Box>
     </>
   );

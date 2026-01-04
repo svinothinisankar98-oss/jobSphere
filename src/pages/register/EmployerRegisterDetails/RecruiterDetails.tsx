@@ -1,14 +1,18 @@
 import React, { useState } from "react";
 import Grid from "@mui/material/Grid";
-import { Box, Typography, RadioGroup, FormControlLabel, Radio } from "@mui/material";
+
 import MyTextField from "../../../Components/newui/MyTextField";
+import MyradioButton from "../../../Components/newui/MyradioButton";
+import MyCheckbox from "../../../Components/newui/MyCheckBox";
+import { Yes_No_Options } from "../../../constants/RadioOptions";
+import { EmploymentTypes } from "../../../constants/CheckBoxOptions";
 
 function RecruiterDetails() {
-  const [remoteWork, setRemoteWork] = useState("");
+  // const [remoteWork, setRemoteWork] = useState("yes");
+  // console.log(remoteWork, "remoteWorkremoteWorkremoteWork");
 
   return (
     <Grid container spacing={2}>
-
       {/* Recruiter Name */}
       <Grid size={{ xs: 12, md: 6 }}>
         <MyTextField name="recruiterName" label="Recruiter Name" required />
@@ -31,7 +35,12 @@ function RecruiterDetails() {
 
       {/* Password */}
       <Grid size={{ xs: 12, md: 6 }}>
-        <MyTextField name="password" type="password" label="Password" required />
+        <MyTextField
+          name="password"
+          type="password"
+          label="Password"
+          required
+        />
       </Grid>
 
       {/* Confirm Password */}
@@ -44,31 +53,24 @@ function RecruiterDetails() {
         />
       </Grid>
 
-      {/* ✅ RADIO BUTTON SECTION */}
+      {/* RADIO BUTTON SECTION */}
       <Grid size={{ xs: 12, md: 6 }}>
-        <Box>
-          <Typography
-            sx={{
-              fontSize: "14px",
-              fontWeight: 500,
-              mb: 1,
-              color: "#0e0e0eff",
-            }}
-          >
-            Do you offer remote opportunities?
-          </Typography>
-
-          <RadioGroup
-            row
-            value={remoteWork}
-            onChange={(e) => setRemoteWork(e.target.value)}
-          >
-            <FormControlLabel value="yes" control={<Radio />} label="Yes" />
-            <FormControlLabel value="no" control={<Radio />} label="No" />
-          </RadioGroup>
-        </Box>
+        <MyradioButton
+          name="remoteopportunity"
+          label="Do you offer remote opportunities?"
+          options={ Yes_No_Options}
+          row={false}
+          
+        />
       </Grid>
-
+      <Grid size={{ xs: 12, md: 6 }}>
+        <MyCheckbox
+          name="employmentType"
+          label="Employment Type "
+          options={EmploymentTypes}
+          row
+        />
+      </Grid>
     </Grid>
   );
 }

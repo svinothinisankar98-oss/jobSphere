@@ -1,50 +1,66 @@
-import React from "react";
 import {
   Radio,
   RadioGroup,
   FormControl,
   FormControlLabel,
   FormLabel,
+  FormHelperText,
 } from "@mui/material";
+import { Controller, useFormContext } from "react-hook-form";
 
-type Option = {
-  label: string;
-  value: string;
-};
+// type RadioOption = {
+//   value: string;
+//   label: string;
+// };
 
-type CommonRadioGroupProps = {
-  label: string;
+type Props = {
   name: string;
-  value: string;
-  options: Option[];
-  onChange: (value: string) => void;
+  label: string;
+  options:Array<{value:string; label:string}>;
+  row?: boolean;
 };
 
 const MyradioButton = ({
-  label,
   name,
-  value,
+  label,
   options,
-  onChange,
-}: CommonRadioGroupProps) => {
+  row = true,
+}: Props) => {
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext();
+
+  const error = errors?.[name];
+
   return (
-    <FormControl>
+    <FormControl error={!!error}>
       <FormLabel>{label}</FormLabel>
 
-      <RadioGroup
+      <Controller
         name={name}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-      >
-        {options.map((option) => (
-          <FormControlLabel
-            key={option.value}
-            value={option.value}
-            control={<Radio />}
-            label={option.label}
-          />
-        ))}
-      </RadioGroup>
+        control={control}
+        render={({ field }) => (
+          <RadioGroup
+            {...field}
+            row={row}
+            onChange={(e) => field.onChange(e.target.value)}
+          >
+            {options.map((opt) => (
+              <FormControlLabel
+                key={opt.value}
+                value={opt.value}
+                control={<Radio />}
+                label={opt.label}
+              />
+            ))}
+          </RadioGroup>
+        )}
+      />
+
+      {error && (
+        <FormHelperText>{error.message as string}</FormHelperText>
+      )}
     </FormControl>
   );
 };

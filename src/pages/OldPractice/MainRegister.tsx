@@ -1,7 +1,7 @@
 import { useState } from "react";
 // import JobSeekerRegister from "./JobSeekerRegister";
 // import EmployerRegister from "./EmployerRegister";
-import Register from "../register/EmployerRegister";
+import Register from "../register/employerregisterdetails/EmployerRegister";
 
 const MainRegister = () => {
   const [role, setRole] = useState<"" | "JOBSEEKER" | "EMPLOYER">("");

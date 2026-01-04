@@ -16,11 +16,7 @@ const MyAddress = () => {
     formState: { errors },
   } = useFormContext();
 
-  const renderTextField = (
-    name: string,
-    label: string,
-    required = false
-  ) => {
+  const renderTextField = (name: string, label: string, required = false) => {
     const error = get(errors, name);
 
     return (
@@ -36,6 +32,15 @@ const MyAddress = () => {
             required={required}
             error={!!error}
             helperText={error?.message as string}
+             slotProps={{
+                    //aligns helper text perfectly under the input//
+                    formHelperText: {
+                      sx: {
+                        marginLeft: 0,
+                        marginRight: 0,
+                      },
+                    },
+                  }}
             sx={{
               "& .MuiFormLabel-asterisk": {
                 color: "red",
@@ -62,11 +67,11 @@ const MyAddress = () => {
           {renderTextField("city", "City", true)}
         </Grid>
 
-       <Grid size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
           {renderTextField("state", "State", true)}
         </Grid>
 
-       <Grid size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Controller
             name="country"
             control={control}
@@ -83,6 +88,15 @@ const MyAddress = () => {
                   required
                   error={!!error}
                   helperText={error?.message as string}
+                  slotProps={{
+                    //aligns helper text perfectly under the input//
+                    formHelperText: {
+                      sx: {
+                        marginLeft: 0,
+                        marginRight: 0,
+                      },
+                    },
+                  }}
                   sx={{
                     "& .MuiFormLabel-asterisk": {
                       color: "red",

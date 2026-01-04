@@ -5,11 +5,11 @@ import CommonButton from "../../Components/ui/CommonButton";
 import CommonHeading from "../../Components/ui/CommonHeading";
 import { toastService } from "../../utils/Toast";
 import { validateField } from "../../utils/validationService";
-import "./login.css"
-import { useUserService } from "../../hooks/useuserService";
-import { authStorage } from "../../utils/authStorage";     //stores login user in localstorage
+import "./login.css";
+import { useUserService } from "../../hooks/useUserService";
+import { authStorage } from "../../utils/authStorage"; //stores login user in localstorage
 // import { userService } from "../../service/userService";
-const { getUserByEmail } = useUserService();
+const { getUserByEmail, getEmployerByEmail } = useUserService();
 
 type LoginForm = {
   email: string;
@@ -103,27 +103,53 @@ const Login = () => {
     //call api service//
 
     const user = await getUserByEmail(form.email);
+    const getEmployer = await getEmployerByEmail(form.email);
 
     // USER NOT FOUND
-    if (!user) {
+    if (!user && !getEmployer) {
       toastService.error("User not found");
       return;
     }
 
     // PASSWORD CHECK
-    if (user.password !== form.password) {
-      toastService.error("Invalid credentials");
-      return;
+    // const userPassword = user?.password || "";
+    // const employerPassword = getEmployer?.password;
+    if (user) {
+      if ( user?.password !== form.password) {
+        console.log("user gettiong");
+        toastService.error("Invalid credentials");
+        return;
+      }
+    }
+
+    if (getEmployer) {
+      if ( getEmployer?.password !== form.password) {
+        console.log("user gettiong");
+        toastService.error("Invalid credentials");
+        return;
+      }
     }
 
     //usertype check//
 
-    const userType: number = user?.userType;
+    const dbUserType = user?.userType || 0;
+    const employeUserType = getEmployer?.userType || 0;
+    const userType: number = dbUserType || employeUserType;
 
     if (userType == 1) {
-      authStorage.set({                 //save into login state auth change and update ui instandly// 
+      authStorage.set({
+        //save into login state auth change and update ui instandly//
         id: user?.id,
-        email: user?.email
+        email: user?.email,
+      });
+      toastService.success("Login successful");
+      navigate("/");
+    }
+    if (userType == 2) {
+      authStorage.set({
+        //save into login state auth change and update ui instandly//
+        id: user?.id,
+        email: user?.email,
       });
       toastService.success("Login successful");
       navigate("/");

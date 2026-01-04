@@ -4,6 +4,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
+//type for year and date//
+
 type PickerType = "year" | "date";
 
 type Props = {
@@ -11,7 +13,7 @@ type Props = {
   label: string;
   required?: boolean;
   size?: "small" | "medium";
-  pickerType?: PickerType; // 👈 important
+  pickerType?: PickerType; //type of pickertype//
   sx?: object;
 };
 
@@ -28,7 +30,11 @@ const MyDatePicker = ({
     formState: { errors },
   } = useFormContext();
 
+  
+
   const error = get(errors, name);
+
+  //Detect year only mode//
 
   const isYearOnly = pickerType === "year";
 
@@ -41,10 +47,11 @@ const MyDatePicker = ({
           <DesktopDatePicker
             label={label}
 
-            // 👇 switch views dynamically
+            //  switch views dynamically datepicker configuration//
+
             views={isYearOnly ? ["year"] : ["year", "month", "day"]}
 
-            // 👇 display value
+            // display value handling//
             value={
               field.value
                 ? isYearOnly
@@ -53,7 +60,7 @@ const MyDatePicker = ({
                 : null
             }
 
-            // 👇 store value
+            //  store value
             onChange={(date) => {
               if (!date) return field.onChange(null);
 
@@ -62,7 +69,11 @@ const MyDatePicker = ({
               );
             }}
 
+            //Disable future dates//
+
             maxDate={new Date()}
+
+            //styling + error//
 
             slotProps={{
               textField: {

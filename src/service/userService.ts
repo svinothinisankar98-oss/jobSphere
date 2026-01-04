@@ -68,4 +68,9 @@ export const userService = {
     const response = await apiService.get<User[]>(`users?email=${email}`);
     return response[0] ?? null;
   },
+
+  getEmployerByEmail:async (recruiterEmail:string): Promise<User | null>=>{
+    const response = await apiService.get<User[]>(`users?recruiterEmail=${recruiterEmail}&userType=2`);
+    return response[0]??null;
+  }
 };

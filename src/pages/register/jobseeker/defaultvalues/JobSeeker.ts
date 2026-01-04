@@ -1,5 +1,5 @@
 const jobseekerDefaultValues = {
-Name: "",
+    Name: "",
       email: "",
       password: "",
       confirmPassword: "",

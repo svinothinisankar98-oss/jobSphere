@@ -1,11 +1,11 @@
-export type EmployerRegister = {
+export type employerRegisterType = {
   companyName: string;
   email: string;
   phone: string;
   website: string;
-  industry?: string;
-  companySize?: string;
-  foundedYear?: number;
+  industry: string;
+  companySize: string;
+  foundedYear?:number;
 
   address1: string;
   address2?: string;
@@ -21,5 +21,7 @@ export type EmployerRegister = {
 
   password: string;
   confirmPassword: string;
+  remoteopportunity?:string;
+  employmentType?:string [];
   userType: number;
 };

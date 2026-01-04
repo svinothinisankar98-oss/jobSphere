@@ -1,38 +1,70 @@
 import * as yup from "yup";
+import {
+  RequiredMessage,
+  InvalidEmailMessage,
+  InvalidPhoneMessage,
+  PasswordMismatchMessage,
+  SelectMessage,
+  URL_REGEX,
+  InvalidUrlMessage,
+} from "../constants/ValidationMessages";
 
 export const employerSchema = yup.object({
-  companyName: yup.string().required("Enter your company name"),
-  email: yup.string().email("Invalid email").required("Email is required"),
-  phone: yup.string()
-  .matches(/^[0-9]{10}$/, "Enter valid mobile number")
-  .required("Enter you company mobile no"),
-  website: yup.string().required("Enter your website name"),
-  industry: yup.string().required("Select Industry"),
-  companySize: yup.string().required("Select your company size"),
+  companyName: yup.string().required(RequiredMessage("Company Name")),
 
-  foundedYear: yup.number().nullable().defined(),
+  email: yup
+    .string()
+    .email(InvalidEmailMessage)
+    .required(RequiredMessage("Email")),
 
-  address1: yup.string().required("Enter your office Address"),
-  address2: yup.string().nullable().defined(),
-  city: yup.string().required("Enter your city"),
-  state: yup.string().required("Enter your state"),
-  country: yup.string().required("select country"),
-  zip: yup.string().required("Enter your zip code"),
+  phone: yup
+    .string()
+    .required(RequiredMessage("Phone No"))
+    .matches(/^[0-9]{10}$/, InvalidPhoneMessage),
 
-  recruiterName: yup.string().required("Enter your Name"),
-  recruiterEmail: yup.string().email("Invalid Email format").required("Enter your email address"),
-  recruiterPhone: yup.string().required("Enter your Phone no"),
-  designation: yup.string().required("Enter your designation"),
+  website: yup
+    .string()
+    .trim()
+    .required(RequiredMessage("Website"))
+    .matches(URL_REGEX, InvalidUrlMessage),
 
-  password: yup.string()
-  .min(6, "Password must be at least 6 characters")
-    .required("Password is required"),
+  industry: yup.string().required(SelectMessage("Industry")),
 
-  confirmPassword: yup.string()
-  .oneOf([yup.ref("password")], "Passwords must match")
-      .required("Confirm password is required"),
-      
-  userType: yup.number().defined(),
+  companySize: yup.string().required(SelectMessage("Company size")),
+
+  address1: yup.string().required(RequiredMessage("Office Address")),
+
+  city: yup.string().required(RequiredMessage("City")),
+
+  state: yup.string().required(RequiredMessage("State")),
+
+  country: yup.string().required(SelectMessage("Country")),
+
+  zip: yup.string().required(RequiredMessage("Zip code")),
+
+  recruiterName: yup.string().required(RequiredMessage("Recruiter name")),
+
+  recruiterEmail: yup
+    .string()
+    .email(InvalidEmailMessage)
+    .required(RequiredMessage("Recruiter email")),
+
+  recruiterPhone: yup
+    .string()
+    .required(RequiredMessage("Recruiter phone No"))
+    .matches(/^[0-9]{10}$/, InvalidPhoneMessage),
+
+  designation: yup.string().required(RequiredMessage("Designation")),
+
+  password: yup
+    .string()
+    .min(6, "Minimum 6 characters")
+    .required(RequiredMessage("Password")),
+
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref("password")], PasswordMismatchMessage)
+    .required(RequiredMessage("Confirm password")),
+
+  userType: yup.number().required(RequiredMessage("User type")),
 });
-
-export type EmployerRegister = yup.InferType<typeof employerSchema>;
