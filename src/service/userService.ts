@@ -79,8 +79,8 @@ export const userService = {
     return response;
   },
 
-  deleteUser: async (id: string,getData:any): Promise<any> => {
-    getData.isDelete = true;
-  return apiService.put(`users/${id}`, getData);
+  deleteUser: async (id: string,data:any): Promise<any> => {
+    // getData.isDelete = true;
+  return apiService.put(`users/${id}`, data);
 }
 };

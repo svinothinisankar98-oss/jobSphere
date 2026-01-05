@@ -83,6 +83,7 @@ const EmployerRegister = () => {
 
       const data = await userService.getRecruiterDetails(searchText.trim());
       const searhKeyWord = searchText?.trim()?.toLowerCase();
+     
       const filterrecruiter = data?.filter((d: any) => {
         const companyName: string = d?.companyName?.trim()?.toLowerCase();
         const recruiterName: string = d?.recruiterName?.trim()?.toLowerCase();
@@ -93,6 +94,8 @@ const EmployerRegister = () => {
           recruiterEmail?.includes(searhKeyWord)
         );
       });
+
+      console.log(filterrecruiter,'filterrecruiter')
 
       filterrecruiter?.map((d: any, index: number) => {
         d.serialNo = index + 1;
@@ -143,7 +146,7 @@ const EmployerRegister = () => {
   return (
     <Grid container justifyContent="center" py={5}>
       <Grid size={{ xs: 12, md: 10, lg: 8 }}>
-        <Card sx={{ maxWidth: 900, mx: "auto", p: 2 }}>
+        <Card sx={{ maxWidth: 900, mx: "auto", p: 2, }}>
         <CardContent>
           <MyHeading
             title="Company Registration"

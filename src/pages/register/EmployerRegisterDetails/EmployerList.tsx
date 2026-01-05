@@ -38,19 +38,18 @@ const EmployerList = ({ data, loading }: Props) => {
     );
   }
 
-  const deleteEmployee = async (employeeIndex: number) => {
-    const getData = data.find((j: any, index: number) => {
-      return index == employeeIndex;
-    });
-    console.log(getData);
-    const id: string = getData?.id || "";
-    const deletelist = await userService.deleteUser( id,getData);
+  const deleteEmployee = async (data: any) => {
+    // const getData = employeDetails;
+    console.log(data,'from 43');
+    const id: string = data?.id || "";
+    data.isDelete = true;
+    const deletelist = await userService.deleteUser( id,data);
   };
 
   return (
     <TableContainer component={Paper} sx={{ mt: 2 }}>
       <Table size="medium">
-        <TableHead>
+        <TableHead sx={{backgroundColor:'lightgrey'}}>
           <TableRow>
             <TableCell>
               <b>Serial No</b>
@@ -98,7 +97,7 @@ const EmployerList = ({ data, loading }: Props) => {
                 >
                   <EditIcon />
                 </IconButton>
-                <IconButton color="error" onClick={() => deleteEmployee(index)}>
+                <IconButton color="error" onClick={() => deleteEmployee(row)}>
                   <DeleteIcon />
                 </IconButton>
               </TableCell>
