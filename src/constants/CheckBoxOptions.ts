@@ -10,7 +10,7 @@ export const EmploymentTypes=
     { label: "Contract", value: "contract" },
     { label: "Temporary", value: "temporary" },
     { label: "Internship", value: "internship" },
-    {label: "All",value:"all"},
+    
   ];
 
 

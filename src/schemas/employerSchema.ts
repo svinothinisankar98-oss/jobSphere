@@ -66,5 +66,16 @@ export const employerSchema = yup.object({
     .oneOf([yup.ref("password")], PasswordMismatchMessage)
     .required(RequiredMessage("Confirm password")),
 
+    remoteopportunity:yup
+    .string()
+    .required(RequiredMessage("remoteopportunity")),
+
+   employmentType: yup
+  .array()
+  .of(yup.string().required())
+  .min(1, SelectMessage(" atleast one Employment type"))
+  .required(RequiredMessage("Employment type")),
+
+
   userType: yup.number().required(RequiredMessage("User type")),
 });

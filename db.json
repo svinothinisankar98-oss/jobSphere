@@ -554,6 +554,66 @@
         "full_time",
         "part_time"
       ],
+      "userType": 2,
+      "serialNo": 1,
+      "isDelete": true
+    },
+    {
+      "id": "ff5f",
+      "companyName": "GimmeGamma",
+      "email": "gimmegamma@gmail.com",
+      "phone": "7894561234",
+      "website": "www.gimmegamma.com",
+      "industry": "IT",
+      "companySize": "11–50",
+      "foundedYear": 1998,
+      "address1": "ldldld",
+      "address2": "",
+      "city": "chennai",
+      "state": "Tamil Nadu",
+      "country": "India",
+      "zip": "626455",
+      "recruiterName": "Karthikeyan",
+      "recruiterEmail": "karthi@gimmegamma.com",
+      "recruiterPhone": "7894561234",
+      "designation": "HR",
+      "password": "123456",
+      "confirmPassword": "123456",
+      "remoteopportunity": "yes",
+      "employmentType": [
+        "temporary",
+        "part_time",
+        "contract"
+      ],
+      "userType": 2
+    },
+    {
+      "id": "e698",
+      "companyName": "noble private limited",
+      "email": "noble@noble.com",
+      "phone": "8945612584",
+      "website": "www.noble.com",
+      "industry": "IT",
+      "companySize": "51–200",
+      "foundedYear": 1997,
+      "address1": "45 east street",
+      "address2": "",
+      "city": "chennai",
+      "state": "Tamil Nadu",
+      "country": "India",
+      "zip": "600000",
+      "recruiterName": "suba",
+      "recruiterEmail": "suba@noble.com",
+      "recruiterPhone": "7894561234",
+      "designation": "HR Manager",
+      "password": "123456",
+      "confirmPassword": "123456",
+      "remoteopportunity": "yes",
+      "employmentType": [
+        "full_time",
+        "part_time",
+        "contract"
+      ],
       "userType": 2
     }
   ]

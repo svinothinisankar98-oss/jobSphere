@@ -1,20 +1,22 @@
 import { Controller, useFormContext, get } from "react-hook-form";
 import TextField from "@mui/material/TextField";
 
-//props types//
-
-type  MyTextFieldProps ={
-  name: string;
-  label: string;
+type MyTextFieldProps = {
+  name?: string; // 👈 optional
+  label?: string;
   required?: boolean;
   type?: "text" | "email" | "password" | "number";
   placeholder?: string;
   inputMode?: "text" | "numeric" | "decimal";
   rows?: number;
-  helpertext?:string;
+  helpertext?: string;
   size?: "small" | "medium";
-  sx?: object;                      //custom mui styling//
-}
+  sx?: object;
+
+  // 👇 standalone usage
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+};
 
 const MyTextField = ({
   name,
@@ -23,51 +25,64 @@ const MyTextField = ({
   type = "text",
   placeholder,
   inputMode,
- 
   rows,
   size = "small",
   sx,
+  value,
+  onChange,
 }: MyTextFieldProps) => {
-  const {                           //accessing form context//
+  const formContext = useFormContext(); // 👈 may be null
+
+  /* ---------------- STANDALONE MODE ---------------- */
+  if (!name || !formContext) {
+    return (
+      <TextField
+        fullWidth
+        label={label}
+        type={type}
+        placeholder={placeholder}
+        size={size}
+        value={value}
+        onChange={onChange}
+        inputMode={inputMode}
+        multiline={Boolean(rows)}
+        rows={rows}
+        sx={{
+          "& .MuiFormLabel-asterisk": { color: "red" },
+          ...sx,
+        }}
+      />
+    );
+  }
+
+  /* ---------------- FORM MODE ---------------- */
+  const {
     control,
     formState: { errors },
-  } = useFormContext();
+  } = formContext;
 
-  const error = get(errors, name);    
+  const error = get(errors, name);
 
   return (
-    <Controller                   //controller usage//
+    <Controller
       name={name}
       control={control}
-      render={({ field }) => (    //value onchange onblur ref//
+      render={({ field }) => (
         <TextField
           {...field}
           fullWidth
           label={label}
           type={type}
           placeholder={placeholder}
-         
           required={required}
           size={size}
           inputMode={inputMode}
           multiline={Boolean(rows)}
           rows={rows}
-          error={!!error}         //shows red border error handling//
-          helperText={error?.message as string}  //display yup validation message//
-
-           slotProps={{                 //aligns helper text perfectly under the input//
-    formHelperText: {
-      sx: {
-        marginLeft: 0,
-        marginRight: 0,
-      },
-    },
-  }}
-
+          error={!!error}
+          helperText={error?.message as string}
           sx={{
-            "& .MuiFormLabel-asterisk": {
-              color: "red",
-            },
+            "& .MuiFormLabel-asterisk": { color: "red" },
             ...sx,
           }}
         />

@@ -1,14 +1,20 @@
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
+import { ThemeProvider } from "@mui/material/styles";
+
 import "./index.css";
-import App from "./App.tsx";
+import App from "./App";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
-import { MySnackBar } from "./Components/newui/MySnackBar.tsx";
+
+import { MySnackBar } from "./Components/newui/MySnackBar";
+import { theme }from "./constants/theme";
 
 createRoot(document.getElementById("root")!).render(
-  <BrowserRouter>
-    <MySnackBar>
-      <App />
-    </MySnackBar>
-  </BrowserRouter>
+  <ThemeProvider theme={theme}>
+    <BrowserRouter>
+      <MySnackBar>
+        <App />
+      </MySnackBar>
+    </BrowserRouter>
+  </ThemeProvider>
 );

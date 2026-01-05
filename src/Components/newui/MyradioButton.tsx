@@ -8,15 +8,10 @@ import {
 } from "@mui/material";
 import { Controller, useFormContext } from "react-hook-form";
 
-// type RadioOption = {
-//   value: string;
-//   label: string;
-// };
-
 type Props = {
   name: string;
   label: string;
-  options:Array<{value:string; label:string}>;
+  options: Array<{ value: string; label: string }>;
   row?: boolean;
 };
 
@@ -50,7 +45,7 @@ const MyradioButton = ({
               <FormControlLabel
                 key={opt.value}
                 value={opt.value}
-                control={<Radio />}
+                control={<Radio  />}
                 label={opt.label}
               />
             ))}

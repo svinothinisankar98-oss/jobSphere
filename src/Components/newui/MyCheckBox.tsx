@@ -35,38 +35,40 @@ const MyCheckbox = ({
       <FormLabel sx={{ mb: 1 }}>{label}</FormLabel>
 
       <Controller
-        name={name}
-        control={control}
-        defaultValue={[]}
-        render={({ field }) => (
-          <FormGroup row={row}>
-            {options.map((option) => (
-              <FormControlLabel
-                key={option.value}
-                label={option.label}
-                control={
-                  <Checkbox
-                    checked={field.value?.includes(option.value)}
-                    onChange={(e) => {
-                      const checked = e.target.checked;
+  name={name}
+  control={control}
+  render={({ field }) => {
+    const value: string[] = Array.isArray(field.value)
+      ? field.value
+      : [];
 
-                      if (checked) {
-                        field.onChange([...field.value, option.value]);
-                      } else {
-                        field.onChange(
-                          field.value.filter(
-                            (v: string) => v !== option.value
-                          )
-                        );
-                      }
-                    }}
-                  />
-                }
+    return (
+      <FormGroup row={row}>
+        {options.map((option) => (
+          <FormControlLabel
+            key={option.value}
+            label={option.label}
+            control={
+              <Checkbox
+                checked={value.includes(option.value)}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    field.onChange([...value, option.value]);
+                  } else {
+                    field.onChange(
+                      value.filter((v) => v !== option.value)
+                    );
+                  }
+                }}
               />
-            ))}
-          </FormGroup>
-        )}
-      />
+            }
+          />
+        ))}
+      </FormGroup>
+    );
+  }}
+/>
+
 
       {errors[name] && (
         <FormHelperText>

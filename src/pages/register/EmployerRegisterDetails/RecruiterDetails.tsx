@@ -59,11 +59,11 @@ function RecruiterDetails() {
           name="remoteopportunity"
           label="Do you offer remote opportunities?"
           options={ Yes_No_Options}
-          row={false}
+          row
           
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 12 }}>
         <MyCheckbox
           name="employmentType"
           label="Employment Type "
@@ -71,7 +71,9 @@ function RecruiterDetails() {
           row
         />
       </Grid>
+      
     </Grid>
+    
   );
 }
 

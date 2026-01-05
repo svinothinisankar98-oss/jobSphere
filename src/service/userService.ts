@@ -37,6 +37,7 @@
 //   throw new Error("Function not implemented.");
 // }
 
+import type { employerRegisterType } from "../types/employerRegister";
 import { apiService } from "./apiService";
 
 /* ================= TYPES ================= */
@@ -52,7 +53,7 @@ export interface User {
 
 export const userService = {
   // GET ALL USERS
-  getUsers: async (): Promise<User[]> => {
+  getUsers: async (p0: { keyword: string; }): Promise<User[]> => {
     const response = await apiService.get<User[]>("users");
     return response;
   },
@@ -72,5 +73,14 @@ export const userService = {
   getEmployerByEmail:async (recruiterEmail:string): Promise<User | null>=>{
     const response = await apiService.get<User[]>(`users?recruiterEmail=${recruiterEmail}&userType=2`);
     return response[0]??null;
-  }
+  },
+  getRecruiterDetails:async(getRecruiterDetails:string):Promise<employerRegisterType []|[]>=>{
+    const response = await apiService.get<employerRegisterType[]>(`users?userType=2`)
+    return response;
+  },
+
+  deleteUser: async (id: string,getData:any): Promise<any> => {
+    getData.isDelete = true;
+  return apiService.put(`users/${id}`, getData);
+}
 };
