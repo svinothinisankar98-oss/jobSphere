@@ -20,9 +20,11 @@ import { toastService } from "../../../utils/Toast";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "../../../Components/newui/MySnackBar";
 import { Box } from "@mui/system";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MyTextField from "../../../Components/newui/MyTextField";
-import EmployerList from "./EmployerList";
+import { useLocation } from "react-router-dom";
+
+//(Tabs Validation)//
 
 const stepFields: (keyof employerRegisterType)[][] = [
   ["companyName", "email", "phone", "website", "industry", "companySize"],
@@ -38,14 +40,14 @@ const stepFields: (keyof employerRegisterType)[][] = [
     "employmentType",
   ],
 ];
+
+//Form Setup//
+
 const EmployerRegister = () => {
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
-  const [searchText, setSearchText] = useState("");
-  const [searchResults, setSearchResults] = useState<employerRegisterType[]>(
-    []
-  );
-  const [loading, setLoading] = useState(false);
+  const location = useLocation();
+  const editData = location.state?.editData;
 
   const form = useForm<employerRegisterType>({
     resolver: yupResolver(employerSchema),
@@ -72,71 +74,106 @@ const EmployerRegister = () => {
     formState: { isValid },
   } = form;
 
-  const handleSearch = async () => {
-    if (!searchText.trim()) {
-      showSnackbar("Enter company or recruiter name", "warning");
-      return;
-    }
-
-    try {
-      setLoading(true);
-
-      const data = await userService.getRecruiterDetails(searchText.trim());
-      const searhKeyWord = searchText?.trim()?.toLowerCase();
-     
-      const filterrecruiter = data?.filter((d: any) => {
-        const companyName: string = d?.companyName?.trim()?.toLowerCase();
-        const recruiterName: string = d?.recruiterName?.trim()?.toLowerCase();
-        const recruiterEmail:string = d?.recruiterEmail.trim()?.toLowerCase();
-        return (
-          companyName?.includes(searhKeyWord) ||
-          recruiterName?.includes(searhKeyWord)||
-          recruiterEmail?.includes(searhKeyWord)
-        );
+  useEffect(() => {
+    if (editData) {
+      // Edit Mode
+      form.reset({
+        ...employerDefaultValues,
+        ...editData,
       });
-
-      console.log(filterrecruiter,'filterrecruiter')
-
-      filterrecruiter?.map((d: any, index: number) => {
-        d.serialNo = index + 1;
-      });
-      console.log(filterrecruiter?.length, "from leangth", searchText);
-      setSearchResults(filterrecruiter);
-    } catch (error) {
-      console.error(error);
-      showSnackbar("Search failed", "error");
-    } finally {
-      setLoading(false);
+    } else {
+      // New Register Mode
+      form.reset(employerDefaultValues);
+      handleResetState(); // reset tabs & validation state
     }
-  };
+  }, [editData]);
 
-  // const onSubmit = (data: employerRegisterType) => {
-  //   console.log("FORM DATA:", data);
+  //Search Flow for input validation//
 
+  // const handleSearch = async () => {
+  //   if (!searchText.trim()) {
+  //     showSnackbar("Enter company or recruiter name", "warning");
+  //     return;
+  //   }
+
+  //   try {
+  //     setLoading(true);
+
+  //     const data = await userService.getRecruiterDetails(searchText.trim());
+
+  //     const searchKeyWord = searchText?.trim()?.toLowerCase();
+
+  //     //Filter companyname,recruitername,recruiteremail//
+
+  //     const filterrecruiter = data?.filter((d: any) => {
+  //       const companyName: string = d?.companyName?.trim()?.toLowerCase();
+  //       const recruiterName: string = d?.recruiterName?.trim()?.toLowerCase();
+  //       const recruiterEmail: string = d?.recruiterEmail.trim()?.toLowerCase();
+  //       return (
+  //         companyName?.includes(searchKeyWord) ||
+  //         recruiterName?.includes(searchKeyWord) ||
+  //         recruiterEmail?.includes(searchKeyWord)
+  //       );
+  //     });
+
+  //     console.log(filterrecruiter, "filterrecruiter");
+
+  //     //Add serial number for table//
+
+  //     filterrecruiter?.map((d: any, index: number) => {
+  //       d.serialNo = index + 1;
+  //     });
+  //     console.log(filterrecruiter?.length, "from leangth", searchText);
+
+  //     setSearchResults(filterrecruiter);
+  //   } catch (error) {
+  //     showSnackbar("Search failed", "error");
+  //   } finally {
+  //     setLoading(false);
+  //   }
   // };
+
+  // // const onSubmit = (data: employerRegisterType) => {
+  // //   console.log("FORM DATA:", data);
+
+  // // };
 
   const onSubmit: SubmitHandler<employerRegisterType> = async (data) => {
     try {
       data.userType = 2;
 
-      const existingemployer = await userService.getEmployerByEmail(
-        data.recruiterEmail?.trim()?.toLowerCase()
-      );
+      if (!editData) {
+        const existingemployer = await userService.getEmployerByEmail(
+          data.recruiterEmail?.trim()?.toLowerCase()
+        );
 
-      if (existingemployer) {
-        showSnackbar("recruiterEmail  already exists", "error");
-        return;
+        if (existingemployer) {
+          showSnackbar("recruiterEmail  already exists", "error");
+          return;
+        }
+        data.createdAt = new Date();
+        data.updatedAt = null;
+        data.deletedAt = null;
+        await userService.createUser(data);
+
+        showSnackbar("Registration successful!", "success");
+
+        reset();
+
+        setTimeout(() => navigate("/login"), 1200);
       }
 
-      await userService.createUser(data);
+      if (editData) {
+        data.updatedAt = new Date();
+        data.deletedAt = null;
+        const id = editData?.id;
+        const updateData = await userService.updateUser(id, data);
+        showSnackbar("Employee Details Updated.", "success");
 
-      showSnackbar("Registration successful!", "success");
+        reset();
 
-      reset();
-      setSearchResults([]);
-      setSearchText("");
-
-      setTimeout(() => navigate("/login"), 1200);
+        setTimeout(() => navigate("/login"), 1200);
+      }
     } catch (error) {
       console.error(error);
       showSnackbar("Something went wrong. Please try again.", "error");
@@ -146,126 +183,132 @@ const EmployerRegister = () => {
   return (
     <Grid container justifyContent="center" py={5}>
       <Grid size={{ xs: 12, md: 10, lg: 8 }}>
-        <Card sx={{ maxWidth: 900, mx: "auto", p: 2, }}>
-        <CardContent>
-          <MyHeading
-            title="Company Registration"
-            subtitle="Register your company to start hiring"
-            center
-          />
-          <Box width="100%" display="flex" justifyContent="flex-end" mb={3}>
-            <Box display="flex" gap={2} width={{ xs: "100%", sm: 420 }}>
-              {/* <TextField
+        <Card sx={{ maxWidth: 900, mx: "auto", p: 2 }}>
+          <CardContent>
+            <MyHeading
+              title={editData ? "Edit Company" : "Company Registration"}
+              subtitle={
+                editData
+                  ? "Update your company details"
+                  : "Register your company to start hiring"
+              }
+              center
+            />
+            <Box width="100%" display="flex" justifyContent="flex-end" mb={3}>
+              <Box display="flex" gap={2} width={{ xs: "100%", sm: 420 }}>
+                {/* <TextField
                   size="small"
                   
                   placeholder="Search company / recruiter"
                   value={searchText}
                   onChange={(e) => setSearchText(e.target.value)}
                 /> */}
-              <MyTextField
-                placeholder="Search company / recruiter"
-                value={searchText}
-                onChange={(e) => setSearchText(e.target.value)}
-              />
+                {/* <MyTextField
+                  placeholder="Search company / recruiter"
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                /> */}
 
-              <MyButton
-                label="Search"
-                variant="contained"
-                type="button"
-                sx={{ minWidth: 110, height: 40 }}
-                // onClick={() => {
-                //   console.log("Search value:", searchText);
-                // }}
-                onClick={handleSearch}
-              />
+                {/* <MyButton
+                  label="Search"
+                  variant="contained"
+                  type="button"
+                  sx={{ minWidth: 110, height: 40 }}
+                  // onClick={() => {
+                  //   console.log("Search value:", searchText);
+                  // }}
+                  onClick={handleSearch}
+                /> */}
+              </Box>
             </Box>
-          </Box>
 
-          <FormProvider {...form}>
-            <form onSubmit={handleSubmit(onSubmit)} noValidate>
-              {/* ---------- TABS ---------- */}
-              <MyTabs
-                activeTab={activeTab}
-                onTabChange={handleTabChange}
-                completedTabs={completedTabs}
-                errorTabs={errorTabs}
-                tabs={[
-                  { tabName: "Company", tabContent: <CompanyDetails /> },
-                  { tabName: "Address", tabContent: <AddressDetails /> },
-                  { tabName: "Recruiter", tabContent: <RecruiterDetails /> },
-                ]}
-              />
-
-              {/* ---------- NAV ---------- */}
-              <Grid container justifyContent="space-between" mt={2}>
-                <MyButton
-                  label="Back"
-                  variant="outlined"
-                  onClick={handleBack}
-                  disabled={activeTab === 0}
+            <FormProvider {...form}>
+              <form onSubmit={handleSubmit(onSubmit)} noValidate>
+                {/* ---------- TABS ---------- */}
+                <MyTabs
+                  activeTab={activeTab}
+                  onTabChange={handleTabChange}
+                  completedTabs={completedTabs}
+                  errorTabs={errorTabs}
+                  tabs={[
+                    { tabName: "Company", tabContent: <CompanyDetails /> },
+                    { tabName: "Address", tabContent: <AddressDetails /> },
+                    { tabName: "Recruiter", tabContent: <RecruiterDetails /> },
+                  ]}
                 />
 
-                <MyButton
-                  label="Next"
-                  variant="contained"
-                  onClick={handleNext}
-                  disabled={activeTab === stepFields.length - 1}
-                />
-              </Grid>
+                {/* ---------- NAV ---------- */}
+                <Grid container justifyContent="space-between" mt={2}>
+                  <MyButton
+                    label="Back"
+                    variant="outlined"
+                    onClick={handleBack}
+                    disabled={activeTab === 0}
+                  />
 
-              {/* ---------- ACTIONS ---------- */}
-              <Grid container justifyContent="center" spacing={2} mt={3}>
-                <MyButton
-                  label="Reset"
-                  color="info"
-                  type="button"
-                  variant="contained"
-                  sx={{
-                    minWidth: 160,
-                    height: 45,
-                    fontWeight: 600,
-                  }}
-                  onClick={() => {
-                    form.reset(employerDefaultValues);
-                    form.clearErrors();
-                    handleResetState();
-                  }}
-                />
+                  <MyButton
+                    label="Next"
+                    variant="contained"
+                    onClick={handleNext}
+                    disabled={activeTab === stepFields.length - 1}
+                  />
+                </Grid>
 
-                <MyButton
-                  label="Register"
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  sx={{
-                    minWidth: 160,
-                    height: 45,
-                    fontWeight: 600,
-                  }}
-                  disabled={!isValid}
-                />
+                {/* ---------- ACTIONS ---------- */}
+                <Grid container justifyContent="center" spacing={2} mt={3}>
+                  <MyButton
+                    label="Reset"
+                    color="info"
+                    type="button"
+                    variant="contained"
+                    sx={{
+                      minWidth: 160,
+                      height: 45,
+                      fontWeight: 600,
+                    }}
+                    onClick={() => {
+                      form.reset(employerDefaultValues);
+                      form.clearErrors();
+                      handleResetState();
+                    }}
+                  />
 
-                <MyButton
-                  label="Cancel"
-                  color="error"
-                  type="button"
-                  variant="contained"
-                  sx={{
-                    minWidth: 160,
-                    height: 45,
-                    fontWeight: 600,
-                  }}
-                  onClick={() => window.history.back()}
-                />
-              </Grid>
-            </form>
-          </FormProvider>
-        </CardContent>
+                  <MyButton
+                    label={!editData ? "Register" : "Update"}
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    sx={{
+                      minWidth: 160,
+                      height: 45,
+                      fontWeight: 600,
+                    }}
+                    disabled={!isValid}
+                  />
+
+                  <MyButton
+                    label="Cancel"
+                    color="error"
+                    type="button"
+                    variant="contained"
+                    sx={{
+                      minWidth: 160,
+                      height: 45,
+                      fontWeight: 600,
+                    }}
+                    onClick={() => window.history.back()}
+                  />
+                </Grid>
+              </form>
+            </FormProvider>
+          </CardContent>
         </Card>
       </Grid>
-      <Grid size={{ xs: 14, md: 12, lg: 10 }}>
-        {searchText && <EmployerList loading={loading} data={searchResults} />}
-      </Grid>
+
+      {/* <Grid size={{ xs: 14, md: 12, lg: 10 }}>
+        {searchText.trim() && (<EmployerList loading={loading} data={searchResults} />        //// Search Result Render//
+)}          
+      </Grid> */}
     </Grid>
   );
 };

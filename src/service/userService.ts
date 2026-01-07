@@ -74,12 +74,14 @@ export const userService = {
     const response = await apiService.get<User[]>(`users?recruiterEmail=${recruiterEmail}&userType=2`);
     return response[0]??null;
   },
-  getRecruiterDetails:async(getRecruiterDetails:string):Promise<employerRegisterType []|[]>=>{
-    const response = await apiService.get<employerRegisterType[]>(`users?userType=2`)
-    return response;
-  },
+ getRecruiterDetails: async (): Promise<employerRegisterType[]> => {
+  const response = await apiService.get<employerRegisterType[]>(
+    `users?userType=2`
+  );
+  return response;
+},
 
-  deleteUser: async (id: string,data:any): Promise<any> => {
+  updateUser: async (id: string,data:any): Promise<any> => {
     // getData.isDelete = true;
   return apiService.put(`users/${id}`, data);
 }

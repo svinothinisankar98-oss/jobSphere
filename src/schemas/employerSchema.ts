@@ -73,8 +73,9 @@ export const employerSchema = yup.object({
    employmentType: yup
   .array()
   .of(yup.string().required())
-  .min(1, SelectMessage(" atleast one Employment type"))
-  .required(RequiredMessage("Employment type")),
+  .required(RequiredMessage("Employment type"))
+  .min(1, SelectMessage(" atleast one Employment type")),
+  
 
 
   userType: yup.number().required(RequiredMessage("User type")),

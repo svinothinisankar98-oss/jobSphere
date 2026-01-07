@@ -26,4 +26,9 @@ export type employerRegisterType = {
   remoteopportunity:string;
   employmentType:string [];
   userType: number;
+  createdAt?: Date;
+updatedAt?: Date|null;
+deletedAt?: Date|null;
+isActive?:boolean;
+
 };

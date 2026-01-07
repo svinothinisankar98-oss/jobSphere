@@ -1,4 +1,11 @@
 import React from "react";
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormHelperText,
+} from "@mui/material";
 
 type Option = {
   id: number;
@@ -16,8 +23,7 @@ type Props = {
   error?: string;
   className?: string;
   style?: React.CSSProperties;
-   icon?: string; 
-  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  onChange: (e: any) => void;
 };
 
 const CommonDropdown: React.FC<Props> = ({
@@ -28,46 +34,50 @@ const CommonDropdown: React.FC<Props> = ({
   placeholder = "Select",
   required = false,
   disabled = false,
-  error,
-  
+  error = "",
+  className,
   style,
-  className = "form-select",
   onChange,
 }) => {
-  return (
-    <div style={{ width: "100%" }}>
-      {/* Label */}
-      {label && (
-        <label className="form-label fw-semibold">
-          {label}
-          {required && <span className="text-danger"> *</span>}
-        </label>
-      )}
-      
-      
+  const hasError = Boolean(error);
 
-      {/* Select */}
-      <select
+  return (
+    <FormControl
+      fullWidth
+      size="small"
+      error={hasError}
+      disabled={disabled}
+      className={className}
+      style={style}
+    >
+      {label && (
+        <InputLabel required={required}>
+          {label}
+        </InputLabel>
+      )}
+
+      <Select
         name={name}
-        value={value}
-        style={style}
-        className={`${className} ${error ? "is-invalid" : ""}`}
-        required={required}
-        disabled={disabled}
+        value={value || ""}
+        label={label}
+        displayEmpty
         onChange={onChange}
       >
-        <option value="">{placeholder}</option>
+        <MenuItem value="">
+          {placeholder}
+        </MenuItem>
 
         {options.map((opt) => (
-          <option key={opt.id} value={opt.item}>
+          <MenuItem key={opt.id} value={opt.item}>
             {opt.item}
-          </option>
+          </MenuItem>
         ))}
-      </select>
+      </Select>
 
-      {/* Error */}
-      {error && <div className="invalid-feedback">{error}</div>}
-    </div>
+      {hasError && (
+        <FormHelperText>{error}</FormHelperText>
+      )}
+    </FormControl>
   );
 };
 

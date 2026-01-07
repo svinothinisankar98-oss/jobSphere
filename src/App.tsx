@@ -14,6 +14,7 @@ import CommonToast from "./Components/ui/CommonToast";
 import Login from "./pages/login/Login";
 // import {EmployerRegister} from "./pages/register/employerregisterdetails/EmployerRegister";
 import EmployerRegister from "./pages/register/employerregisterdetails/EmployerRegister";
+import EmployerList from "./pages/register/employerregisterdetails/EmployerList";
 
 
 
@@ -44,6 +45,8 @@ function App() {
           <Route path="/employer-register" element={<EmployerRegister/>} />
           <Route path="/job-list" element={<Joblist />} />
           <Route path="/job-seeker-register" element={<JobSeekerRegister />} />
+         <Route path="/employer-list" element={<EmployerList />} />
+
           
           
           

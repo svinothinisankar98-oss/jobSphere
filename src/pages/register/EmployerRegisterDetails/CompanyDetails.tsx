@@ -2,20 +2,21 @@ import Grid from "@mui/material/Grid";
 import MyTextField from "../../../Components/newui/MyTextField";
 import MyDropDown from "../../../Components/newui/MyDropDown";
 import MyYearPicker from "../../../Components/newui/MyDatePicker";
+import { COMPANY_SIZE_OPTIONS, INDUSTRY_OPTIONS } from "../../../constants/DropDownOptions";
 
-const INDUSTRY_OPTIONS = [
-  { id: 1, item: "IT" },
-  { id: 2, item: "Finance" },
-  { id: 3, item: "Healthcare" },
-  { id: 4, item: "Education" },
-];
+// const INDUSTRY_OPTIONS = [
+//   { id: 1, item: "IT" },
+//   { id: 2, item: "Finance" },
+//   { id: 3, item: "Healthcare" },
+//   { id: 4, item: "Education" },
+// ];
 
-const COMPANY_SIZE_OPTIONS = [
-  { id: 1, item: "1–10" },
-  { id: 2, item: "11–50" },
-  { id: 3, item: "51–200" },
-  { id: 4, item: "200+" },
-];
+// const COMPANY_SIZE_OPTIONS = [
+//   { id: 1, item: "1–10" },
+//   { id: 2, item: "11–50" },
+//   { id: 3, item: "51–200" },
+//   { id: 4, item: "200+" },
+// ];
 
 function CompanyDetails() {
   return (

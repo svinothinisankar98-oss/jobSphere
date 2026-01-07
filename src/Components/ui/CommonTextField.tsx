@@ -1,4 +1,5 @@
 import React from "react";
+import { TextField } from "@mui/material";
 
 type Props = {
   label?: string;
@@ -8,14 +9,14 @@ type Props = {
   placeholder?: string;
   required?: boolean;
   className?: string;
-  error?:string;
+  error?: string;
   inputMode?: "text" | "numeric" | "decimal";
-  rows?: number; //  textarea
+  rows?: number; // textarea
   onChange?: (
-  e: React.ChangeEvent<
-    HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-  >
-) => void;
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement
+    >
+  ) => void;
 };
 
 const CommonTextField: React.FC<Props> = ({
@@ -24,53 +25,36 @@ const CommonTextField: React.FC<Props> = ({
   value,
   type = "text",
   placeholder = "",
-  required,
+  required = false,
   className = "",
   inputMode,
   rows,
-  error='',
+  error = "",
   onChange,
 }) => {
   const hasError = error.trim().length > 0;
-  return (
-    <div className="mb-3">
-      {label && (
-        <label className="form-label fw-semibold">
-          {label} {required && <span className="text-danger">*</span>}
-        </label>
-      )}
 
-      {rows ? (
-        /* TEXTAREA */
-        <textarea
-          name={name}
-          value={value}
-          rows={rows}
-          placeholder={placeholder}
-          required={required}
-          className={`form-control ${className} ${hasError ? "is-invalid" : ""}`}
-          onChange={onChange}
-        />
-      ) : (
-        /* INPUT */
-        <input
-          type={type}
-          name={name}
-          value={value}
-          placeholder={placeholder}
-          required={required}
-          inputMode={inputMode}
-          className={`form-control ${className} ${hasError ? "is-invalid" : ""}`}
-          onChange={onChange}
-          
-        />
-      )}
-      {hasError && (
-        <div className="invalid-feedback">
-          {error}
-        </div>
-      )}
-    </div>
+  return (
+    <TextField
+      fullWidth
+      label={label}
+      name={name}
+      value={value}
+      type={rows ? undefined : type}
+      placeholder={placeholder}
+      required={required}
+      error={hasError}
+      helperText={hasError ? error : ""}
+      multiline={!!rows}
+      rows={rows}
+      inputProps={{
+        inputMode,
+      }}
+      className={className}
+      onChange={onChange}
+      size="small"
+      variant="outlined"
+    />
   );
 };
 

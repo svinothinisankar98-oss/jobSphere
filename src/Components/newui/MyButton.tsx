@@ -19,7 +19,7 @@ type ButtonProps = {
   maxWidth?: number;
 
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
-  icon?: string; // MUI icon name
+  icon?: string | React.ReactNode;
 };
 
 const MyButton: React.FC<ButtonProps> = ({
@@ -44,7 +44,9 @@ const MyButton: React.FC<ButtonProps> = ({
       disabled={disabled}
       onClick={onClick}
       className={className}
-      startIcon={icon ? <Icon>{icon}</Icon> : null}
+      startIcon={
+  typeof icon === "string" ? <Icon>{icon}</Icon> : icon
+}
       sx={{
         textTransform: "none",
         ...sx,
