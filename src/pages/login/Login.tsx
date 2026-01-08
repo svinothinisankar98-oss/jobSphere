@@ -154,7 +154,14 @@ const Login = () => {
       toastService.success("Login successful");
       navigate("/");
     }
+    if(userType==3){
+
+      navigate("/employer-list")
+    
+  }
   };
+
+  
 
   return (
     <div className="container-fluid min-vh-50 p-0">

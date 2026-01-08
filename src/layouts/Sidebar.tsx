@@ -73,6 +73,13 @@ const Sidebar = () => {
             </li>
           </ul>
         </li>
+        <li className="nav-item">
+          <Link className="nav-link" to="/employer-list">
+            <i className="bi bi-bank"></i>
+            <span className="link-text">Employer List</span>
+          </Link>
+        </li>
+
 
       </ul>
     </div>

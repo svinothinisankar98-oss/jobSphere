@@ -10,8 +10,37 @@ export const theme = createTheme({
         },
       },
     },
+
+   
+    MuiTablePagination: {
+      styleOverrides: {
+        root: {
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "flex-end",
+          paddingRight: "16px",
+        },
+        toolbar: {
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          paddingLeft: "16px",
+          paddingRight: "16px",
+        },
+        spacer: {
+          display: "none",
+        },
+        selectLabel: {
+          marginBottom: 0,
+        },
+        displayedRows: {
+          marginBottom: 0,
+        },
+        actions: {
+          marginLeft: "8px",
+        },
+      },
+    },
   },
-
-
-  
 });

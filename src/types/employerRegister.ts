@@ -28,7 +28,7 @@ export type employerRegisterType = {
   userType: number;
   createdAt?: Date;
 updatedAt?: Date|null;
-deletedAt?: Date|null;
+// deletedAt?: Date|null;
 isActive?:boolean;
 
 };

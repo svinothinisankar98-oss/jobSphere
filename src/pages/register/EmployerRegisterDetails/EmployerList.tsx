@@ -7,11 +7,13 @@ import {
   IconButton,
   Grid,
   Chip,
+  Tooltip,
 } from "@mui/material";
 
 import SearchIcon from "@mui/icons-material/Search";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 import type { employerRegisterType } from "../../../types/employerRegister";
 import { userService } from "../../../service/userService";
@@ -54,19 +56,40 @@ const EmployerList = () => {
     setCompanySize("");
     setData([]);
   };
+
+  //Delete Logic//
+
   const handleDelete = async (row: any) => {
     row.isActive = false;
-    row.deletedAt = new Date();
+    row.updatedAt = new Date();
     const id = row?.id;
    await userService.updateUser(id,row);
      showSnackbar("Employee deleted sucessfully", "success");
   };
 
-  const handleEdit = (row: employerRegisterType) => {
-  navigate("/employer-register", {
-    state: { editData: row },
-  });
+  const handleActivate = async (row: any) => {
+    row.isActive=true;
+    row.updatedAt=new Date();
+    const id=row?.id;
+  
+  await userService.updateUser(id, row);
+  showSnackbar("Employee activated successfully", "success");
+  // handleSearch();
 };
+
+  //Edit Logic//
+
+//   const handleEdit = (row: employerRegisterType) => {        //edit mode location.state//
+//   navigate("/employer-register", {
+//     state: { editData: row },
+//   });
+// };
+
+const handleEdit = (row: employerRegisterType) => {
+  navigate(`/employer-register/edit/${row.id}`);
+};
+
+
 
   // ================= SEARCH =================
   const handleSearch = async () => {
@@ -95,6 +118,8 @@ const EmployerList = () => {
         );
       });
 
+      //Add Serial Number//
+
       const withSerial = filtered.map((d: any, index: number) => ({
         ...d,
         serialNo: index + 1,
@@ -109,23 +134,27 @@ const EmployerList = () => {
     }
   };
 
+  //default load for on page open//
+
   useEffect(() => {
     handleSearch();
   }, []);
 
-  // ================= TABLE COLUMNS (FIXED LOCATION) =================
+ //Table Columns//
+
   const columns: Column<employerRegisterType>[] = [
-    { id: "serialNo", label: "SerialNo", align: "center" },
+    { id: "serialNo", label: "SerialNo", align: "center", sortable:false, },
     { id: "companyName", label: "Company Name", align: "left" },
     { id: "companySize", label: "Company Size", align: "center" },
     { id: "industry", label: "Industry", align: "left" },
     { id: "recruiterName", label: "Recruiter Name", align: "left" },
     { id: "recruiterEmail", label: "Recruiter Email", align: "left" },
-    { id: "recruiterPhone", label: "Recruiter Phone", align: "left" },
+    { id: "recruiterPhone", label: "Recruiter Phone", align: "center",sortable:false, },
     {
       id: "createdAt",
       label: "Created At",
       align: "center",
+      sortable:false,
       render: (row) => formatDate(row.createdAt),
       // row.createdAt && !isNaN(new Date(row.createdAt).getTime())
       //   ? new Date(row.createdAt).toLocaleDateString()
@@ -135,6 +164,8 @@ const EmployerList = () => {
       id: "status",
       label: "Status",
       align: "center",
+      sortable:false,
+
       render: (row: employerRegisterType) => (
         <Chip
           label={row.isActive ? "Active" : "Inactive"}
@@ -148,31 +179,50 @@ const EmployerList = () => {
       id: "actions",
       label: "Actions",
       align: "center",
+      sortable:false,
 
-      render: (row) => (
+      render: (row: employerRegisterType) => (
+    <Box display="flex" justifyContent="center" gap={1}>
+      {/* ACTIVE → Edit + Delete */}
+      {row.isActive && (
         <>
           <IconButton
             size="small"
             color="primary"
-             onClick={() => handleEdit(row)}
+            onClick={() => handleEdit(row)}
           >
             <EditIcon fontSize="small" />
           </IconButton>
-          {
-            row?.isActive&&(
-              <IconButton size="small" color="error">
-            <DeleteIcon fontSize="small" onClick={() => handleDelete(row)} />
-          </IconButton>
 
-            )
-          }
-          
+          <IconButton
+            size="small"
+            color="error"
+            onClick={() => handleDelete(row)}
+          >
+            <DeleteIcon fontSize="small" />
+          </IconButton>
         </>
-      ),
+      )}
+
+      {/* INACTIVE → Activate */}
+     {!row.isActive && (
+  <Tooltip title="Activate">
+    <IconButton
+      size="small"
+      color="success"
+      onClick={() => handleActivate(row)}
+    >
+      <CheckCircleIcon fontSize="small" />
+    </IconButton>
+  </Tooltip>
+)}
+    </Box>
+  ),
+        
     },
   ];
 
-  // ================= JSX =================
+  // JSX //
   return (
     <Box mt={4}>
       <Paper sx={{ maxWidth: 1200, mx: "auto", p: 3, borderRadius: 2 }}>
@@ -285,7 +335,9 @@ const EmployerList = () => {
         </Typography>
       )}
 
-      {!loading && data.length > 0 && (
+     
+
+      {!loading && data.length > 0 && (            //Table Usage//
         <MyTable
           rows={data}
           columns={columns}

@@ -81,35 +81,34 @@ function MyTable<T>({               //default set for for pageoptions rows perpa
       <Box sx={{ overflowX: "auto", maxHeight: 400 }}>
         <Table stickyHeader size={tableSize} sx={{ minWidth: 1200 }}>
           <TableHead>
-            <TableRow>
-              {columns.map((c) => (
-                <TableCell
-                  key={String(c.id)}
-                  align={c.headerAlign || "center"}
-                  sx={{
-                    fontWeight: "bold",
-                    // border: "1px solid #ddd",
-                    whiteSpace: "nowrap",
-                    backgroundColor: "#f0ebebff",
-                    
-                  }}
-                >
-
-                    
-                  <Box display="flex" justifyContent="center">
-                    <TableSortLabel
-                      active={orderBy === c.id}
-                      direction={orderBy === c.id ? order : "asc"}
-                      onClick={() => handleSort(String(c.id))}
-                    >
-                        
-                      {c.label}
-                    </TableSortLabel>
-                  </Box>
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
+  <TableRow>
+    {columns.map((c) => (
+      <TableCell
+        key={String(c.id)}
+        align={c.headerAlign || "center"}
+        sx={{
+          fontWeight: "bold",
+          whiteSpace: "nowrap",
+          backgroundColor: "#f0ebebff",
+        }}
+      >
+        <Box display="flex" justifyContent="center">
+          {c.sortable === false ? (
+            c.label
+          ) : (
+            <TableSortLabel
+              active={orderBy === c.id}
+              direction={orderBy === c.id ? order : "asc"}
+              onClick={() => handleSort(String(c.id))}
+            >
+              {c.label}
+            </TableSortLabel>
+          )}
+        </Box>
+      </TableCell>
+    ))}
+  </TableRow>
+</TableHead>
 
           <TableBody>
             {paginatedRows.map((row, rowIndex) => (

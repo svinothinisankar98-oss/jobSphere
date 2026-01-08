@@ -84,5 +84,13 @@ export const userService = {
   updateUser: async (id: string,data:any): Promise<any> => {
     // getData.isDelete = true;
   return apiService.put(`users/${id}`, data);
-}
+},
+getEmployerById: async (id: string): Promise<employerRegisterType> => {
+  const response = await apiService.get<employerRegisterType[]>(
+    `users?id=${id}&userType=2`
+  );
+
+  return response[0]??null;
+},
+
 };

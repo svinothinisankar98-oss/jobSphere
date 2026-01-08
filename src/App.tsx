@@ -43,6 +43,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/jobs" element={<JobList />} />
           <Route path="/employer-register" element={<EmployerRegister/>} />
+          <Route path="/employer-register/edit/:id" element={<EmployerRegister />} />
           <Route path="/job-list" element={<Joblist />} />
           <Route path="/job-seeker-register" element={<JobSeekerRegister />} />
          <Route path="/employer-list" element={<EmployerList />} />
