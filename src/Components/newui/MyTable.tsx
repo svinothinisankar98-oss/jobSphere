@@ -19,6 +19,7 @@ type Order = "asc" | "desc";
 
 export type Column<T> = {
   id: keyof T | string;
+  width?: number; 
   label: string;
   headerAlign?: "left" | "center" | "right";   //header alignment//
   align?: "left" | "center" | "right";          //cell alignment//
@@ -31,6 +32,7 @@ export type Column<T> = {
 
 type CommonTableProps<T> = {
   rows: T[];
+   width?: number; 
   columns: Column<T>[];    //columnconfiguration//
   rowsPerPageOptions?: number[];  //pagination//   
   defaultRowsPerPage?: number;    //initial page size like 5//
@@ -79,7 +81,7 @@ function MyTable<T>({               //default set for for pageoptions rows perpa
   return (
    <Paper sx={{ p: 2, width: "100%", overflow: "hidden", ...containerSx }}>
       <Box sx={{ overflowX: "auto", maxHeight: 400 }}>
-        <Table stickyHeader size={tableSize} sx={{ minWidth: 1200 }}>
+        <Table stickyHeader size={tableSize} sx={{ minWidth: 900 }}>
           <TableHead>
   <TableRow>
     {columns.map((c) => (
@@ -88,8 +90,9 @@ function MyTable<T>({               //default set for for pageoptions rows perpa
         align={c.headerAlign || "center"}
         sx={{
           fontWeight: "bold",
-          whiteSpace: "nowrap",
+          // whiteSpace: "nowrap",
           backgroundColor: "#f0ebebff",
+          width: c.width,
         }}
       >
         <Box display="flex" justifyContent="center">

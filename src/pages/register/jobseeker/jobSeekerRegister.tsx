@@ -19,6 +19,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { jobSeekerSchema } from "../../../schemas/jobSeekerSchema";
 import jobseekerDefaultValues from "../jobseeker/defaultvalues/JobSeeker";
 import MyTextField from "../../../Components/newui/MyTextField";
+import { useUserService } from "../../../hooks/useUserService";
 
 // const defaultValues: JobSeeker = {
 //   Name: "",
@@ -32,6 +33,8 @@ import MyTextField from "../../../Components/newui/MyTextField";
 //   portfolio: "",
 //   resume: null,
 // };
+const { getUserByEmail,createUser } = useUserService();
+
 
 const JobSeekerRegister = () => {
   const navigate = useNavigate();
@@ -75,13 +78,13 @@ const JobSeekerRegister = () => {
 
       data.userType = 1;
 
-      const existingUser = await userService.getUserByEmail(data.email);
+      const existingUser = await getUserByEmail(data.email);
       if (existingUser) {
         toastService.error("Email already exists");
         return;
       }
 
-      await userService.createUser(data);
+      await createUser(data);
 
       toastService.success("Registration successful!");
 

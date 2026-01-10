@@ -109,7 +109,6 @@
       "description": "Manage cloud infrastructure and automate deployment pipelines."
     }
   ],
-  
   "locations": [
     {
       "id": "1",
@@ -320,7 +319,7 @@
       "id": "dcf9",
       "companyName": "Vinothini  & co",
       "email": "viqqqno@gmail.com",
-      "phone": "8745124577",
+      "phone": "8745124576",
       "website": "https://www.egrovesys.com/ecommerce-accessibility/",
       "industry": "IT",
       "companySize": "200+",
@@ -348,16 +347,16 @@
       "isActive": true,
       "serialNo": 1,
       "deletedAt": null,
-      "updatedAt": "2026-01-08T15:35:02.775Z"
+      "updatedAt": "2026-01-09T11:16:51.710Z"
     },
     {
       "id": "3d60",
-      "companyName": "egrove System",
+      "companyName": "egrove Systems",
       "email": "egrove@gmail.com",
       "phone": "7788888888",
-      "website": "https://www.egrovesys.com/ecommerce-accessibility/",
+      "website": "https://www.egrovesys.com/",
       "industry": "IT",
-      "companySize": "51–200",
+      "companySize": "200+",
       "foundedYear": 2004,
       "address1": "sasas",
       "address2": "",
@@ -365,13 +364,13 @@
       "state": "Tamil Nadu",
       "country": "India",
       "zip": "6231244",
-      "recruiterName": "Malar",
+      "recruiterName": "Mala",
       "recruiterEmail": "hr@egrovesys.com",
       "recruiterPhone": "8745612457",
       "designation": "Manager",
       "password": "112233",
       "confirmPassword": "112233",
-      "remoteopportunity": "yes",
+      "remoteopportunity": "no",
       "employmentType": [
         "full_time",
         "part_time",
@@ -380,7 +379,7 @@
       "userType": 2,
       "isActive": true,
       "serialNo": 2,
-      "updatedAt": "2026-01-08T15:34:06.134Z",
+      "updatedAt": "2026-01-09T11:18:17.124Z",
       "deletedAt": "2026-01-08T13:48:03.080Z"
     },
     {
@@ -409,9 +408,9 @@
         "full_time"
       ],
       "userType": 2,
-      "isActive": true,
+      "isActive": false,
       "serialNo": 3,
-      "updatedAt": "2026-01-08T15:35:33.317Z"
+      "updatedAt": "2026-01-10T03:49:10.132Z"
     },
     {
       "id": "3e03",
@@ -442,7 +441,7 @@
       "userType": 2,
       "isActive": true,
       "serialNo": 4,
-      "updatedAt": "2026-01-08T14:58:15.628Z"
+      "updatedAt": "2026-01-10T06:12:44.997Z"
     },
     {
       "id": "b2dd",
@@ -471,8 +470,10 @@
         "part_time"
       ],
       "userType": 2,
-      "serialNo": 1,
-      "isDelete": true
+      "serialNo": 5,
+      "isDelete": true,
+      "isActive": false,
+      "updatedAt": "2026-01-10T06:17:55.515Z"
     },
     {
       "id": "ff5f",
@@ -502,10 +503,10 @@
         "contract"
       ],
       "userType": 2,
-      "isActive": true,
+      "isActive": false,
       "serialNo": 6,
       "deletedAt": "2026-01-08T04:26:49.339Z",
-      "updatedAt": "2026-01-08T10:52:19.409Z"
+      "updatedAt": "2026-01-10T06:11:54.842Z"
     },
     {
       "id": "e698",
@@ -916,9 +917,9 @@
         "part_time"
       ],
       "userType": 2,
-      "isActive": false,
+      "isActive": true,
       "createdAt": "2026-01-07T14:25:06.542Z",
-      "updatedAt": null,
+      "updatedAt": "2026-01-09T11:23:34.196Z",
       "deletedAt": "2026-01-08T14:38:42.080Z",
       "serialNo": 19
     },
@@ -987,10 +988,146 @@
       "updatedAt": null
     },
     {
-      "name":"admin",
-      "password":"admin123",
-      "email":"admin@gmail.com",
-      "userType": 3
+      "name": "admin",
+      "password": "admin123",
+      "email": "admin@gmail.com",
+      "userType": 3,
+      "id": "77b4"
+    },
+    {
+      "id": "",
+      "companyName": "4D Marketify",
+      "email": "admin@marketify.com",
+      "phone": "6123457894",
+      "website": "https://4dmarketify.com/",
+      "industry": "Marketing",
+      "companySize": "11–50",
+      "foundedYear": 2000,
+      "address1": "no 24 royapettai street",
+      "address2": "chrompet",
+      "city": "Chennai",
+      "state": " Tamil Nadu",
+      "country": "India",
+      "zip": "600044",
+      "recruiterName": "Malathi",
+      "recruiterEmail": "hr@marketify.com",
+      "recruiterPhone": "6547125488",
+      "designation": "Manager",
+      "password": "112233",
+      "confirmPassword": "112233",
+      "remoteopportunity": "yes",
+      "employmentType": [
+        "full_time"
+      ],
+      "userType": 2,
+      "isActive": true,
+      "createdAt": "2026-01-09T06:25:09.524Z",
+      "updatedAt": null
+    },
+    {
+      "id": "bede",
+      "Name": "Malathi",
+      "email": "malathiprakash@gmail.com",
+      "password": "123456",
+      "confirmPassword": "123456",
+      "phoneno": "8745612547",
+      "location": "Tamil Nadu",
+      "experience": "Fresher",
+      "skills": "React",
+      "portfolio": "",
+      "resume": null,
+      "userType": 1
+    },
+    {
+      "id": "",
+      "companyName": "Vihaan Digital Solutions",
+      "email": "vihaan@gmail.com",
+      "phone": "8769851244",
+      "website": "https://vihaandigitalsolutions.com/",
+      "industry": "Marketing",
+      "companySize": "11–50",
+      "foundedYear": 2012,
+      "address1": "3, Sarojini Street 1st Cross",
+      "address2": "Thiripura Sundari Colony, Pallavaram,",
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "country": "India",
+      "zip": "600043",
+      "recruiterName": "vihaan",
+      "recruiterEmail": "support@vihaandigitalsolutions.com",
+      "recruiterPhone": "6379264867",
+      "designation": "HR",
+      "password": "123456",
+      "confirmPassword": "123456",
+      "remoteopportunity": "no",
+      "employmentType": [
+        "full_time"
+      ],
+      "userType": 2,
+      "isActive": true,
+      "createdAt": "2026-01-09T07:58:49.440Z",
+      "updatedAt": null
+    },
+    {
+      "id": "",
+      "companyName": "PharmNova Private Limited",
+      "email": "support@pharmnova.com",
+      "phone": "8974561254",
+      "website": "www.pharmnova.com",
+      "industry": "IT",
+      "companySize": "11–50",
+      "foundedYear": 2019,
+      "address1": "11 Seliyaur",
+      "address2": "",
+      "city": "Kanchipuram",
+      "state": "Tamil Nadu",
+      "country": "India",
+      "zip": "600042",
+      "recruiterName": "Dhivya",
+      "recruiterEmail": "admin@pharmnova.com",
+      "recruiterPhone": "7894561245",
+      "designation": "HR Admin",
+      "password": "789456",
+      "confirmPassword": "789456",
+      "remoteopportunity": "yes",
+      "employmentType": [
+        "full_time",
+        "temporary"
+      ],
+      "userType": 2,
+      "isActive": true,
+      "createdAt": "2026-01-09T10:48:24.441Z",
+      "updatedAt": null
+    },
+    {
+      "id": "",
+      "companyName": " TeleCMI Technologies Pvt Ltd",
+      "email": "contact@telecmi.com",
+      "phone": "8008903305",
+      "website": "https://www.telecmi.com/",
+      "industry": "Telecommunications",
+      "companySize": "11–50",
+      "foundedYear": 2000,
+      "address1": " 1st Floor, TS70, Thiru Vi Ka Industrial Estate",
+      "address2": "Guindy",
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "country": "India",
+      "zip": "600044",
+      "recruiterName": "Dharsha",
+      "recruiterEmail": "hr@telecmi.com",
+      "recruiterPhone": "9874561234",
+      "designation": "HR Admin",
+      "password": "123456",
+      "confirmPassword": "123456",
+      "remoteopportunity": "yes",
+      "employmentType": [
+        "full_time"
+      ],
+      "userType": 2,
+      "isActive": true,
+      "createdAt": "2026-01-10T05:02:44.285Z",
+      "updatedAt": null
     }
   ]
 }

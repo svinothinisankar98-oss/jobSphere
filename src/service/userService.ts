@@ -38,6 +38,7 @@
 // }
 
 import type { employerRegisterType } from "../types/employerRegister";
+import type { JobSeeker } from "../types/jobSeeker";
 import { apiService } from "./apiService";
 
 /* ================= TYPES ================= */
@@ -48,6 +49,7 @@ export interface User {
   password: string;
   userType: number;
 }
+type CreateUserPayload = employerRegisterType | JobSeeker;
 
 /* ================= SERVICE ================= */
 
@@ -59,7 +61,9 @@ export const userService = {
   },
 
   // CREATE USER
-  createUser: async (data: any): Promise<User> => {
+
+  
+  createUser: async (data: CreateUserPayload): Promise<User> => {
     const response = await apiService.post<User>("users", data);
     return response;
   },
@@ -74,23 +78,23 @@ export const userService = {
     const response = await apiService.get<User[]>(`users?recruiterEmail=${recruiterEmail}&userType=2`);
     return response[0]??null;
   },
- getRecruiterDetails: async (): Promise<employerRegisterType[]> => {
-  const response = await apiService.get<employerRegisterType[]>(
-    `users?userType=2`
-  );
-  return response;
-},
+  getRecruiterDetails: async (): Promise<employerRegisterType[]> => {
+    const response = await apiService.get<employerRegisterType[]>(
+      `users?userType=2`
+    );
+    return response;
+  },
+
 
   updateUser: async (id: string,data:any): Promise<any> => {
     // getData.isDelete = true;
   return apiService.put(`users/${id}`, data);
 },
-getEmployerById: async (id: string): Promise<employerRegisterType> => {
+getEmployerById: async (id: string): Promise<employerRegisterType | null> => {
   const response = await apiService.get<employerRegisterType[]>(
     `users?id=${id}&userType=2`
   );
 
-  return response[0]??null;
+  return response[0] ?? null;
 },
-
 };

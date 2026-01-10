@@ -39,11 +39,13 @@ const MyTabs = ({
       <Tabs
         value={activeTab}
         onChange={(_, newValue) => onTabChange(newValue)}
-        sx={{
-          mb: 3,
-          "& .MuiTabs-indicator": {
-            backgroundColor: "primary.main",
-          },
+       sx={{
+    mb: 3,
+    borderBottom: "2px solid #e0e0e0", 
+    "& .MuiTabs-indicator": {
+      backgroundColor: "primary.main",
+      height: "3px", 
+    },
         }}
       >
         {tabs.map((tab, index) => (
@@ -51,20 +53,21 @@ const MyTabs = ({
             key={index}
             label={tab.tabName}
             sx={{
-              color: getTabColor(index),
-              fontWeight: getFontWeight(index),
-              textTransform: "none",
-
-              "&.Mui-selected": {
-                color: "primary.main",
-                fontWeight: 600,
-              },
+    color: getTabColor(index),
+    fontWeight: getFontWeight(index),
+    textTransform: "none",
+    borderBottom: activeTab === index ? "3px solid #1976d2" : "3px solid transparent", // 👈 manual border
+    borderRadius: 0,
+    "&.Mui-selected": {
+      color: "primary.main",
+      fontWeight: 600,
+    },
             }}
           />
         ))}
       </Tabs>
 
-      <Box mt={2}>{tabs[activeTab]?.tabContent}</Box>
+      <Box>{tabs[activeTab]?.tabContent}</Box>
     </>
   );
 };

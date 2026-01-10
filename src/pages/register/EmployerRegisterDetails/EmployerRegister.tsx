@@ -15,14 +15,17 @@ import employerDefaultValues from "../employerregisterdetails/defaultvalues/Empl
 import type { employerRegisterType } from "../../../types/employerRegister";
 
 import { useEmployerFormHandlers } from "./useEmployerFormHandlers";
-import { userService } from "../../../service/userService";
+
 
 import { useNavigate, useParams } from "react-router-dom";
 import { useSnackbar } from "../../../Components/newui/MySnackBar";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
 
-import { useLocation } from "react-router-dom";
+
+import { useUserService } from "../../../hooks/useUserService";
+
+const { getEmployerById,getEmployerByEmail,createUser,updateUser } = useUserService();
 
 //(Tabs Validation)//
 
@@ -49,14 +52,18 @@ const EmployerRegister = () => {
   // const location = useLocation();
   // const editData = location.state?.editData;
 
+  //Detect Edit Mode//
+
   const { id: employerId } = useParams<{ id: string }>();
   const editData = Boolean(employerId);
+
+  //Form Setup//
 
   const form = useForm<employerRegisterType>({
     resolver: yupResolver(employerSchema),
     defaultValues: employerDefaultValues,
     mode: "onChange",
-    shouldUnregister: false,
+    shouldUnregister: false,     //keep tabs data//
   });
 
   //used for useformhandlers for employers//
@@ -91,6 +98,8 @@ const EmployerRegister = () => {
   //   }
   // }, [editData]);
 
+ // Load Data in Edit Mode//
+
   useEffect(() => {
     console.log(employerId,'employerId')
     if (editData && employerId) {
@@ -102,33 +111,52 @@ const EmployerRegister = () => {
     
   }, [editData, employerId]);
 
-  const loadEmployer = async (id: string) => {
-    try {
-      const employer = await userService.getEmployerById(id);
+  //Fetch Employer Data//
 
-      if (employer) {
-        form.reset({
-          ...employerDefaultValues,
-          ...employer,
+  // const loadEmployer = async (id: string) => {
+  //   try {
+  //     const employer = await userService.getEmployerById(id);
+
+  //     if (employer) {
+  //       form.reset({
+  //         ...employerDefaultValues,
+  //         ...employer,
          
-        });
-      }
-    } catch (err) {
-      showSnackbar("Failed to load employer details", "error");
-    }
+  //       });
+  //     }
+  //   } catch (err) {
+  //     showSnackbar("Failed to load employer details", "error");
+  //   }
 
+  // }
+
+  const loadEmployer = async (id: string) => {
+  try {
+    const employer = await getEmployerById(id);
+
+    if (employer) {
+      form.reset({
+        ...employerDefaultValues,
+        ...employer,
+      });
+    }
+  } catch (err) {
+    showSnackbar("Failed to load employer details", "error");
   }
+};
 
   
 
     //onsubmit//
 
     const onSubmit: SubmitHandler<employerRegisterType> = async (data) => {
+
+      //create Mode//
       try {
         data.userType = 2;
 
         if (!editData) {
-          const existingemployer = await userService.getEmployerByEmail(
+          const existingemployer = await getEmployerByEmail(
             data.recruiterEmail?.trim()?.toLowerCase()
           );
 
@@ -139,13 +167,14 @@ const EmployerRegister = () => {
           data.createdAt = new Date();
           data.updatedAt = null;
           // data.deletedAt = null;
-          await userService.createUser(data);
+          const createuser = await createUser(data);
+          // await userService.createUser(data);
 
           showSnackbar("Registration successful!", "success");
 
           reset();
 
-          setTimeout(() => navigate("/login"), 1200);
+           navigate("/login") ;
         }
 
         //edit flow//
@@ -155,12 +184,13 @@ const EmployerRegister = () => {
           data.updatedAt = new Date();
           // data.deletedAt = null;
           const id:any = employerId;
-          await userService.updateUser(id, data);
+          const updateuser = updateUser(id,data);
+          // await userService.updateUser(id, data);
           showSnackbar("Employee Details Updated.", "success");
 
           reset();
 
-          setTimeout(() => navigate("/employer-list"), 1200);
+          navigate("/employer-list");
         }
       } catch (error) {
         console.error(error);
