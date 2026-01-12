@@ -344,10 +344,10 @@
         "temporary"
       ],
       "userType": 2,
-      "isActive": true,
+      "isActive": false,
       "serialNo": 1,
       "deletedAt": null,
-      "updatedAt": "2026-01-09T11:16:51.710Z"
+      "updatedAt": "2026-01-12T12:35:09.520Z"
     },
     {
       "id": "3d60",
@@ -366,7 +366,7 @@
       "zip": "6231244",
       "recruiterName": "Mala",
       "recruiterEmail": "hr@egrovesys.com",
-      "recruiterPhone": "8745612457",
+      "recruiterPhone": "8745612455",
       "designation": "Manager",
       "password": "112233",
       "confirmPassword": "112233",
@@ -379,7 +379,7 @@
       "userType": 2,
       "isActive": true,
       "serialNo": 2,
-      "updatedAt": "2026-01-09T11:18:17.124Z",
+      "updatedAt": "2026-01-12T12:35:29.544Z",
       "deletedAt": "2026-01-08T13:48:03.080Z"
     },
     {
@@ -410,7 +410,7 @@
       "userType": 2,
       "isActive": false,
       "serialNo": 3,
-      "updatedAt": "2026-01-10T03:49:10.132Z"
+      "updatedAt": "2026-01-12T11:06:47.660Z"
     },
     {
       "id": "3e03",
@@ -439,9 +439,9 @@
         "temporary"
       ],
       "userType": 2,
-      "isActive": true,
+      "isActive": false,
       "serialNo": 4,
-      "updatedAt": "2026-01-10T06:12:44.997Z"
+      "updatedAt": "2026-01-12T12:34:17.996Z"
     },
     {
       "id": "b2dd",
@@ -472,8 +472,8 @@
       "userType": 2,
       "serialNo": 5,
       "isDelete": true,
-      "isActive": false,
-      "updatedAt": "2026-01-10T06:17:55.515Z"
+      "isActive": true,
+      "updatedAt": "2026-01-12T11:20:21.987Z"
     },
     {
       "id": "ff5f",
@@ -536,7 +536,8 @@
         "contract"
       ],
       "userType": 2,
-      "isActive": true
+      "isActive": true,
+      "updatedAt": "2026-01-12T11:20:21.992Z"
     },
     {
       "id": "d8d9",
@@ -952,12 +953,12 @@
       "isActive": false,
       "id": "0d01",
       "createdAt": "2026-01-08T04:26:18.898Z",
-      "updatedAt": "2026-01-08T04:28:46.971Z",
+      "updatedAt": "2026-01-12T11:03:34.018Z",
       "deletedAt": "2026-01-08T05:17:40.058Z",
       "serialNo": 20
     },
     {
-      "id": "",
+      "id": "43",
       "companyName": "VKV Software Solutions",
       "email": "admin@vkvsolutions.com",
       "phone": "6541234577",
@@ -995,7 +996,7 @@
       "id": "77b4"
     },
     {
-      "id": "",
+      "id": "23",
       "companyName": "4D Marketify",
       "email": "admin@marketify.com",
       "phone": "6123457894",
@@ -1039,7 +1040,7 @@
       "userType": 1
     },
     {
-      "id": "",
+      "id": "112",
       "companyName": "Vihaan Digital Solutions",
       "email": "vihaan@gmail.com",
       "phone": "8769851244",
@@ -1069,7 +1070,7 @@
       "updatedAt": null
     },
     {
-      "id": "",
+      "id": "113",
       "companyName": "PharmNova Private Limited",
       "email": "support@pharmnova.com",
       "phone": "8974561254",
@@ -1100,7 +1101,7 @@
       "updatedAt": null
     },
     {
-      "id": "",
+      "id": "123",
       "companyName": " TeleCMI Technologies Pvt Ltd",
       "email": "contact@telecmi.com",
       "phone": "8008903305",

@@ -11,7 +11,6 @@ export const theme = createTheme({
       },
     },
 
-   
     MuiTablePagination: {
       styleOverrides: {
         root: {
@@ -42,5 +41,20 @@ export const theme = createTheme({
         },
       },
     },
+
+    // MuiButton: {
+    //   defaultProps: {
+    //     variant: "contained",
+    //   },
+    //   styleOverrides: {
+    //     root: {
+    //       minWidth: 160,
+    //       height: 45,
+    //       fontWeight: 600,
+    //       textTransform: "none",
+    //       borderRadius: 8,
+    //     },
+    //   },
+    // },
   },
 });

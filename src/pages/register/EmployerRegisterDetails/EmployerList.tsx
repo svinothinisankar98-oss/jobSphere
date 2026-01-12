@@ -14,6 +14,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 
 import type { employerRegisterType } from "../../../types/employerRegister";
 import { userService } from "../../../service/userService";
@@ -33,51 +35,78 @@ import { formatDate } from "../../../utils/dateFormatter";
 import { useSnackbar } from "../../../Components/newui/MySnackBar";
 import { useUserService } from "../../../hooks/useUserService";
 import MyDialog from "../../../Components/newui/MyDialog";
-import RestartAltIcon from "@mui/icons-material/RestartAlt";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import MyTabs from "../../../Components/newui/MyTab";
 
+// ✅ NEW IMPORT
+import { useEmployerActions } from "../../register/useEmployerListHandlers";
+
 const EmployerList = () => {
-  // ================= STATE =================
+  //state variables//
+
   const [data, setData] = useState<employerRegisterType[]>([]);
+
+  //search filters//
   const [companyName, setCompanyName] = useState("");
   const [recruiterName, setRecruiterName] = useState("");
   const [recruiterEmail, setRecruiterEmail] = useState("");
   const [recruiterPhone, setRecruiterPhone] = useState("");
   const [industry, setIndustry] = useState("");
   const [companySize, setCompanySize] = useState("");
-  const [loading, setLoading] = useState(false); //  store filter input values//
+  const [loading, setLoading] = useState(false);
   const { showSnackbar } = useSnackbar();
 
   const { getRecruiterDetails, updateUser } = useUserService();
 
+  //tabs//
   const [activeTab, setActiveTab] = useState(0);
 
   const navigate = useNavigate();
 
+  //dialog//
   const [openConfirm, setOpenConfirm] = useState(false);
   const [openDeleteConfirm, setOpenDeleteConfirm] = useState(false);
+
+  //selected rows//
   const [selectedRow, setSelectedRow] = useState<any>(null);
   const [rowToDelete, setRowToDelete] = useState<any>(null);
 
+  // ✅ HANDLER HOOK (ADDED — NO LOGIC REMOVED)
+  const {
+    showConfirm,
+    pendingAction,
+    handleDeleteClick: handleDeleteFromHook,
+    handleActivateClick: handleActivateFromHook,
+    handleConfirmYes,
+    handleConfirmNo,
+    pendingRows,
+  } = useEmployerActions(updateUser, showSnackbar);
 
-   const loadDefaultData = async () => {
-    try {
-      setLoading(true);
-      const response = await getRecruiterDetails();
+  const [activeCount, setActiveCount] = useState(0);
+const [inactiveCount, setInactiveCount] = useState(0);
 
-      const tabFiltered = response.filter((d) =>
-        activeTab === 0 ? d.isActive === true : d.isActive === false
-      );
+  //data loading tab change//
 
-      setData(tabFiltered);
-    } catch (err) {
-      console.error(err);
-      setData([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const loadDefaultData = async () => {
+  try {
+    setLoading(true);
+    const response = await getRecruiterDetails();
+
+    const active = response.filter((d) => d.isActive === true);
+    const inactive = response.filter((d) => d.isActive === false);
+
+    setActiveCount(active.length);
+    setInactiveCount(inactive.length);
+
+    const tabFiltered = activeTab === 0 ? active : inactive;
+    setData(tabFiltered);
+  } catch (err) {
+    console.error(err);
+    setData([]);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   // clear//
   const handleClear = () => {
@@ -87,48 +116,34 @@ const EmployerList = () => {
     setRecruiterPhone("");
     setIndustry("");
     setCompanySize("");
-   loadDefaultData();
+    loadDefaultData();
   };
 
-  //Delete Logic//
+  //confirm delete//
 
-//   const handleDelete = async (row: any) => {
-//   const updatedRow = {
-//     ...row,
-//     isActive: false,
-//     updatedAt: new Date(),
-//   };
+  const handleConfirmDelete = async () => {
+    if (!rowToDelete) return;
 
-//   const id = row.id;
-//   await updateUser(id, updatedRow);
-//   await loadDefaultData();
-//   showSnackbar("Employee deleted successfully", "success");
-// };
+    try {
+      const updatedRow = {
+        ...rowToDelete,
+        isActive: false,
+        updatedAt: new Date(),
+      };
 
-const handleConfirmDelete = async () => {
-  if (!rowToDelete) return;
+      const id = rowToDelete.id;
+      await updateUser(id, updatedRow);
+      await loadDefaultData();
 
-  try {
-    const updatedRow = {
-      ...rowToDelete,
-      isActive: false,
-      updatedAt: new Date(),
-    };
-
-    const id = rowToDelete.id;
-    await updateUser(id, updatedRow);
-    await loadDefaultData();
-
-    showSnackbar("Employee deleted successfully", "success");
-  } catch (error) {
-    console.error(error);
-    showSnackbar("Failed to delete employee", "error");
-  } finally {
-    setOpenDeleteConfirm(false);
-    setRowToDelete(null);
-  }
-};
-
+      showSnackbar("Employee deleted successfully", "success");
+    } catch (error) {
+      console.error(error);
+      showSnackbar("Failed to delete employee", "error");
+    } finally {
+      setOpenDeleteConfirm(false);
+      setRowToDelete(null);
+    }
+  };
 
   //Activate logic//
 
@@ -162,34 +177,14 @@ const handleConfirmDelete = async () => {
     }
   };
 
-  // const handleActivate = async (row: any) => {
-  //   row.isActive = true;
-  //   row.updatedAt = new Date();
-  //   const id = row?.id;
-
-  //   await userService.updateUser(id, row);
-  //   showSnackbar("Employee activated successfully", "success");
-  //   handleSearch();
-  // };
-
-  //Edit Logic//
-
-  //   const handleEdit = (row: employerRegisterType) => {        //edit mode location.state//
-  //   navigate("/employer-register", {
-  //     state: { editData: row },
-  //   });
-  // };
-
   //Edit Logic//
 
   const handleEdit = (row: employerRegisterType) => {
-    console.log("Edit clicked row:", row);
-    console.log("Row ID:", row.id);
-
     navigate(`/employer-register/edit/${row.id}`);
   };
 
-  // ================= SEARCH =================
+  //  Search logic//
+
   const handleSearch = async () => {
     try {
       setLoading(true);
@@ -220,13 +215,6 @@ const handleConfirmDelete = async () => {
         activeTab === 0 ? d.isActive === true : d.isActive === false
       );
 
-      //Add Serial Number//
-
-      // const withSerial = filtered.map((d: any, index: number) => ({
-      //   ...d,
-      //   serialNo: index + 1,
-      // }));
-
       setData(tabFiltered);
     } catch (err) {
       console.error(err);
@@ -236,15 +224,13 @@ const handleConfirmDelete = async () => {
     }
   };
 
-  //default load for on page open//
-
   useEffect(() => {
     loadDefaultData();
   }, [activeTab]);
+
   //Table Columns//
 
   const columns: Column<employerRegisterType>[] = [
-    // { id: "serialNo", label: "SerialNo", align: "center", sortable: false },
     { id: "companyName", label: "Company Name", align: "left" },
     { id: "companySize", label: "Company Size", align: "center" },
     { id: "industry", label: "Industry", align: "left" },
@@ -262,9 +248,6 @@ const handleConfirmDelete = async () => {
       align: "center",
       sortable: false,
       render: (row) => formatDate(row.createdAt),
-      // row.createdAt && !isNaN(new Date(row.createdAt).getTime())
-      //   ? new Date(row.createdAt).toLocaleDateString()
-      //   : "-",
     },
     {
       id: "status",
@@ -303,10 +286,7 @@ const handleConfirmDelete = async () => {
               <IconButton
                 size="small"
                 color="error"
-                onClick={() => {
-  setRowToDelete(row);
-  setOpenDeleteConfirm(true);
-}}
+                onClick={() => handleDeleteFromHook([row])} // ✅ wired
               >
                 <DeleteIcon fontSize="small" />
               </IconButton>
@@ -319,10 +299,7 @@ const handleConfirmDelete = async () => {
               <IconButton
                 size="small"
                 color="success"
-                onClick={() => {
-                  console.log("Activate clicked", row);
-                  handleActivateClick(row);
-                }}
+                onClick={() => handleActivateFromHook(row)} 
               >
                 <CheckCircleIcon fontSize="small" />
               </IconButton>
@@ -332,11 +309,10 @@ const handleConfirmDelete = async () => {
       ),
     },
   ];
-
   // JSX //
   return (
     <Box mt={4}>
-      <Paper sx={{ maxWidth: 1200, mx: "auto", p: 3, borderRadius: 5 }}>
+      <Paper sx={{ maxWidth: 1300, mx: "auto", p: 3, borderRadius: 5 }}>
         <Box display="flex" justifyContent="flex-end" mb={3}>
           <MyButton
             label="Add Employee"
@@ -414,48 +390,49 @@ const handleConfirmDelete = async () => {
               variant="contained"
               icon={<SearchIcon />}
               onClick={handleSearch}
-              // sx={{
-              //   minWidth: 160,
-              //   height: 45,
-              //   fontWeight: 600,
-              // }}
             />
             <MyButton
               label="Reset"
               variant="contained"
               color="error"
               icon={<RestartAltIcon />}
-              // sx={{
-              //   minWidth: 160,
-              //   height: 45,
-              //   fontWeight: 600,
-              // }}
               onClick={handleClear}
             />
           </Grid>
         </Grid>
       </Paper>
 
+      {/* ✅ Dialogs wired to handler */}
+
       <MyDialog
-        open={openConfirm}
+        open={showConfirm && pendingAction === "activate"}
         title="Activate User"
-        message="Are you sure you want to activate this employee?"
-        onClose={() => setOpenConfirm(false)}
-        onConfirm={handleConfirmActivate}
+        // message="Are you sure you want to activate this employee?"
+        message={
+    pendingRows.length === 1
+      ? "Are you sure you want to activate this employee?"
+      : `Are you sure you want to activate ${pendingRows.length} employees?`
+  }
+        onClose={handleConfirmNo}
+        onConfirm={() => handleConfirmYes(loadDefaultData)}
         confirmText="Yes, Activate"
         confirmColor="success"
       />
+
       <MyDialog
-  open={openDeleteConfirm}
-  title="Delete User"
-  message="Are you sure you want to delete this employee?"
-  onClose={() => setOpenDeleteConfirm(false)}
-  onConfirm={handleConfirmDelete}
-  confirmText="Yes, Delete"
-  confirmColor="error"
-/>
-
-
+        open={showConfirm && pendingAction === "delete"}
+        title="Delete User"
+        // message="Are you sure you want to delete this employee?"
+        message={
+    pendingRows.length === 1
+      ? "Are you sure you want to delete this employee?"
+      : `Are you sure you want to delete ${pendingRows.length} employees?`
+  }
+        onClose={handleConfirmNo}
+        onConfirm={() => handleConfirmYes(loadDefaultData)}
+        confirmText="Yes, Delete"
+        confirmColor="error"
+      />
 
       {loading && (
         <Box display="flex" justifyContent="center" mt={3}>
@@ -463,30 +440,13 @@ const handleConfirmDelete = async () => {
         </Box>
       )}
 
-      {!loading && data.length === 0 && (
-        <Typography align="center" mt={3}>
-          No records found
-        </Typography>
-      )}
-
-      {/* {!loading &&
-        data.length > 0 && ( //Table Usage//
-          <MyTable
-            rows={data}
-            columns={columns}
-            tableSize="small"
-            containerSx={{ width: 1200, mx: "auto", mt: 2 }}
-          />
-        )} */}
-      <Box sx={{ maxWidth: 1200, mx: "auto", mt: 4 }}>
+      <Box sx={{ maxWidth: 1300, mx: "auto", mt: 4 }}>
         <MyTabs
           activeTab={activeTab}
           onTabChange={(index) => setActiveTab(index)}
-          completedTabs={[]}
-          errorTabs={[]}
           tabs={[
             {
-              tabName: "Active Employer",
+              tabName: `Active Employer (${activeCount})`,
               tabContent: (
                 <>
                   {!loading && data.length === 0 && (
@@ -497,17 +457,26 @@ const handleConfirmDelete = async () => {
 
                   {!loading && data.length > 0 && (
                     <MyTable
+                      containerSx={{ width: 1300, mx: "auto" }}
                       rows={data}
                       columns={columns}
-                      tableSize="small"
-                      containerSx={{ width: 1200, mx: "auto" }}
+                      enableSelection
+                      getRowId={(row) => row.id!}
+                      
+                      onDeleteSelected={(ids) => {
+                        const rowsToDelete = data.filter(
+                          (r) => r.id && ids.includes(r.id)
+                        );
+                        handleDeleteFromHook(rowsToDelete); 
+                        
+                      }}
                     />
                   )}
                 </>
               ),
             },
             {
-              tabName: "Inactive Employer",
+              tabName: `Inactive Employer (${inactiveCount})`,
               tabContent: (
                 <>
                   {!loading && data.length === 0 && (
@@ -517,11 +486,26 @@ const handleConfirmDelete = async () => {
                   )}
 
                   {!loading && data.length > 0 && (
+                    // <MyTable
+                    //   rows={data}
+                    //   columns={columns}
+                    //   tableSize="small"
+                    //   containerSx={{ width: 1200, mx: "auto" }}
+                    // />
+
                     <MyTable
                       rows={data}
                       columns={columns}
+                      enableSelection 
+                      getRowId={(row) => row.id!}
                       tableSize="small"
-                      containerSx={{ width: 1200, mx: "auto" }}
+                      containerSx={{ width: 1300, mx: "auto" }}
+                      onDeleteSelected={(ids) => {
+                        const rowsToRestore = data.filter(
+                          (r) => r.id && ids.includes(r.id)
+                        );
+                        handleActivateFromHook(rowsToRestore); // ✅ bulk restore
+                      }}
                     />
                   )}
                 </>

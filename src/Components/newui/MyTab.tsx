@@ -9,16 +9,16 @@ type TabItem = {
 type TabsProps = {
   activeTab: number;
   onTabChange: (index: number) => void;
-  completedTabs: number[];
-  errorTabs: number[];
+  completedTabs?: number[];
+  errorTabs?: number[];
   tabs: TabItem[];
 };
 
 const MyTabs = ({
   activeTab,
   onTabChange,
-  completedTabs,
-  errorTabs,
+  completedTabs = [],
+  errorTabs = [],
   tabs,
 }: TabsProps) => {
   const getTabColor = (index: number) => {
@@ -39,13 +39,13 @@ const MyTabs = ({
       <Tabs
         value={activeTab}
         onChange={(_, newValue) => onTabChange(newValue)}
-       sx={{
-    mb: 3,
-    borderBottom: "2px solid #e0e0e0", 
-    "& .MuiTabs-indicator": {
-      backgroundColor: "primary.main",
-      height: "3px", 
-    },
+        sx={{
+          mb: 3,
+          borderBottom: "2px solid #e0e0e0",
+          "& .MuiTabs-indicator": {
+            backgroundColor: "primary.main",
+            height: "3px",
+          },
         }}
       >
         {tabs.map((tab, index) => (
@@ -53,15 +53,18 @@ const MyTabs = ({
             key={index}
             label={tab.tabName}
             sx={{
-    color: getTabColor(index),
-    fontWeight: getFontWeight(index),
-    textTransform: "none",
-    borderBottom: activeTab === index ? "3px solid #1976d2" : "3px solid transparent", // 👈 manual border
-    borderRadius: 0,
-    "&.Mui-selected": {
-      color: "primary.main",
-      fontWeight: 600,
-    },
+              color: getTabColor(index),
+              fontWeight: getFontWeight(index),
+              textTransform: "none",
+              borderBottom:
+                activeTab === index
+                  ? "3px solid #1976d2"
+                  : "3px solid transparent", // 👈 manual border
+              borderRadius: 0,
+              "&.Mui-selected": {
+                color: "primary.main",
+                fontWeight: 600,
+              },
             }}
           />
         ))}

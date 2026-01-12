@@ -35,7 +35,7 @@ const MyDialog = ({
       PaperProps={{
         sx: {
           position: "absolute",
-          top: 20,   // 👈 change this value if needed
+          top: 20,   
           m: 0,
         },
       }}
