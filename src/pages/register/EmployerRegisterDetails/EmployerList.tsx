@@ -18,7 +18,6 @@ import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 
 import type { employerRegisterType } from "../../../types/employerRegister";
-import { userService } from "../../../service/userService";
 
 import MyButton from "../../../Components/newui/MyButton";
 import CommonTextField from "../../../Components/ui/CommonTextField";
@@ -28,7 +27,7 @@ import MyTable, { type Column } from "../../../Components/newui/MyTable";
 import {
   COMPANY_SIZE_OPTIONS,
   INDUSTRY_OPTIONS,
-} from "../../../constants/DropDownOptions";
+} from "../../../constants/EmployerRegister";
 
 import { useNavigate } from "react-router-dom";
 import { formatDate } from "../../../utils/dateFormatter";
@@ -37,8 +36,7 @@ import { useUserService } from "../../../hooks/useUserService";
 import MyDialog from "../../../Components/newui/MyDialog";
 import MyTabs from "../../../Components/newui/MyTab";
 
-// ✅ NEW IMPORT
-import { useEmployerActions } from "../../register/useEmployerListHandlers";
+import { useEmployerListHandlers } from "../../../hooks/employer/useEmployerListHandlers";
 
 const EmployerList = () => {
   //state variables//
@@ -52,7 +50,7 @@ const EmployerList = () => {
   const [recruiterPhone, setRecruiterPhone] = useState("");
   const [industry, setIndustry] = useState("");
   const [companySize, setCompanySize] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); //api loading//
   const { showSnackbar } = useSnackbar();
 
   const { getRecruiterDetails, updateUser } = useUserService();
@@ -70,53 +68,70 @@ const EmployerList = () => {
   const [selectedRow, setSelectedRow] = useState<any>(null);
   const [rowToDelete, setRowToDelete] = useState<any>(null);
 
-  // ✅ HANDLER HOOK (ADDED — NO LOGIC REMOVED)
+  //count for active and inactive//
+
+  const [activeCount, setActiveCount] = useState(0);
+  const [inactiveCount, setInactiveCount] = useState(0);
+
+  //actions hooks useemployerlisthandler//
   const {
     showConfirm,
     pendingAction,
-    handleDeleteClick: handleDeleteFromHook,
-    handleActivateClick: handleActivateFromHook,
+    handleDeleteClick: handleBulkDelete,
+    handleActivateClick: handleBulkActivate,
     handleConfirmYes,
     handleConfirmNo,
     pendingRows,
-  } = useEmployerActions(updateUser, showSnackbar);
-
-  const [activeCount, setActiveCount] = useState(0);
-const [inactiveCount, setInactiveCount] = useState(0);
+  } = useEmployerListHandlers(updateUser, showSnackbar);
 
   //data loading tab change//
 
-  const loadDefaultData = async () => {
-  try {
-    setLoading(true);
-    const response = await getRecruiterDetails();
+  // const loadDefaultData = async () => {
+  //   try {
+  //     setLoading(true);
+  //     // const response = await getRecruiterDetails();
+  //     handleSearch();
 
-    const active = response.filter((d) => d.isActive === true);
-    const inactive = response.filter((d) => d.isActive === false);
+  //     // const active = response.filter((d) => d.isActive === true);
+  //     // const inactive = response.filter((d) => d.isActive === false);
 
-    setActiveCount(active.length);
-    setInactiveCount(inactive.length);
+  //     // console.log(active?.length, "active");
 
-    const tabFiltered = activeTab === 0 ? active : inactive;
-    setData(tabFiltered);
-  } catch (err) {
-    console.error(err);
-    setData([]);
-  } finally {
-    setLoading(false);
-  }
-};
+  //     // setActiveCount(active.length);
+  //     // setInactiveCount(inactive.length);
 
+  //     // const tabFiltered = activeTab === 0 ? active : inactive;
+  //     // setData(tabFiltered);
+
+  //     // let tabFiltered = [] as any;
+
+  //     // if (activeTab === 0) {
+  //     //   tabFiltered = response;
+  //     // } else if (activeTab === 1) {
+  //     //   tabFiltered = active;
+  //     // } else if (activeTab === 2) {
+  //     //   tabFiltered = inactive;
+  //     // }
+
+  //     // setData(tabFiltered);
+  //   } catch (err) {
+  //     console.error(err);
+  //     setData([]);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   // clear//
-  const handleClear = () => {
+  const handleClear = async () => {
     setCompanyName("");
     setRecruiterName("");
     setRecruiterEmail("");
     setRecruiterPhone("");
     setIndustry("");
     setCompanySize("");
-    loadDefaultData();
+    handleSearch();
+    // loadDefaultData();
   };
 
   //confirm delete//
@@ -133,7 +148,7 @@ const [inactiveCount, setInactiveCount] = useState(0);
 
       const id = rowToDelete.id;
       await updateUser(id, updatedRow);
-      await loadDefaultData();
+      await handleSearch();
 
       showSnackbar("Employee deleted successfully", "success");
     } catch (error) {
@@ -211,22 +226,48 @@ const [inactiveCount, setInactiveCount] = useState(0);
         );
       });
 
-      const tabFiltered = filtered.filter((d: employerRegisterType) =>
-        activeTab === 0 ? d.isActive === true : d.isActive === false
-      );
+      // const tabFiltered = filtered.filter((d: employerRegisterType) =>
+      //   activeTab === 0 ? d.isActive === true : d.isActive === false
+      // );
+
+      // setData(tabFiltered);
+
+      let tabFiltered = [] as any;
+
+      const active = filtered.filter((d) => d.isActive === true);
+      const inActive = filtered.filter((d) => d.isActive === false);
+      setActiveCount(active.length);
+      setInactiveCount(inActive.length);
+
+      if (activeTab === 0) {
+        tabFiltered = filtered; // ALL
+      } else if (activeTab === 1) {
+        tabFiltered = filtered.filter((d) => d.isActive === true);
+        // setActiveCount(tabFiltered.length);
+        // setInactiveCount(tabFiltered.length);
+      } else if (activeTab === 2) {
+        tabFiltered = filtered.filter((d) => d.isActive === false);
+        //  setActiveCount(tabFiltered.length);
+        // setInactiveCount(tabFiltered.length);
+      }
+
+      // const active = response.filter((d) => d.isActive === true);
+      // const inactive = response.filter((d) => d.isActive === false);
 
       setData(tabFiltered);
     } catch (err) {
       console.error(err);
       setData([]);
     } finally {
-      setLoading(false);
+      setLoading(false);  
     }
   };
 
+  //tab changes data reloads//
+
   useEffect(() => {
-    loadDefaultData();
-  }, [activeTab]);
+  handleSearch();
+}, [companyName, recruiterName, recruiterEmail, recruiterPhone, industry, companySize]);
 
   //Table Columns//
 
@@ -286,7 +327,7 @@ const [inactiveCount, setInactiveCount] = useState(0);
               <IconButton
                 size="small"
                 color="error"
-                onClick={() => handleDeleteFromHook([row])} // ✅ wired
+                onClick={() => handleBulkDelete([row])}
               >
                 <DeleteIcon fontSize="small" />
               </IconButton>
@@ -299,7 +340,7 @@ const [inactiveCount, setInactiveCount] = useState(0);
               <IconButton
                 size="small"
                 color="success"
-                onClick={() => handleActivateFromHook(row)} 
+                onClick={() => handleBulkActivate([row])}
               >
                 <CheckCircleIcon fontSize="small" />
               </IconButton>
@@ -337,7 +378,7 @@ const [inactiveCount, setInactiveCount] = useState(0);
               placeholder="Recruiter Name"
               value={recruiterName}
               onChange={(e) => setRecruiterName(e.target.value)}
-              name={""}
+              name="Recruiter Name"
             />
           </Grid>
 
@@ -346,7 +387,7 @@ const [inactiveCount, setInactiveCount] = useState(0);
               placeholder="Recruiter Email"
               value={recruiterEmail}
               onChange={(e) => setRecruiterEmail(e.target.value)}
-              name={""}
+              name="Recruiter Email"
             />
           </Grid>
 
@@ -356,7 +397,7 @@ const [inactiveCount, setInactiveCount] = useState(0);
               options={INDUSTRY_OPTIONS}
               placeholder="Industry"
               onChange={(e) => setIndustry(e.target.value)}
-              name={""}
+              name="Industry"
             />
           </Grid>
 
@@ -366,7 +407,7 @@ const [inactiveCount, setInactiveCount] = useState(0);
               options={COMPANY_SIZE_OPTIONS}
               placeholder="Company Size"
               onChange={(e) => setCompanySize(e.target.value)}
-              name={""}
+              name="Company Size"
             />
           </Grid>
 
@@ -375,7 +416,7 @@ const [inactiveCount, setInactiveCount] = useState(0);
               placeholder="Recruiter Phone"
               value={recruiterPhone}
               onChange={(e) => setRecruiterPhone(e.target.value)}
-              name={""}
+              name="Recruiter Phone"
             />
           </Grid>
 
@@ -402,19 +443,19 @@ const [inactiveCount, setInactiveCount] = useState(0);
         </Grid>
       </Paper>
 
-      {/* ✅ Dialogs wired to handler */}
+      {/*  Dialogs handler */}
 
       <MyDialog
         open={showConfirm && pendingAction === "activate"}
         title="Activate User"
         // message="Are you sure you want to activate this employee?"
         message={
-    pendingRows.length === 1
-      ? "Are you sure you want to activate this employee?"
-      : `Are you sure you want to activate ${pendingRows.length} employees?`
-  }
+          pendingRows.length === 1
+            ? "Are you sure you want to activate this employee?"
+            : `Are you sure you want to activate ${pendingRows.length} employees?`
+        }
         onClose={handleConfirmNo}
-        onConfirm={() => handleConfirmYes(loadDefaultData)}
+        onConfirm={() => handleConfirmYes(handleSearch)}
         confirmText="Yes, Activate"
         confirmColor="success"
       />
@@ -424,12 +465,12 @@ const [inactiveCount, setInactiveCount] = useState(0);
         title="Delete User"
         // message="Are you sure you want to delete this employee?"
         message={
-    pendingRows.length === 1
-      ? "Are you sure you want to delete this employee?"
-      : `Are you sure you want to delete ${pendingRows.length} employees?`
-  }
+          pendingRows.length === 1
+            ? "Are you sure you want to delete this employee?"
+            : `Are you sure you want to delete ${pendingRows.length} employees?`
+        }
         onClose={handleConfirmNo}
-        onConfirm={() => handleConfirmYes(loadDefaultData)}
+        onConfirm={() => handleConfirmYes(handleSearch)}
         confirmText="Yes, Delete"
         confirmColor="error"
       />
@@ -445,6 +486,36 @@ const [inactiveCount, setInactiveCount] = useState(0);
           activeTab={activeTab}
           onTabChange={(index) => setActiveTab(index)}
           tabs={[
+            {
+              tabName: `All Employers (${activeCount + inactiveCount})`,
+              tabContent: (
+                <>
+                  {!loading && data.length === 0 && (
+                    <Typography align="center" mt={3}>
+                      No records found
+                    </Typography>
+                  )}
+
+                  {!loading && data.length > 0 && (
+                    <MyTable
+                      containerSx={{ width: 1300, mx: "auto" }}
+                      rows={data}
+                      columns={columns}
+                      enableSelection={false}
+                      getRowId={(row) => row.id!}
+                      // mode="active"
+                      // onDeleteSelected={(ids) => {
+                      //   const rowsToDelete = data.filter(
+                      //     (r) => r.id && ids.includes(r.id)
+                      //   );
+                      //   handleBulkDelete(rowsToDelete);
+                      // }}
+                    />
+                  )}
+                </>
+              ),
+            },
+
             {
               tabName: `Active Employer (${activeCount})`,
               tabContent: (
@@ -462,13 +533,12 @@ const [inactiveCount, setInactiveCount] = useState(0);
                       columns={columns}
                       enableSelection
                       getRowId={(row) => row.id!}
-                      
+                      mode="active"
                       onDeleteSelected={(ids) => {
                         const rowsToDelete = data.filter(
                           (r) => r.id && ids.includes(r.id)
                         );
-                        handleDeleteFromHook(rowsToDelete); 
-                        
+                        handleBulkDelete(rowsToDelete);
                       }}
                     />
                   )}
@@ -496,16 +566,55 @@ const [inactiveCount, setInactiveCount] = useState(0);
                     <MyTable
                       rows={data}
                       columns={columns}
-                      enableSelection 
+                      enableSelection
                       getRowId={(row) => row.id!}
                       tableSize="small"
+                      mode="inactive"
                       containerSx={{ width: 1300, mx: "auto" }}
-                      onDeleteSelected={(ids) => {
-                        const rowsToRestore = data.filter(
+                      onActivateSelected={(ids) => {
+                        const selectedRows = data.filter(
                           (r) => r.id && ids.includes(r.id)
                         );
-                        handleActivateFromHook(rowsToRestore); // ✅ bulk restore
+                        handleBulkActivate(selectedRows);
                       }}
+                    />
+                  )}
+                </>
+              ),
+            },
+            {
+              tabName: `Group by category `,
+              tabContent: (
+                <>
+                  {!loading && data.length === 0 && (
+                    <Typography align="center" mt={3}>
+                      No records found
+                    </Typography>
+                  )}
+
+                  {!loading && data.length > 0 && (
+                    // <MyTable
+                    //   rows={data}
+                    //   columns={columns}
+                    //   tableSize="small"
+                    //   containerSx={{ width: 1200, mx: "auto" }}
+                    // />
+
+                    <MyTable
+                      rows={data}
+                      columns={columns}
+                      enableSelection={false}
+                      getRowId={(row) => row.id!}
+                      tableSize="small"
+                      groupBy="industry"
+                      mode="inactive"
+                      containerSx={{ width: 1300, mx: "auto" }}
+                      // onActivateSelected={(ids) => {
+                      //   const selectedRows = data.filter(
+                      //     (r) => r.id && ids.includes(r.id)
+                      //   );
+                      //   handleBulkActivate(selectedRows);
+                      // }}
                     />
                   )}
                 </>

@@ -7,7 +7,7 @@ import App from "./App";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 import { MySnackBar } from "./Components/newui/MySnackBar";
-import { theme }from "./constants/theme";
+import { theme }from "./config/theme";
 
 createRoot(document.getElementById("root")!).render(
   <ThemeProvider theme={theme}>

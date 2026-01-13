@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 
 import DeleteIcon from "@mui/icons-material/Delete";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import FirstPageIcon from "@mui/icons-material/FirstPage";
 import LastPageIcon from "@mui/icons-material/LastPage";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
@@ -34,6 +35,8 @@ export type Column<T> = {
   sortable?: boolean;
 };
 
+//props mytable//
+
 type CommonTableProps<T> = {
   rows: T[];
   columns: Column<T>[];
@@ -41,12 +44,17 @@ type CommonTableProps<T> = {
   defaultRowsPerPage?: number;
   tableSize?: "small" | "medium";
   containerSx?: object;
+  groupBy?: keyof T | null;
 
-  enableSelection?: boolean;
-  getRowId?: (row: T) => RowId;
-  onSelectionChange?: (selected: RowId[]) => void;
-  onDeleteSelected?: (ids: RowId[]) => void;
+  enableSelection?: boolean; //enable checkbox//
+  getRowId?: (row: T) => RowId; //unique id each row//
+  mode?: "active" | "inactive"; //shows delete icon
+  onSelectionChange?: (selected: RowId[]) => void; //returns selected id//
+  onDeleteSelected?: (ids: RowId[]) => void; //bulk delete//
+  onActivateSelected?: (ids: RowId[]) => void; //bulk  activate//
 };
+
+//pagination props//
 
 type PaginationActionsProps = {
   count: number;
@@ -57,6 +65,8 @@ type PaginationActionsProps = {
     newPage: number
   ) => void;
 };
+
+//custom pagination actions//
 
 function CustomPaginationActions(props: PaginationActionsProps) {
   const { count, page, rowsPerPage, onPageChange } = props;
@@ -103,6 +113,9 @@ function MyTable<T>({
   getRowId,
   onSelectionChange,
   onDeleteSelected,
+  onActivateSelected,
+  mode = "active",
+  groupBy = null,
 }: CommonTableProps<T>) {
   const [orderBy, setOrderBy] = useState<string>("");
   const [order, setOrder] = useState<Order>("asc");
@@ -137,6 +150,17 @@ function MyTable<T>({
     return sortedRows.slice(start, start + rowsPerPage);
   }, [sortedRows, page, rowsPerPage]);
 
+  const groupedData = useMemo(() => {
+    if (!groupBy) return null;
+
+    return paginatedRows.reduce((acc: any, row: any) => {
+      const key = row[groupBy] || "Unknown";
+      if (!acc[key]) acc[key] = [];
+      acc[key].push(row);
+      return acc;
+    }, {});
+  }, [paginatedRows, groupBy]);
+
   const isSelected = (id: RowId) => selected.includes(id);
 
   const handleRowToggle = (id: RowId) => {
@@ -168,8 +192,7 @@ function MyTable<T>({
       return id !== undefined && selected.includes(id);
     });
 
-  const someSelected =
-    enableSelection && selected.length > 0 && !allSelected;
+  const someSelected = enableSelection && selected.length > 0 && !allSelected;
 
   return (
     <Paper sx={{ p: 2, width: "100%", overflow: "hidden", ...containerSx }}>
@@ -190,9 +213,21 @@ function MyTable<T>({
         >
           <span>{selected.length} selected</span>
 
-          <IconButton color="error" onClick={handleDeleteSelected}>
+          {/* <IconButton color="error" onClick={handleDeleteSelected}>
             <DeleteIcon />
-          </IconButton>
+          </IconButton> */}
+          {mode === "inactive" ? (
+            <IconButton
+              color="success"
+              onClick={() => onActivateSelected?.(selected)}
+            >
+              <CheckCircleIcon />
+            </IconButton>
+          ) : (
+            <IconButton color="error" onClick={handleDeleteSelected}>
+              <DeleteIcon />
+            </IconButton>
+          )}
         </Box>
       )}
 
@@ -201,7 +236,12 @@ function MyTable<T>({
           <TableHead>
             <TableRow>
               {enableSelection && (
-                <TableCell padding="checkbox">
+                <TableCell
+                  padding="checkbox"
+                  sx={{
+                    backgroundColor: "#f0ebebff",
+                  }}
+                >
                   <Checkbox
                     checked={allSelected}
                     indeterminate={someSelected}
@@ -220,7 +260,16 @@ function MyTable<T>({
                     width: c.width,
                   }}
                 >
-                  <Box display="flex" justifyContent="center">
+                  <Box
+                    display="flex"
+                    justifyContent="center"
+                    sx={{
+                      // whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      maxWidth: "100%",
+                    }}
+                  >
                     {c.sortable === false ? (
                       c.label
                     ) : (
@@ -239,41 +288,90 @@ function MyTable<T>({
           </TableHead>
 
           <TableBody>
-            {paginatedRows.map((row, rowIndex) => {
-              const rowId = getRowId?.(row);
-              const checked =
-                rowId !== undefined ? isSelected(rowId) : false;
-
-              return (
-                <TableRow key={rowIndex} hover selected={checked}>
-                  {enableSelection && (
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={checked}
-                        onChange={() =>
-                          rowId !== undefined &&
-                          handleRowToggle(rowId)
-                        }
-                      />
-                    </TableCell>
-                  )}
-
-                  {columns.map((c) => {
-                    const align = c.cellAlign
-                      ? c.cellAlign(row)
-                      : c.align || "center";
-
-                    return (
-                      <TableCell key={String(c.id)} align={align}>
-                        {c.render
-                          ? c.render(row, rowIndex)
-                          : (row as any)[c.id]}
+            {groupBy && groupedData
+              ? Object.entries(groupedData).map(([group, items]: any) => (
+                  <React.Fragment key={group}>
+                    {/* Group Header */}
+                    <TableRow sx={{ background: "#e2ebf5" }}>
+                      <TableCell
+                        colSpan={columns.length + (enableSelection ? 1 : 0)}
+                        sx={{ fontWeight: "bold" }}
+                      >
+                        {group} ({items.length})
                       </TableCell>
-                    );
-                  })}
-                </TableRow>
-              );
-            })}
+                    </TableRow>
+
+                    {/* Group Rows */}
+                    {items.map((row: any, rowIndex: number) => {
+                      const rowId = getRowId?.(row);
+                      const checked =
+                        rowId !== undefined ? isSelected(rowId) : false;
+
+                      return (
+                        <TableRow key={rowIndex} hover selected={checked}>
+                          {enableSelection && (
+                            <TableCell padding="checkbox">
+                              <Checkbox
+                                checked={checked}
+                                onChange={() =>
+                                  rowId !== undefined && handleRowToggle(rowId)
+                                }
+                              />
+                            </TableCell>
+                          )}
+
+                          {columns.map((c) => {
+                            const align = c.cellAlign
+                              ? c.cellAlign(row)
+                              : c.align || "center";
+
+                            return (
+                              <TableCell key={String(c.id)} align={align}>
+                                {c.render
+                                  ? c.render(row, rowIndex)
+                                  : (row as any)[c.id]}
+                              </TableCell>
+                            );
+                          })}
+                        </TableRow>
+                      );
+                    })}
+                  </React.Fragment>
+                ))
+              : paginatedRows.map((row, rowIndex) => {
+                  const rowId = getRowId?.(row);
+                  const checked =
+                    rowId !== undefined ? isSelected(rowId) : false;
+
+                  return (
+                    <TableRow key={rowIndex} hover selected={checked}>
+                      {enableSelection && (
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            checked={checked}
+                            onChange={() =>
+                              rowId !== undefined && handleRowToggle(rowId)
+                            }
+                          />
+                        </TableCell>
+                      )}
+
+                      {columns.map((c) => {
+                        const align = c.cellAlign
+                          ? c.cellAlign(row)
+                          : c.align || "center";
+
+                        return (
+                          <TableCell key={String(c.id)} align={align}>
+                            {c.render
+                              ? c.render(row, rowIndex)
+                              : (row as any)[c.id]}
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  );
+                })}
           </TableBody>
         </Table>
       </Box>

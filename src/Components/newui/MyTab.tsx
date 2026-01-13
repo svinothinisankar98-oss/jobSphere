@@ -14,7 +14,7 @@ type TabsProps = {
   tabs: TabItem[];
 };
 
-const MyTabs = ({
+const MyTab = ({
   activeTab,
   onTabChange,
   completedTabs = [],
@@ -59,7 +59,7 @@ const MyTabs = ({
               borderBottom:
                 activeTab === index
                   ? "3px solid #1976d2"
-                  : "3px solid transparent", // 👈 manual border
+                  : "3px solid transparent", //  manual border
               borderRadius: 0,
               "&.Mui-selected": {
                 color: "primary.main",
@@ -75,4 +75,4 @@ const MyTabs = ({
   );
 };
 
-export default MyTabs;
+export default MyTab;

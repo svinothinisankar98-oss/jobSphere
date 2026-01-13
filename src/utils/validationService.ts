@@ -37,21 +37,21 @@ export const validateField = (
 
 //Email Already Exists Check//
 
-export const validateUser = async (email: string): Promise<any> => {
-  try {
-    const getAllUsers: any[] = (await userService.getUsers()) || [];
+// export const validateUser = async (email: string): Promise<any> => {
+//   try {
+//     const getAllUsers: any[] = (await userService.getUsers()) || [];
 
-    if (getAllUsers?.length == 0) {
-      return false;
-    }
+//     if (getAllUsers?.length == 0) {
+//       return false;
+//     }
 
-    if (getAllUsers?.length > 0) {
-      const checkEMail = getAllUsers?.some((d) => d?.email?.includes(email));
-      return checkEMail;
-    }
+//     if (getAllUsers?.length > 0) {
+//       const checkEMail = getAllUsers?.some((d) => d?.email?.includes(email));
+//       return checkEMail;
+//     }
 
-    return true;
-  } catch (error) {
-    console.log(error);
-  }
-};
+//     return true;
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };

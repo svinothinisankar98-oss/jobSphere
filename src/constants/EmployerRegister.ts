@@ -1,3 +1,8 @@
+export const Yes_No_Options = [
+  { label: "Yes", value: "yes" },
+  { label: "No", value: "no" },
+];
+
 export const INDUSTRY_OPTIONS = [
   { id: 1, item: "IT" },
   { id: 2, item: "Finance" },
@@ -19,4 +24,12 @@ export const COMPANY_SIZE_OPTIONS = [
   { id: 2, item: "11–50" },
   { id: 3, item: "51–200" },
   { id: 4, item: "200+" },
+];
+
+export const EmploymentTypes = [
+  { label: "Full-time", value: "full_time" },
+  { label: "Part-time", value: "part_time" },
+  { label: "Contract", value: "contract" },
+  { label: "Temporary", value: "temporary" },
+  { label: "Internship", value: "internship" },
 ];

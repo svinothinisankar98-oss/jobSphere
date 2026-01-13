@@ -1,7 +1,7 @@
 // useEmployerFormHandlers.ts
 import { useState } from "react";
 import type { UseFormReturn } from "react-hook-form";
-import type { employerRegisterType } from "../../../types/employerRegister";
+import type { employerRegisterType } from "../../types/employerRegister";
 
 export function useEmployerFormHandlers(
   form: UseFormReturn<employerRegisterType>,

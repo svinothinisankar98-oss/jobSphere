@@ -6,8 +6,10 @@ import {
   PasswordMismatchMessage,
   RequiredMessage,
   SelectMessage,
-  URL_REGEX,
+   URL_REGEX,
 } from "../constants/ValidationMessages";
+
+import { REGEX } from "../constants/regex"
 
 export const jobSeekerSchema = yup.object({
   Name: yup.string().required(RequiredMessage("Name")),
@@ -30,7 +32,7 @@ export const jobSeekerSchema = yup.object({
   phoneno: yup
     .string()
     .required(RequiredMessage("Phone No"))
-    .matches(/^[0-9]{10}$/, InvalidPhoneMessage),
+    .matches(REGEX.phone, InvalidPhoneMessage),
 
   location: yup.string().required(SelectMessage("Current Location")),
 
@@ -45,7 +47,7 @@ export const jobSeekerSchema = yup.object({
     .test(
       "valid-url",
       InvalidUrlMessage,
-      (value) => !value || URL_REGEX.test(value)
+      (value) => !value || REGEX.url.test(value)
     ),
   resume: yup.mixed<File>().nullable(),
 });

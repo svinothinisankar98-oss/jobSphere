@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import Grid from "@mui/material/Grid";
 
 import MyTextField from "../../../Components/newui/MyTextField";
-import MyradioButton from "../../../Components/newui/MyradioButton";
+import MyradioButton from "../../../Components/newui/MyRadioButton";
 import MyCheckbox from "../../../Components/newui/MyCheckBox";
-import { Yes_No_Options } from "../../../constants/RadioOptions";
-import { EmploymentTypes } from "../../../constants/CheckBoxOptions";
+import { Yes_No_Options } from "../../../constants/EmployerRegister";
+import { EmploymentTypes } from "../../../constants/EmployerRegister";
 
 function RecruiterDetails() {
   // const [remoteWork, setRemoteWork] = useState("yes");

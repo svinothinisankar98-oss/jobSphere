@@ -2,7 +2,7 @@
 
 
 const employerDefaultValues = {
-  id:"",
+  // id:"",
   companyName: "",
   email: "",
   phone: "",

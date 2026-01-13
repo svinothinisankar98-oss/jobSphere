@@ -1,5 +1,5 @@
 export type employerRegisterType = {
-  id?:string;
+  id?:number;
   companyName: string;
   email: string;
   phone: string;

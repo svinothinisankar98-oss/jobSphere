@@ -5,9 +5,11 @@ import {
   InvalidPhoneMessage,
   PasswordMismatchMessage,
   SelectMessage,
-  URL_REGEX,
+   URL_REGEX,
   InvalidUrlMessage,
 } from "../constants/ValidationMessages";
+
+import { REGEX } from "../constants/regex"
 
 export const employerSchema = yup.object({
   companyName: yup.string().required(RequiredMessage("Company Name")),
@@ -20,13 +22,13 @@ export const employerSchema = yup.object({
   phone: yup
     .string()
     .required(RequiredMessage("Phone No"))
-    .matches(/^[0-9]{10}$/, InvalidPhoneMessage),
+    .matches(REGEX.phone, InvalidPhoneMessage),
 
   website: yup
     .string()
     .trim()
     .required(RequiredMessage("Website"))
-    .matches(URL_REGEX, InvalidUrlMessage),
+    .matches(REGEX.url, InvalidUrlMessage),
 
   industry: yup.string().required(SelectMessage("Industry")),
 
@@ -52,7 +54,7 @@ export const employerSchema = yup.object({
   recruiterPhone: yup
     .string()
     .required(RequiredMessage("Recruiter phone No"))
-    .matches(/^[0-9]{10}$/, InvalidPhoneMessage),
+    .matches(REGEX.phone, InvalidPhoneMessage),
 
   designation: yup.string().required(RequiredMessage("Designation")),
 

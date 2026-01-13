@@ -3,13 +3,19 @@ import type { employerRegisterType } from "../../types/employerRegister";
 
 type PendingAction = "delete" | "activate" | null;
 
-export const useEmployerActions = (
-  updateUser: (id: string, data: any) => Promise<any>,
+export const useEmployerListHandlers = (
+  updateUser: (id: number, data: any) => Promise<any>,
   showSnackbar: (msg: string, type: "success" | "error") => void
 ) => {
+  //State Variables//
+
   const [showConfirm, setShowConfirm] = useState(false);
+  //stores current action  delete activate//
   const [pendingAction, setPendingAction] = useState<PendingAction>(null);
+  //selected employees//
   const [pendingRows, setPendingRows] = useState<employerRegisterType[]>([]);
+
+  //handleDeleteClick//
 
   const handleDeleteClick = (rows: employerRegisterType[]) => {
     setPendingRows(rows);
@@ -17,15 +23,16 @@ export const useEmployerActions = (
     setShowConfirm(true);
   };
 
-  
-  const handleActivateClick = (
-    rows: employerRegisterType | employerRegisterType[]
-  ) => {
+  //handleActivateClick//
+
+  const handleActivateClick = (rows: employerRegisterType[]) => {
     const list = Array.isArray(rows) ? rows : [rows];
     setPendingRows(list);
     setPendingAction("activate");
     setShowConfirm(true);
   };
+
+  //handle confirm yes//
 
   const handleConfirmYes = async (reload: () => Promise<void>) => {
     if (!pendingAction || pendingRows.length === 0) return;
@@ -35,6 +42,8 @@ export const useEmployerActions = (
         pendingRows.map((row) => {
           if (!row.id) return Promise.resolve();
 
+          //api calls//
+
           return updateUser(row.id, {
             ...row,
             isActive: pendingAction === "activate",
@@ -43,34 +52,27 @@ export const useEmployerActions = (
         })
       );
 
-    //   showSnackbar(
-    //     pendingAction === "delete"
-    //       ? "Employee(s) deleted successfully"
-    //       : "Employee(s) activated successfully",
-    //     "success"
-    //   );
+      //Snackbar messages//
 
-    const count = pendingRows.length;
+      const count = pendingRows.length;
 
-if (pendingAction === "delete") {
-  showSnackbar(
-    count === 1
-      ? "1 employee deleted successfully"
-      : `${count} employees deleted successfully`,
-    "success"
-  );
-}
+      if (pendingAction === "delete") {
+        showSnackbar(
+          count === 1
+            ? "1 employee deleted successfully"
+            : `${count} employees deleted successfully`,
+          "success"
+        );
+      }
 
-if (pendingAction === "activate") {
-  showSnackbar(
-    count === 1
-      ? "1 employee activated successfully"
-      : `${count} employees activated successfully`,
-    "success"
-  );
-}
-
-    
+      if (pendingAction === "activate") {
+        showSnackbar(
+          count === 1
+            ? "1 employee activated successfully"
+            : `${count} employees activated successfully`,
+          "success"
+        );
+      }
 
       await reload();
     } catch (error) {
@@ -82,6 +84,8 @@ if (pendingAction === "activate") {
       setPendingAction(null);
     }
   };
+
+  //handle confirm no//
 
   const handleConfirmNo = () => {
     setShowConfirm(false);

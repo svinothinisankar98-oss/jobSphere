@@ -14,7 +14,7 @@ import { employerSchema } from "../../../schemas/employerSchema";
 import employerDefaultValues from "../employerregisterdetails/defaultvalues/EmployerRegister";
 import type { employerRegisterType } from "../../../types/employerRegister";
 
-import { useEmployerFormHandlers } from "./useEmployerFormHandlers";
+import { useEmployerFormHandlers } from "../../../hooks/employer/useEmployerFormHandlers";
 
 import { useNavigate, useParams } from "react-router-dom";
 import { useSnackbar } from "../../../Components/newui/MySnackBar";

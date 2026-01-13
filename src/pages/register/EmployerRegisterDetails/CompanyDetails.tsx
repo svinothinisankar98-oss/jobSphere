@@ -2,7 +2,7 @@ import Grid from "@mui/material/Grid";
 import MyTextField from "../../../Components/newui/MyTextField";
 import MyDropDown from "../../../Components/newui/MyDropDown";
 import MyYearPicker from "../../../Components/newui/MyDatePicker";
-import { COMPANY_SIZE_OPTIONS, INDUSTRY_OPTIONS } from "../../../constants/DropDownOptions";
+import { COMPANY_SIZE_OPTIONS, INDUSTRY_OPTIONS } from "../../../constants/EmployerRegister";
 
 // const INDUSTRY_OPTIONS = [
 //   { id: 1, item: "IT" },

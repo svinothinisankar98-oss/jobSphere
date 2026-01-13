@@ -64,6 +64,8 @@ export const userService = {
 
   
   createUser: async (data: CreateUserPayload): Promise<User> => {
+    console.log(data,"user service");
+    
     const response = await apiService.post<User>("users", data);
     return response;
   },
@@ -86,7 +88,7 @@ export const userService = {
   },
 
 
-  updateUser: async (id: string,data:any): Promise<any> => {
+  updateUser: async (id: number,data:any): Promise<any> => {
     // getData.isDelete = true;
   return apiService.put(`users/${id}`, data);
 },

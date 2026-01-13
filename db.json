@@ -188,7 +188,7 @@
       "userType": 1
     },
     {
-      "id": "341a",
+      "id": "3411",
       "Name": "vinothini",
       "email": "vino123@gmail.com",
       "password": "123456",
@@ -216,7 +216,7 @@
       "userType": 1
     },
     {
-      "id": "339f",
+      "id": "3391",
       "Name": "karthi",
       "email": "ooo@gmail.com",
       "password": "123456",
@@ -230,7 +230,7 @@
       "userType": 1
     },
     {
-      "id": "26fd",
+      "id": "2611",
       "Name": "karthi",
       "email": "karth@gmail.com",
       "password": "123456",
@@ -245,7 +245,7 @@
       "userType": 1
     },
     {
-      "id": "39fb",
+      "id": "3912",
       "resume": {},
       "portfolio": null,
       "skills": "TTT",
@@ -260,7 +260,7 @@
       "userType": 1
     },
     {
-      "id": "2f3b",
+      "id": "2339",
       "resume": null,
       "portfolio": null,
       "skills": "sql",
@@ -288,7 +288,7 @@
       "userType": 1
     },
     {
-      "id": "6c20",
+      "id": "6420",
       "Name": "karthi",
       "email": "mangalapradhabini@egrovesys.com",
       "password": "123456",
@@ -302,7 +302,7 @@
       "userType": 1
     },
     {
-      "id": "b716",
+      "id": "4416",
       "Name": "karthi",
       "email": "karthi1@gmail.com",
       "password": "112233",
@@ -316,7 +316,7 @@
       "userType": 1
     },
     {
-      "id": "dcf9",
+      "id": "1122",
       "companyName": "Vinothini  & co",
       "email": "viqqqno@gmail.com",
       "phone": "8745124576",
@@ -347,10 +347,10 @@
       "isActive": false,
       "serialNo": 1,
       "deletedAt": null,
-      "updatedAt": "2026-01-12T12:35:09.520Z"
+      "updatedAt": "2026-01-13T14:09:41.911Z"
     },
     {
-      "id": "3d60",
+      "id": "1133",
       "companyName": "egrove Systems",
       "email": "egrove@gmail.com",
       "phone": "7788888888",
@@ -377,13 +377,13 @@
         "contract"
       ],
       "userType": 2,
-      "isActive": true,
+      "isActive": false,
       "serialNo": 2,
-      "updatedAt": "2026-01-12T12:35:29.544Z",
+      "updatedAt": "2026-01-13T14:09:41.912Z",
       "deletedAt": "2026-01-08T13:48:03.080Z"
     },
     {
-      "id": "9da7",
+      "id": "3454",
       "companyName": "Logic Private Limited",
       "email": "ooo@gmail.com",
       "phone": "8745612345",
@@ -410,10 +410,10 @@
       "userType": 2,
       "isActive": false,
       "serialNo": 3,
-      "updatedAt": "2026-01-12T11:06:47.660Z"
+      "updatedAt": "2026-01-13T14:09:41.912Z"
     },
     {
-      "id": "3e03",
+      "id": "8767",
       "companyName": "eWallHost",
       "email": "ewallhost@gmail.com",
       "phone": "7788888888",
@@ -439,12 +439,12 @@
         "temporary"
       ],
       "userType": 2,
-      "isActive": false,
+      "isActive": true,
       "serialNo": 4,
-      "updatedAt": "2026-01-12T12:34:17.996Z"
+      "updatedAt": "2026-01-13T14:01:27.322Z"
     },
     {
-      "id": "b2dd",
+      "id": "4344",
       "companyName": "noble",
       "email": "ooso@gmail.com",
       "phone": "7788888888",
@@ -472,11 +472,11 @@
       "userType": 2,
       "serialNo": 5,
       "isDelete": true,
-      "isActive": true,
-      "updatedAt": "2026-01-12T11:20:21.987Z"
+      "isActive": false,
+      "updatedAt": "2026-01-13T03:56:35.853Z"
     },
     {
-      "id": "ff5f",
+      "id": "5566",
       "companyName": "GimmeGamma",
       "email": "gimmegamma@gmail.com",
       "phone": "7894561234",
@@ -509,7 +509,7 @@
       "updatedAt": "2026-01-10T06:11:54.842Z"
     },
     {
-      "id": "e698",
+      "id": "8878",
       "companyName": "noble private limited",
       "email": "noble@noble.com",
       "phone": "8945612584",
@@ -537,10 +537,10 @@
       ],
       "userType": 2,
       "isActive": true,
-      "updatedAt": "2026-01-12T11:20:21.992Z"
+      "updatedAt": "2026-01-13T03:57:01.411Z"
     },
     {
-      "id": "d8d9",
+      "id": "3456",
       "companyName": "Logicfield Private Limited",
       "email": "admin@logicfield.com",
       "phone": "8745612544",
@@ -573,7 +573,7 @@
       "deletedAt": null
     },
     {
-      "id": "a1b2",
+      "id": "9876",
       "companyName": "TechNova Solutions",
       "email": "contact@technova.com",
       "phone": "9876543210",
@@ -605,7 +605,7 @@
       "deletedAt": null
     },
     {
-      "id": "c3d4",
+      "id": "8767",
       "companyName": "FinEdge Corp",
       "email": "info@finedge.com",
       "phone": "9012345678",
@@ -662,14 +662,14 @@
       ],
       "userType": 2,
       "isActive": true,
-      "id": "e5f6",
+      "id": "4568",
       "createdAt": "2026-01-03T12:30:45.789Z",
       "updatedAt": "2026-01-08T04:21:13.868Z",
       "deletedAt": null,
       "serialNo": 1
     },
     {
-      "id": "g7h8",
+      "id": "2585",
       "companyName": "EduSpark Learning",
       "email": "hello@eduspark.com",
       "phone": "7788990011",
@@ -701,7 +701,7 @@
       "deletedAt": null
     },
     {
-      "id": "g7h8",
+      "id": "9874",
       "companyName": "BuildSmart Infra",
       "email": "admin@buildsmart.com",
       "phone": "9876543210",
@@ -732,7 +732,7 @@
       "deletedAt": null
     },
     {
-      "id": "i9j0",
+      "id": "1125",
       "companyName": "RetailNest",
       "email": "hello@retailnest.com",
       "phone": "9090909090",
@@ -764,7 +764,7 @@
       "deletedAt": null
     },
     {
-      "id": "cs01",
+      "id": "8541",
       "companyName": "SecureNet Labs",
       "email": "contact@securenetlabs.com",
       "phone": "9876501234",
@@ -796,7 +796,7 @@
       "deletedAt": null
     },
     {
-      "id": "tncs01",
+      "id": "4562",
       "companyName": "SecureTamil Systems",
       "email": "contact@securetamil.com",
       "phone": "9786543210",
@@ -828,7 +828,7 @@
       "deletedAt": null
     },
     {
-      "id": "tncs02",
+      "id": "4561",
       "companyName": "DefendX Cyber Labs",
       "email": "info@defendxcyber.com",
       "phone": "9623457812",
@@ -860,7 +860,7 @@
       "deletedAt": null
     },
     {
-      "id": "57ec",
+      "id": "7854",
       "companyName": "G way Techno Private Limited",
       "email": "gway@gway.com",
       "phone": "6523124511",
@@ -892,7 +892,7 @@
       "deletedAt": null
     },
     {
-      "id": "f0a1",
+      "id": "9564",
       "companyName": "Nova Private Limited",
       "email": "nova@nova.com",
       "phone": "6541234588",
@@ -951,7 +951,7 @@
       ],
       "userType": 2,
       "isActive": false,
-      "id": "0d01",
+      "id": "3214",
       "createdAt": "2026-01-08T04:26:18.898Z",
       "updatedAt": "2026-01-12T11:03:34.018Z",
       "deletedAt": "2026-01-08T05:17:40.058Z",
@@ -1026,7 +1026,7 @@
       "updatedAt": null
     },
     {
-      "id": "bede",
+      "id": "4561",
       "Name": "Malathi",
       "email": "malathiprakash@gmail.com",
       "password": "123456",
@@ -1128,6 +1128,96 @@
       "userType": 2,
       "isActive": true,
       "createdAt": "2026-01-10T05:02:44.285Z",
+      "updatedAt": null
+    },
+    {
+      "id": "9918",
+      "Name": "Subathra",
+      "email": "subathra@gmail.com",
+      "password": "123456",
+      "confirmPassword": "123456",
+      "phoneno": "8541254888",
+      "location": "Kerala",
+      "experience": "0–1 Years",
+      "skills": "React",
+      "portfolio": "",
+      "resume": null,
+      "userType": 1
+    },
+    {
+      "id": "8421",
+      "Name": "saranya",
+      "email": "saranya@gmail.com",
+      "password": "112233",
+      "confirmPassword": "112233",
+      "phoneno": "8945612347",
+      "location": "Kerala",
+      "experience": "1–3 Years",
+      "skills": "react",
+      "portfolio": "",
+      "resume": null,
+      "userType": 1
+    },
+    {
+      "id": "0",
+      "companyName": "eWall Solutions",
+      "email": "admin@ewallsolutions.com",
+      "phone": "7412356444",
+      "website": "www.ewallsolutions.com",
+      "industry": "IT",
+      "companySize": "1–10",
+      "foundedYear": 1998,
+      "address1": "34 north street, ",
+      "address2": "valasaravakam",
+      "city": "chennai",
+      "state": "tamil nadu",
+      "country": "India",
+      "zip": "600044",
+      "recruiterName": "Mohan",
+      "recruiterEmail": "mohan@ewallsolutions.com",
+      "recruiterPhone": "6541245877",
+      "designation": "HR Manager",
+      "password": "112233",
+      "confirmPassword": "112233",
+      "remoteopportunity": "yes",
+      "employmentType": [
+        "full_time",
+        "contract"
+      ],
+      "userType": 2,
+      "isActive": true,
+      "createdAt": "2026-01-13T08:01:05.894Z",
+      "updatedAt": null
+    },
+    {
+      "id": "215d",
+      "companyName": "ES Telecom",
+      "email": "estelecom@gmail.com",
+      "phone": "9448574344",
+      "website": "http://www.estelecom.co.in/",
+      "industry": "Telecommunications",
+      "companySize": "51–200",
+      "foundedYear": 2000,
+      "address1": " Plot No 38, Nehru St,",
+      "address2": "Medavakkam",
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "country": "India",
+      "zip": " 600100",
+      "recruiterName": "Malavika",
+      "recruiterEmail": "info@estelecom.co.in",
+      "recruiterPhone": "4448574345",
+      "designation": "HR",
+      "password": "112233",
+      "confirmPassword": "112233",
+      "remoteopportunity": "yes",
+      "employmentType": [
+        "full_time",
+        "part_time"
+      ],
+      "userType": 2,
+      "isActive": true,
+      "createdAt": "2026-01-13T09:13:42.258Z",
       "updatedAt": null
     }
   ]

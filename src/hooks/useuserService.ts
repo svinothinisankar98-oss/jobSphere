@@ -69,7 +69,7 @@ const getEmployerById = async (id: string): Promise<employerRegisterType | null>
   }
 };
 
-const updateUser = async (id: string, data: employerRegisterType) => {
+const updateUser = async (id: number, data: employerRegisterType) => {
   try {
     return await userService.updateUser(id, data);
   } catch (error) {
