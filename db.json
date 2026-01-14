@@ -439,9 +439,9 @@
         "temporary"
       ],
       "userType": 2,
-      "isActive": true,
+      "isActive": false,
       "serialNo": 4,
-      "updatedAt": "2026-01-13T14:01:27.322Z"
+      "updatedAt": "2026-01-14T04:42:28.404Z"
     },
     {
       "id": "4344",
@@ -1218,6 +1218,38 @@
       "userType": 2,
       "isActive": true,
       "createdAt": "2026-01-13T09:13:42.258Z",
+      "updatedAt": null
+    },
+    {
+      "id": "959b",
+      "companyName": "Sparklin Innovations",
+      "email": "hello@sparklin.com",
+      "phone": "7788888888",
+      "website": "https://sparklin.com/",
+      "industry": "Product Design",
+      "companySize": "51–200",
+      "foundedYear": 2013,
+      "address1": "34, south car street",
+      "address2": "",
+      "city": "New Delhi",
+      "state": "New Delhi",
+      "country": "India",
+      "zip": "110018",
+      "recruiterName": "Khan",
+      "recruiterEmail": "hr@sparklin.com",
+      "recruiterPhone": "8745612457",
+      "designation": "HR Admin",
+      "password": "112233",
+      "confirmPassword": "112233",
+      "remoteopportunity": "yes",
+      "employmentType": [
+        "part_time",
+        "full_time",
+        "internship"
+      ],
+      "userType": 2,
+      "isActive": true,
+      "createdAt": "2026-01-14T04:40:21.581Z",
       "updatedAt": null
     }
   ]

@@ -259,15 +259,22 @@ const EmployerList = () => {
       console.error(err);
       setData([]);
     } finally {
-      setLoading(false);  
+      setLoading(false);
     }
   };
 
   //tab changes data reloads//
 
   useEffect(() => {
-  handleSearch();
-}, [companyName, recruiterName, recruiterEmail, recruiterPhone, industry, companySize]);
+    handleSearch();
+  }, [
+    companyName,
+    recruiterName,
+    recruiterEmail,
+    recruiterPhone,
+    industry,
+    companySize,
+  ]);
 
   //Table Columns//
 

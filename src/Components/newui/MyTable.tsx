@@ -31,24 +31,24 @@ export type Column<T> = {
   headerAlign?: "left" | "center" | "right";
   align?: "left" | "center" | "right";
   cellAlign?: (row: T) => "left" | "center" | "right";
-  render?: (row: T, index: number) => React.ReactNode;
+  render?: (row: T, index: number) => React.ReactNode;    //custom cell rendering function//
   sortable?: boolean;
 };
 
 //props mytable//
 
 type CommonTableProps<T> = {
-  rows: T[];
+  rows: T[];                    //data//
   columns: Column<T>[];
   rowsPerPageOptions?: number[];
   defaultRowsPerPage?: number;
   tableSize?: "small" | "medium";
   containerSx?: object;
-  groupBy?: keyof T | null;
+  groupBy?: keyof T | null;        //allow grouping  rows by a field//
 
   enableSelection?: boolean; //enable checkbox//
   getRowId?: (row: T) => RowId; //unique id each row//
-  mode?: "active" | "inactive"; //shows delete icon
+  mode?: "active" | "inactive"; //shows delete icon or active icon//
   onSelectionChange?: (selected: RowId[]) => void; //returns selected id//
   onDeleteSelected?: (ids: RowId[]) => void; //bulk delete//
   onActivateSelected?: (ids: RowId[]) => void; //bulk  activate//
@@ -70,11 +70,11 @@ type PaginationActionsProps = {
 
 function CustomPaginationActions(props: PaginationActionsProps) {
   const { count, page, rowsPerPage, onPageChange } = props;
-  const totalPages = Math.ceil(count / rowsPerPage);
+  const totalPages = Math.ceil(count / rowsPerPage);          //calculate total pages//
 
   return (
     <Box sx={{ flexShrink: 0, ml: 2.5 }}>
-      <IconButton onClick={(e) => onPageChange(e, 0)} disabled={page === 0}>
+      <IconButton onClick={(e) => onPageChange(e, 0)} disabled={page === 0}>      
         <FirstPageIcon />
       </IconButton>
 
@@ -102,6 +102,8 @@ function CustomPaginationActions(props: PaginationActionsProps) {
   );
 }
 
+//main component//
+
 function MyTable<T>({
   rows,
   columns,
@@ -117,15 +119,19 @@ function MyTable<T>({
   mode = "active",
   groupBy = null,
 }: CommonTableProps<T>) {
-  const [orderBy, setOrderBy] = useState<string>("");
+  const [orderBy, setOrderBy] = useState<string>("");      //sorting direction//
   const [order, setOrder] = useState<Order>("asc");
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(0);                     //current page state//
   const [rowsPerPage, setRowsPerPage] = useState(defaultRowsPerPage);
   const [selected, setSelected] = useState<RowId[]>([]);
+
+  //selection effect//
 
   useEffect(() => {
     onSelectionChange?.(selected);
   }, [selected, onSelectionChange]);
+
+  //Sorting Handler//
 
   const handleSort = (id: string) => {
     if (orderBy === id) {
@@ -136,6 +142,8 @@ function MyTable<T>({
     }
   };
 
+  //sorted rows//
+
   const sortedRows = useMemo(() => {
     if (!orderBy) return rows;
     return [...rows].sort((a: any, b: any) => {
@@ -145,29 +153,37 @@ function MyTable<T>({
     });
   }, [rows, orderBy, order]);
 
+  //pagination//
+
   const paginatedRows = useMemo(() => {
     const start = page * rowsPerPage;
     return sortedRows.slice(start, start + rowsPerPage);
   }, [sortedRows, page, rowsPerPage]);
 
+  //grouping//
+
   const groupedData = useMemo(() => {
     if (!groupBy) return null;
 
     return paginatedRows.reduce((acc: any, row: any) => {
-      const key = row[groupBy] || "Unknown";
+      const key = row[groupBy] || "Unknown";       //group key//
       if (!acc[key]) acc[key] = [];
       acc[key].push(row);
       return acc;
     }, {});
   }, [paginatedRows, groupBy]);
 
-  const isSelected = (id: RowId) => selected.includes(id);
+  //selection helpers//
+
+  const isSelected = (id: RowId) => selected.includes(id);      //check if row is selected//
 
   const handleRowToggle = (id: RowId) => {
     setSelected((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
     );
   };
+
+  //handle select all//
 
   const handleSelectAll = (checked: boolean) => {
     if (!getRowId) return;
@@ -179,11 +195,14 @@ function MyTable<T>({
     setSelected(checked ? allIds : []);
   };
 
+  //handle delete icon actions//
+
   const handleDeleteSelected = () => {
     if (!onDeleteSelected) return;
     onDeleteSelected(selected);
   };
 
+  //header checkbox state//
   const allSelected =
     enableSelection &&
     rows.length > 0 &&
@@ -192,11 +211,16 @@ function MyTable<T>({
       return id !== undefined && selected.includes(id);
     });
 
+    //partial selection//
+
   const someSelected = enableSelection && selected.length > 0 && !allSelected;
+
+  //jsx//
 
   return (
     <Paper sx={{ p: 2, width: "100%", overflow: "hidden", ...containerSx }}>
-      {enableSelection && selected.length > 0 && (
+      
+      {enableSelection && selected.length > 0 && (      //bulk action bar//
         <Box
           sx={{
             display: "flex",
@@ -232,7 +256,7 @@ function MyTable<T>({
       )}
 
       <Box sx={{ overflowX: "auto", maxHeight: 400 }}>
-        <Table stickyHeader size={tableSize} sx={{ minWidth: 900 }}>
+        <Table stickyHeader size={tableSize} sx={{ minWidth: 900 }}>       
           <TableHead>
             <TableRow>
               {enableSelection && (
@@ -287,8 +311,8 @@ function MyTable<T>({
             </TableRow>
           </TableHead>
 
-          <TableBody>
-            {groupBy && groupedData
+          <TableBody>           
+            {groupBy && groupedData                                          //grouped data//
               ? Object.entries(groupedData).map(([group, items]: any) => (
                   <React.Fragment key={group}>
                     {/* Group Header */}
@@ -307,7 +331,7 @@ function MyTable<T>({
                       const checked =
                         rowId !== undefined ? isSelected(rowId) : false;
 
-                      return (
+                      return (                                                    //row rendering//
                         <TableRow key={rowIndex} hover selected={checked}>
                           {enableSelection && (
                             <TableCell padding="checkbox">
@@ -320,7 +344,7 @@ function MyTable<T>({
                             </TableCell>
                           )}
 
-                          {columns.map((c) => {
+                          {columns.map((c) => {                                 //cell rendering//
                             const align = c.cellAlign
                               ? c.cellAlign(row)
                               : c.align || "center";
@@ -338,7 +362,7 @@ function MyTable<T>({
                     })}
                   </React.Fragment>
                 ))
-              : paginatedRows.map((row, rowIndex) => {
+              : paginatedRows.map((row, rowIndex) => {                            //pagination footer//
                   const rowId = getRowId?.(row);
                   const checked =
                     rowId !== undefined ? isSelected(rowId) : false;
@@ -377,7 +401,7 @@ function MyTable<T>({
       </Box>
 
       <Box display="flex" justifyContent="flex-end">
-        <TablePagination
+        <TablePagination                                              //Pagination Footer//
           component="div"
           count={rows.length}
           page={page}
@@ -388,7 +412,7 @@ function MyTable<T>({
             setPage(0);
           }}
           rowsPerPageOptions={rowsPerPageOptions}
-          ActionsComponent={CustomPaginationActions}
+          ActionsComponent={CustomPaginationActions}               //custom pagination options//
         />
       </Box>
     </Paper>
