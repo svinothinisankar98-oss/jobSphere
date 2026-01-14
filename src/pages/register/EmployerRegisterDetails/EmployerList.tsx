@@ -249,6 +249,10 @@ const EmployerList = () => {
         tabFiltered = filtered.filter((d) => d.isActive === false);
         //  setActiveCount(tabFiltered.length);
         // setInactiveCount(tabFiltered.length);
+      } else if (activeTab === 3) {
+        tabFiltered = filtered; //filtered.filter((d) => d.isActive === false);
+        //  setActiveCount(tabFiltered.length);
+        // setInactiveCount(tabFiltered.length);
       }
 
       // const active = response.filter((d) => d.isActive === true);
@@ -274,6 +278,7 @@ const EmployerList = () => {
     recruiterPhone,
     industry,
     companySize,
+    activeTab,
   ]);
 
   //Table Columns//
