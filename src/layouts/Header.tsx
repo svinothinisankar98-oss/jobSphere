@@ -1,31 +1,41 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "./Header.css";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  Box,
+  IconButton,
+  Menu,
+  MenuItem,
+  Stack,
+} from "@mui/material";
 
-import CommonButton from "../Components/ui/CommonButton";
+import MenuIcon from "@mui/icons-material/Menu";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import LogoutIcon from "@mui/icons-material/Logout";
+import PersonIcon from "@mui/icons-material/Person";
+
 import { authStorage } from "../utils/authStorage";
-
-/* ================= TYPES ================= */
+import MyButton from "../Components/newui/MyButton";
 
 type AuthUser = {
   id: number;
   name: string;
 };
 
-/* COMPONENT  */
-
 export default function Header() {
   const navigate = useNavigate();
   const [user, setUser] = useState<AuthUser | null>(null);
 
-  /*  AUTH LISTENER  */
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [registerAnchor, setRegisterAnchor] = useState<null | HTMLElement>(null);
 
   useEffect(() => {
-    // Initial load (page refresh)
     setUser(authStorage.get());
 
-    // Listen for login / logout updates
     const handleAuthChange = () => {
       setUser(authStorage.get());
     };
@@ -37,135 +47,155 @@ export default function Header() {
     };
   }, []);
 
-  /*  HANDLERS  */
-
-  const handleLogin = () => {
-    navigate("/login");
-  };
+  const handleLogin = () => navigate("/login");
 
   const handleLogout = () => {
-    authStorage.remove(); //  clears storage + dispatch event
+    authStorage.remove();
     setUser(null);
     navigate("/login");
   };
 
-  /* ================= UI ================= */
-
   return (
-    <nav className="navbar fixed-top bg-white border-bottom py-2">
-      <div className="container-fluid d-flex align-items-center">
-
-        {/* SIDEBAR TOGGLE (UNCHANGED) */}
-        <button
-          className="btn"
-          data-bs-toggle="offcanvas"
-          data-bs-target="#sidebar"
-          aria-controls="sidebar"
+    <AppBar position="fixed" color="inherit" elevation={1}>
+      <Toolbar
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: 1,
+        }}
+      >
+        {/* LEFT SIDE */}
+        <Stack
+          direction="row"
+          alignItems="center"
+          spacing={{ xs: 1, md: 2 }}
+          sx={{ flexWrap: "wrap" }}
         >
-          <i className="bi bi-list fs-3"></i>
-        </button>
+          {/* Hamburger */}
+          <IconButton>
+            <MenuIcon />
+          </IconButton>
 
-        {/* LOGO (UNCHANGED) */}
-        <Link
-          to="/"
-          className="navbar-brand fw-bold text-primary ms-2 brand-logo"
-        >
-          JobSphere
-        </Link>
+          {/* Logo */}
+          <Typography
+            variant="h6"
+            component={Link}
+            to="/"
+            sx={{
+              textDecoration: "none",
+              color: "primary.main",
+              fontWeight: "bold",
+              fontSize: { xs: "1rem", md: "1.25rem" },
+            }}
+          >
+            JobSphere
+          </Typography>
 
-        {/* MIDDLE MENU (UNCHANGED) */}
-        <ul className="navbar-nav flex-row gap-4 ms-4 d-none d-md-flex">
-          <li className="nav-item">
-            <Link className="nav-link fw-semibold" to="/">
+          {/* Menu Items (NOW VISIBLE ON MOBILE) */}
+          <Stack
+            direction="row"
+            spacing={{ xs: 1, md: 3 }}
+            sx={{ ml: { xs: 0, md: 3 } }}
+          >
+            <Button
+              component={Link}
+              to="/"
+              color="inherit"
+              sx={{ fontSize: { xs: "0.75rem", md: "0.875rem" } }}
+            >
               Home
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link className="nav-link fw-semibold" to="/Jobs">
+            </Button>
+            <Button
+              component={Link}
+              to="/jobs"
+              color="inherit"
+              sx={{ fontSize: { xs: "0.75rem", md: "0.875rem" } }}
+            >
               Jobs
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link className="nav-link fw-semibold" to="/Company">
+            </Button>
+            <Button
+              component={Link}
+              to="/company"
+              color="inherit"
+              sx={{ fontSize: { xs: "0.75rem", md: "0.875rem" } }}
+            >
               Company
-            </Link>
-          </li>
-        </ul>
+            </Button>
+          </Stack>
+        </Stack>
 
-        {/* RIGHT ACTIONS (ONLY THIS PART IS CONDITIONAL) */}
-        <div className="d-flex align-items-center gap-3 ms-auto">
-
+        {/* RIGHT SIDE (NOW VISIBLE ON MOBILE) */}
+        <Box>
           {!user ? (
-            <>
-              {/* LOGIN BUTTON */}
-              <CommonButton
-                label="Login"
-                type="button"
-                variant="primary"
+            <Stack direction="row" spacing={{ xs: 1, md: 2 }}>
+              <MyButton
+                variant="contained"
+                icon={<AccountCircleIcon />}
                 onClick={handleLogin}
-                icon="bi bi-person-circle"
-                size="sm"
-                className="w-100"
+                label="Login"
               />
 
-              {/* REGISTER DROPDOWN */}
-              <div className="dropdown">
-                <button
-                  className="btn btn-primary dropdown-toggle btn-sm w-100 d-flex align-items-center justify-content-center gap-2"
-                  data-bs-toggle="dropdown"
-                >
-                  <i className="bi bi-person-plus"></i> Register
-                </button>
+              <MyButton
+                variant="contained"
+                icon={<PersonAddIcon />}
+                onClick={(e) => setRegisterAnchor(e.currentTarget)}
+                label="Register"
+              />
 
-                <ul className="dropdown-menu dropdown-menu-end">
-                  <li>
-                    <Link className="dropdown-item" to="/employer-register">
-                      Employer
-                    </Link>
-                  </li>
-                  <li>
-                    <Link className="dropdown-item" to="/job-seeker-register">
-                      Job Seeker
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            </>
+              <Menu
+                anchorEl={registerAnchor}
+                open={Boolean(registerAnchor)}
+                onClose={() => setRegisterAnchor(null)}
+              >
+                <MenuItem
+                  component={Link}
+                  to="/employer-register"
+                  onClick={() => setRegisterAnchor(null)}
+                >
+                  Employer
+                </MenuItem>
+                <MenuItem
+                  component={Link}
+                  to="/job-seeker-register"
+                  onClick={() => setRegisterAnchor(null)}
+                >
+                  Job Seeker
+                </MenuItem>
+              </Menu>
+            </Stack>
           ) : (
             <>
-              {/* PROFILE DROPDOWN */}
-              <div className="dropdown">
-                <button
-                  className="btn btn-outline-primary btn-sm dropdown-toggle d-flex align-items-center gap-2"
-                  data-bs-toggle="dropdown"
-                >
-                  <i className="bi bi-person-circle"></i>
-                  {user.name}
-                </button>
+              <Button
+                variant="outlined"
+                size="small"
+                startIcon={<AccountCircleIcon />}
+                onClick={(e) => setAnchorEl(e.currentTarget)}
+              >
+                {user.name}
+              </Button>
 
-                <ul className="dropdown-menu dropdown-menu-end">
-                  <li>
-                    <Link className="dropdown-item" to="/profile">
-                      <i className="bi bi-person me-2"></i>
-                      My Profile
-                    </Link>
-                  </li>
-                  <li>
-                    <button
-                      className="dropdown-item text-danger"
-                      onClick={handleLogout}
-                    >
-                      <i className="bi bi-box-arrow-right me-2"></i>
-                      Logout
-                    </button>
-                  </li>
-                </ul>
-              </div>
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={() => setAnchorEl(null)}
+              >
+                <MenuItem
+                  component={Link}
+                  to="/profile"
+                  onClick={() => setAnchorEl(null)}
+                >
+                  <PersonIcon sx={{ mr: 1 }} /> My Profile
+                </MenuItem>
+
+                <MenuItem onClick={handleLogout} sx={{ color: "red" }}>
+                  <LogoutIcon sx={{ mr: 1 }} /> Logout
+                </MenuItem>
+              </Menu>
             </>
           )}
-
-        </div>
-      </div>
-    </nav>
+        </Box>
+      </Toolbar>
+    </AppBar>
   );
 }

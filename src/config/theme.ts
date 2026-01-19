@@ -42,6 +42,17 @@ export const theme = createTheme({
       },
     },
 
+    MuiTableCell: {
+      styleOverrides: {
+        head: {
+          backgroundColor: "#f0ebebff",
+          borderBottom: "1px solid #d0d7de",
+          fontWeight: "bold",
+          whiteSpace: "nowrap",
+        },
+      },
+    },
+
     // MuiButton: {
     //   defaultProps: {
     //     variant: "contained",

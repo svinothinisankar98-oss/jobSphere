@@ -5,7 +5,9 @@ import {
   DialogContentText,
   DialogActions,
   Button,
+  IconButton,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 type CommonConfirmDialogProps = {
   open: boolean;
@@ -31,16 +33,34 @@ const MyDialog = ({
   return (
     <Dialog
       open={open}
-      onClose={onClose}
+      onClose={(event, reason) => {
+        if (reason === "backdropClick") return; // ⛔ Disable outside click close
+        onClose();
+      }}
+      disableEscapeKeyDown // ⛔ Disable Esc key close
       PaperProps={{
         sx: {
           position: "absolute",
-          top: 20,   
+          top: 20,
           m: 0,
         },
       }}
     >
-      <DialogTitle>{title}</DialogTitle>
+      <DialogTitle sx={{ pr: 5 }}>
+        {title}
+
+        {/* Close (X) Button */}
+        <IconButton
+          onClick={onClose}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
 
       <DialogContent>
         <DialogContentText>{message}</DialogContentText>

@@ -1,56 +1,54 @@
+import { Box, Grid, Typography, Chip } from "@mui/material";
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
+import HomeIcon from "@mui/icons-material/Home";
+import PeopleIcon from "@mui/icons-material/People";
+import WorkIcon from "@mui/icons-material/Work";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import HeadsetMicIcon from "@mui/icons-material/HeadsetMic";
+
+const jobs = [
+  { label: "Banking", icon: <AccountBalanceIcon /> },
+  { label: "Work From Home", icon: <HomeIcon /> },
+  { label: "Software Dev", icon: <PeopleIcon /> },
+  { label: "Design", icon: <WorkIcon /> },
+  { label: "Accounting", icon: <AttachMoneyIcon /> },
+  { label: "Support", icon: <HeadsetMicIcon /> },
+];
+
 const PopularJobs = () => {
   return (
-    <div className="container my-4 mt-0 mt-md-4">
-      <section className="py-3 mt-3">
-        <h5 className="fw-bold mb-3 text-center">Popular Jobs</h5>
+    <Box sx={{ my: { xs: 3, md: 3 } }}>
+      <Typography
+        variant="h6"
+        fontWeight="bold"
+        textAlign="center"
+        mb={2}
+      >
+        Popular Jobs
+      </Typography>
 
-        <div className="row g-3 justify-content-center">
-          {/* Row 1 */}
-          <div className="col-4">
-            <div className="border rounded-pill py-2 px-3 d-flex align-items-center justify-content-center gap-2 category-pill">
-              <i className="bi bi-bank text-primary"></i>
-              <span className="small fw-medium">Banking</span>
-            </div>
-          </div>
-
-          <div className="col-4">
-            <div className="border rounded-pill py-2 px-3 d-flex align-items-center justify-content-center gap-2 category-pill">
-              <i className="bi bi-house text-primary"></i>
-              <span className="small fw-medium">Work From Home</span>
-            </div>
-          </div>
-
-          <div className="col-4">
-            <div className="border rounded-pill py-2 px-3 d-flex align-items-center justify-content-center gap-2 category-pill">
-              <i className="bi bi-people text-primary"></i>
-              <span className="small fw-medium">Software Dev</span>
-            </div>
-          </div>
-
-          {/* Row 2 */}
-          <div className="col-4">
-            <div className="border rounded-pill py-2 px-3 d-flex align-items-center justify-content-center gap-2 category-pill">
-              <i className="bi bi-briefcase text-primary"></i>
-              <span className="small fw-medium">Design</span>
-            </div>
-          </div>
-
-          <div className="col-4">
-            <div className="border rounded-pill py-2 px-3 d-flex align-items-center justify-content-center gap-2 category-pill">
-              <i className="bi bi-cash-stack text-primary"></i>
-              <span className="small fw-medium">Accounting</span>
-            </div>
-          </div>
-
-          <div className="col-4">
-            <div className="border rounded-pill py-2 px-3 d-flex align-items-center justify-content-center gap-2 category-pill">
-              <i className="bi bi-headset text-primary"></i>
-              <span className="small fw-medium">Support</span>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
+      <Grid container spacing={2} justifyContent="center">
+        {jobs.map((job) => (
+         <Grid size={{ xs: 6, sm: 4, md: 3 }}>
+            <Chip
+              icon={job.icon}
+              label={job.label}
+              variant="outlined"
+              sx={{
+                width: "100%",
+                py: 2,
+                fontSize: "0.9rem",
+                borderRadius: "999px",
+                justifyContent: "center",
+                "& .MuiChip-label": {
+                  px: 1,
+                },
+              }}
+            />
+          </Grid>
+        ))}
+      </Grid>
+    </Box>
   );
 };
 

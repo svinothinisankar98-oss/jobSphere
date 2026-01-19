@@ -60,7 +60,7 @@ export const useEmployerListHandlers = (
         showSnackbar(
           count === 1
             ? "1 employee deleted successfully"
-            : `${count} employees deleted successfully`,
+            : `${count} employer deleted successfully`,
           "success"
         );
       }
@@ -69,7 +69,7 @@ export const useEmployerListHandlers = (
         showSnackbar(
           count === 1
             ? "1 employee activated successfully"
-            : `${count} employees activated successfully`,
+            : `${count} employer activated successfully`,
           "success"
         );
       }

@@ -1,14 +1,12 @@
-
 import { useState } from "react";
-import "./Home.css";
+import { Box, Container, Typography, Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 import PopularJobs from "./PopularJobs";
 import SearchSection from "./SearchSection";
-import { useNavigate } from "react-router-dom";
 
 function Home() {
-  
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState("");
@@ -18,11 +16,10 @@ const navigate = useNavigate();
       state: { search, selected },
     });
   };
-  
-  
 
- return (
-    <div className="container my-4 mt-0 mt-md-4">
+  return (
+    <Container maxWidth="lg" sx={{ my: { xs: 2, md: 4 } }}>
+      {/* Search Section */}
       <SearchSection
         search={search}
         setSearch={setSearch}
@@ -31,31 +28,52 @@ const navigate = useNavigate();
         onSearch={onSearch}
       />
 
-      {/*  Middle Section*/}
+      {/* Middle Section */}
+      <Box
+        sx={{
+          textAlign: "center",
+          py: { xs: 3, md: 3 },
+        }}
+      >
+        <Typography
+          variant="h5"
+          fontWeight="bold"
+          sx={{ fontSize: { xs: "1.4rem", md: "2rem" } }}
+        >
+          Your Career Journey Starts Here
+        </Typography>
 
-      <section className=" py-3 mt-3">
-        <div className="container text-center">
-          {/* Title */}
-          <h2 className="fw-bold mt-2">Your Career Journey Starts Here</h2>
+        <Typography
+          variant="body1"
+          color="text.secondary"
+          sx={{
+            mt: 2,
+            px: { xs: 1, md: 8 },
+            fontSize: { xs: "0.9rem", md: "1rem" },
+          }}
+        >
+          Discover jobs tailored to your skills, location, and career goals.
+        </Typography>
 
-          {/* Subtitle */}
-          <p className="text-muted mt-2 px-2 px-md-5">
-            Discover jobs tailored to your skills, location, and career goals.
-          </p>
-
-          {/* CTA Button */}
-          <div className="mt-4">
-            <button className="btn btn-info btn-sm rounded-pill px-5">
-              Get Started →
-            </button>
-          </div>
-        </div>
-      </section>
+        <Box mt={3}>
+          <Button
+            variant="contained"
+            color="info"
+            size="medium"
+            sx={{
+              borderRadius: "999px",
+              px: 5,
+              textTransform: "none",
+            }}
+          >
+            Get Started →
+          </Button>
+        </Box>
+      </Box>
 
       {/* Popular Jobs */}
-
       <PopularJobs />
-    </div>
+    </Container>
   );
 }
 

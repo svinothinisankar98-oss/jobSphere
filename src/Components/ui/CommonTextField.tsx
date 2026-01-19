@@ -1,5 +1,5 @@
 import React from "react";
-import { TextField } from "@mui/material";
+import { TextField, InputAdornment } from "@mui/material";
 
 type Props = {
   label?: string;
@@ -12,6 +12,8 @@ type Props = {
   error?: string;
   inputMode?: "text" | "numeric" | "decimal";
   rows?: number; // textarea
+  startIcon?: React.ReactNode; 
+  endIcon?: React.ReactNode;   
   onChange?: (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement
@@ -30,6 +32,8 @@ const CommonTextField: React.FC<Props> = ({
   inputMode,
   rows,
   error = "",
+  startIcon,
+  endIcon,
   onChange,
 }) => {
   const hasError = error.trim().length > 0;
@@ -49,6 +53,18 @@ const CommonTextField: React.FC<Props> = ({
       rows={rows}
       inputProps={{
         inputMode,
+      }}
+      InputProps={{
+        startAdornment: startIcon ? (
+          <InputAdornment position="start">
+            {startIcon}
+          </InputAdornment>
+        ) : undefined,
+        endAdornment: endIcon ? (
+          <InputAdornment position="end">
+            {endIcon}
+          </InputAdornment>
+        ) : undefined,
       }}
       className={className}
       onChange={onChange}

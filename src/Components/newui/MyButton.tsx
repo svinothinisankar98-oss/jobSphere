@@ -7,16 +7,14 @@ type ButtonProps = {
   type?: "button" | "submit" | "reset";
   sx?: object;
 
-  // MUI variants
   variant?: "contained" | "outlined" | "text";
-
-  // MUI colors
   color?: "primary" | "secondary" | "success" | "error" | "warning" | "info";
-
   size?: "small" | "medium" | "large";
   disabled?: boolean;
   className?: string;
+
   maxWidth?: number;
+  fullWidth?: boolean; // ✅ FIXED casing
 
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   icon?: string | React.ReactNode;
@@ -33,6 +31,7 @@ const MyButton: React.FC<ButtonProps> = ({
   onClick,
   icon,
   maxWidth,
+  fullWidth = false, // ✅ default
   sx,
 }) => {
   return (
@@ -44,13 +43,14 @@ const MyButton: React.FC<ButtonProps> = ({
       disabled={disabled}
       onClick={onClick}
       className={className}
+      fullWidth={fullWidth} // ✅ passed to MUI
       startIcon={
-  typeof icon === "string" ? <Icon>{icon}</Icon> : icon
-}
+        typeof icon === "string" ? <Icon>{icon}</Icon> : icon
+      }
       sx={{
         textTransform: "none",
-        ...sx,
         maxWidth,
+        ...sx,
       }}
     >
       {label}

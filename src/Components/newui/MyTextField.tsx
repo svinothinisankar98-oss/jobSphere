@@ -2,7 +2,7 @@ import { Controller, useFormContext, get } from "react-hook-form";
 import TextField from "@mui/material/TextField";
 
 type MyTextFieldProps = {
-  name?: string; // 👈 optional
+  name?: string; //
   label?: string;
   required?: boolean;
   type?: "text" | "email" | "password" | "number";
@@ -12,8 +12,9 @@ type MyTextFieldProps = {
   helpertext?: string;
   size?: "small" | "medium";
   sx?: object;
+  
 
-  // 👇 standalone usage
+  
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };

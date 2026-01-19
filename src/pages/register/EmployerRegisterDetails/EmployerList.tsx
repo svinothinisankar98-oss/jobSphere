@@ -37,6 +37,9 @@ import MyDialog from "../../../Components/newui/MyDialog";
 import MyTabs from "../../../Components/newui/MyTab";
 
 import { useEmployerListHandlers } from "../../../hooks/employer/useEmployerListHandlers";
+import type { borderRadius } from "@mui/system";
+
+import { Switch, FormControlLabel } from "@mui/material";
 
 const EmployerList = () => {
   //state variables//
@@ -72,6 +75,8 @@ const EmployerList = () => {
 
   const [activeCount, setActiveCount] = useState(0);
   const [inactiveCount, setInactiveCount] = useState(0);
+
+  const [dense, setDense] = useState(false);
 
   //actions hooks useemployerlisthandler//
   const {
@@ -284,16 +289,42 @@ const EmployerList = () => {
   //Table Columns//
 
   const columns: Column<employerRegisterType>[] = [
-    { id: "companyName", label: "Company Name", align: "left" },
-    { id: "companySize", label: "Company Size", align: "center" },
-    { id: "industry", label: "Industry", align: "left" },
-    { id: "recruiterName", label: "Recruiter Name", align: "left" },
-    { id: "recruiterEmail", label: "Recruiter Email", align: "left" },
+    {
+      id: "companyName",
+      label: "Company Name",
+      align: "left",
+      group: "Company Details",
+    },
+    {
+      id: "companySize",
+      label: "Company Size",
+      align: "center",
+      group: "Company Details",
+    },
+    {
+      id: "industry",
+      label: "Industry",
+      align: "left",
+      group: "Company Details",
+    },
+    {
+      id: "recruiterName",
+      label: "Recruiter Name",
+      align: "left",
+      group: "Recruiter Details",
+    },
+    {
+      id: "recruiterEmail",
+      label: "Recruiter Email",
+      align: "left",
+      group: "Recruiter Details",
+    },
     {
       id: "recruiterPhone",
       label: "Recruiter Phone",
       align: "center",
       sortable: false,
+      group: "Recruiter Details",
     },
     {
       id: "createdAt",
@@ -301,12 +332,14 @@ const EmployerList = () => {
       align: "center",
       sortable: false,
       render: (row) => formatDate(row.createdAt),
+      group: "Status",
     },
     {
       id: "status",
       label: "Status",
       align: "center",
       sortable: false,
+      group: "Status",
 
       render: (row: employerRegisterType) => (
         <Chip
@@ -322,6 +355,7 @@ const EmployerList = () => {
       label: "Actions",
       align: "center",
       sortable: false,
+      group: "Status",
 
       render: (row: employerRegisterType) => (
         <Box display="flex" justifyContent="center" gap={1}>
@@ -364,9 +398,9 @@ const EmployerList = () => {
   ];
   // JSX //
   return (
-    <Box mt={4}>
-      <Paper sx={{ maxWidth: 1300, mx: "auto", p: 3, borderRadius: 5 }}>
-        <Box display="flex" justifyContent="flex-end" mb={3}>
+    <Box mt={2}>
+      <Paper sx={{ maxWidth: 1300, mx: "auto", p: 3, overflowX: "auto" }}>
+        <Box display="flex" justifyContent="flex-end" mb={3} borderRadius={5}>
           <MyButton
             label="Add Employee"
             variant="contained"
@@ -459,12 +493,12 @@ const EmployerList = () => {
 
       <MyDialog
         open={showConfirm && pendingAction === "activate"}
-        title="Activate User"
-        // message="Are you sure you want to activate this employee?"
+        title="Activate Employer"
+        
         message={
           pendingRows.length === 1
-            ? "Are you sure you want to activate this employee?"
-            : `Are you sure you want to activate ${pendingRows.length} employees?`
+            ? "Are you sure you want to activate this employer?"
+            : `Are you sure you want to activate ${pendingRows.length} employer?`
         }
         onClose={handleConfirmNo}
         onConfirm={() => handleConfirmYes(handleSearch)}
@@ -474,12 +508,12 @@ const EmployerList = () => {
 
       <MyDialog
         open={showConfirm && pendingAction === "delete"}
-        title="Delete User"
-        // message="Are you sure you want to delete this employee?"
+        title="Delete Employer"
+       
         message={
           pendingRows.length === 1
-            ? "Are you sure you want to delete this employee?"
-            : `Are you sure you want to delete ${pendingRows.length} employees?`
+            ? "Are you sure you want to delete this employer?"
+            : `Are you sure you want to delete ${pendingRows.length} employer?`
         }
         onClose={handleConfirmNo}
         onConfirm={() => handleConfirmYes(handleSearch)}
@@ -493,7 +527,9 @@ const EmployerList = () => {
         </Box>
       )}
 
-      <Box sx={{ maxWidth: 1300, mx: "auto", mt: 4 }}>
+      <Box sx={{ maxWidth: 1300, mx: "auto", mt: 4 , 
+    
+    }}>
         <MyTabs
           activeTab={activeTab}
           onTabChange={(index) => setActiveTab(index)}
@@ -510,18 +546,17 @@ const EmployerList = () => {
 
                   {!loading && data.length > 0 && (
                     <MyTable
-                      containerSx={{ width: 1300, mx: "auto" }}
+                      containerSx={{ maxWidth: 1300, mx: "auto" }}
                       rows={data}
                       columns={columns}
                       enableSelection={false}
                       getRowId={(row) => row.id!}
-                      // mode="active"
-                      // onDeleteSelected={(ids) => {
-                      //   const rowsToDelete = data.filter(
-                      //     (r) => r.id && ids.includes(r.id)
-                      //   );
-                      //   handleBulkDelete(rowsToDelete);
-                      // }}
+                      // enableColumnGrouping={true}
+                      enableColumnGrouping={activeTab === 0}
+                      groupBy="companySize"
+                      tableSize={dense ? "small" : "medium"}
+
+                     
                     />
                   )}
                 </>
@@ -540,12 +575,13 @@ const EmployerList = () => {
 
                   {!loading && data.length > 0 && (
                     <MyTable
-                      containerSx={{ width: 1300, mx: "auto" }}
+                      containerSx={{ maxWidth: 1300, mx: "auto" }}
                       rows={data}
                       columns={columns}
                       enableSelection
                       getRowId={(row) => row.id!}
                       mode="active"
+                      tableSize={dense ? "small" : "medium"}
                       onDeleteSelected={(ids) => {
                         const rowsToDelete = data.filter(
                           (r) => r.id && ids.includes(r.id)
@@ -580,9 +616,9 @@ const EmployerList = () => {
                       columns={columns}
                       enableSelection
                       getRowId={(row) => row.id!}
-                      tableSize="small"
                       mode="inactive"
-                      containerSx={{ width: 1300, mx: "auto" }}
+                      tableSize={dense ? "small" : "medium"}
+                      containerSx={{ maxWidth: 1300, mx: "auto" }}
                       onActivateSelected={(ids) => {
                         const selectedRows = data.filter(
                           (r) => r.id && ids.includes(r.id)
@@ -617,10 +653,10 @@ const EmployerList = () => {
                       columns={columns}
                       enableSelection={false}
                       getRowId={(row) => row.id!}
-                      tableSize="small"
                       groupBy="industry"
-                      mode="inactive"
-                      containerSx={{ width: 1300, mx: "auto" }}
+                      tableSize={dense ? "small" : "medium"}
+                      containerSx={{ maxWidth: 1300, mx: "auto" }}
+                      
                       // onActivateSelected={(ids) => {
                       //   const selectedRows = data.filter(
                       //     (r) => r.id && ids.includes(r.id)
@@ -634,6 +670,20 @@ const EmployerList = () => {
             },
           ]}
         />
+        <Box sx={{ maxWidth: 1300, mx: "auto" }}>
+          {/* Dense Padding Toggle */}
+          <Box display="flex" justifyContent="left">
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={dense}
+                  onChange={(e) => setDense(e.target.checked)}
+                />
+              }
+              label="Dense padding"
+            />
+          </Box>
+        </Box>
       </Box>
     </Box>
   );

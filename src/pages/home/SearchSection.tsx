@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
+import { Grid, Paper, useMediaQuery } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import CommonDropdown from "../../Components/ui/CommonDropdown";
+import { useTheme } from "@mui/material/styles";
 import { locationService } from "../../service/locationService";
-import "./SearchSection.css";
-
-/* ================= TYPES ================= */
+import MyButton from "../../Components/newui/MyButton";
+import CommonDropdown from "../../Components/ui/CommonDropdown";
+import CommonTextField from "../../Components/ui/CommonTextField";
 
 type Option = {
   id: number;
@@ -20,8 +21,6 @@ type Props = {
   onSearch: () => void;
 };
 
-/* ================= COMPONENT ================= */
-
 const SearchSection = ({
   search,
   setSearch,
@@ -31,7 +30,9 @@ const SearchSection = ({
 }: Props) => {
   const [locations, setLocations] = useState<Option[]>([]);
 
-  /* ================= FETCH LOCATIONS ================= */
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   useEffect(() => {
     const fetchLocations = async () => {
       try {
@@ -45,41 +46,55 @@ const SearchSection = ({
     fetchLocations();
   }, []);
 
-  /* ================= UI ================= */
   return (
-    <div className="search-wrapper">
-      <div className="search-box">
-        {/* SEARCH INPUT */}
-        <div className="field-box">
-          <SearchIcon className="icon" />
-          <input
-            type="text"
-            placeholder="Job title, keywords, or company"
+    <Paper
+      elevation={3}
+      sx={{
+        p: 2,
+        borderRadius: 2,
+        maxWidth: 1000,
+        mx: "auto",
+      }}
+    >
+      <Grid container spacing={2} alignItems="center">
+        {/* Search Input */}
+
+        <Grid size={{ xs: 12, md: 5 }}>
+          <CommonTextField
+            name="search"
             value={search}
+            placeholder="Job title, keywords, or company"
+            startIcon={<SearchIcon />}
             onChange={(e) => setSearch(e.target.value)}
           />
-        </div>
+        </Grid>
 
-        {/* LOCATION DROPDOWN */}
-        <div className="field-box location">
-          <LocationOnIcon className="icon" />
-          <div className="dropdown-fix">
-            <CommonDropdown
-              name="location"
-              value={selected}
-              options={locations}
-              placeholder="Select Location"
-              onChange={(e) => setSelected(e.target.value)}
-            />
-          </div>
-        </div>
+        {/* Location Dropdown */}
 
-        {/* SEARCH BUTTON */}
-        <button className="find-btn" onClick={onSearch}>
-          Find Jobs
-        </button>
-      </div>
-    </div>
+        <Grid size={{ xs: 12, md: 4 }}>
+          <CommonDropdown
+            name="location"
+            value={selected}
+            onChange={(e) => setSelected(e.target.value)}
+            options={locations}
+            placeholder="Select Location"
+            startIcon={<LocationOnIcon />}
+          />
+        </Grid>
+
+        {/* Button */}
+
+        <Grid size={{ xs: 12, md: 3 }}>
+          <MyButton
+            fullWidth
+            size="large"
+            variant="contained"
+            onClick={onSearch}
+            label="Find Jobs"
+          />
+        </Grid>
+      </Grid>
+    </Paper>
   );
 };
 

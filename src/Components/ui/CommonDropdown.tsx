@@ -5,6 +5,8 @@ import {
   Select,
   MenuItem,
   FormHelperText,
+  InputAdornment,
+  OutlinedInput,
 } from "@mui/material";
 
 type Option = {
@@ -24,6 +26,7 @@ type Props = {
   className?: string;
   style?: React.CSSProperties;
   onChange: (e: any) => void;
+  startIcon?: React.ReactNode; // 👈 NEW
 };
 
 const CommonDropdown: React.FC<Props> = ({
@@ -38,6 +41,7 @@ const CommonDropdown: React.FC<Props> = ({
   className,
   style,
   onChange,
+  startIcon,
 }) => {
   const hasError = Boolean(error);
 
@@ -62,6 +66,18 @@ const CommonDropdown: React.FC<Props> = ({
         label={label}
         displayEmpty
         onChange={onChange}
+        input={
+          <OutlinedInput
+            startAdornment={
+              startIcon ? (
+                <InputAdornment position="start">
+                  {startIcon}
+                </InputAdornment>
+              ) : undefined
+            }
+            label={label}
+          />
+        }
       >
         <MenuItem value="">
           {placeholder}
@@ -74,9 +90,7 @@ const CommonDropdown: React.FC<Props> = ({
         ))}
       </Select>
 
-      {hasError && (
-        <FormHelperText>{error}</FormHelperText>
-      )}
+      {hasError && <FormHelperText>{error}</FormHelperText>}
     </FormControl>
   );
 };

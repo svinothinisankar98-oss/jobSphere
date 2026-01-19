@@ -408,9 +408,9 @@
         "full_time"
       ],
       "userType": 2,
-      "isActive": false,
+      "isActive": true,
       "serialNo": 3,
-      "updatedAt": "2026-01-13T14:09:41.912Z"
+      "updatedAt": "2026-01-16T07:12:02.312Z"
     },
     {
       "id": "8767",
@@ -439,9 +439,9 @@
         "temporary"
       ],
       "userType": 2,
-      "isActive": false,
+      "isActive": true,
       "serialNo": 4,
-      "updatedAt": "2026-01-14T04:42:28.404Z"
+      "updatedAt": "2026-01-16T07:12:02.313Z"
     },
     {
       "id": "4344",
@@ -536,8 +536,8 @@
         "contract"
       ],
       "userType": 2,
-      "isActive": true,
-      "updatedAt": "2026-01-13T03:57:01.411Z"
+      "isActive": false,
+      "updatedAt": "2026-01-16T07:11:48.573Z"
     },
     {
       "id": "3456",
@@ -567,9 +567,9 @@
         "internship"
       ],
       "userType": 2,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-01-06T15:48:38.977Z",
-      "updatedAt": null,
+      "updatedAt": "2026-01-16T07:11:48.575Z",
       "deletedAt": null
     },
     {
@@ -599,9 +599,9 @@
         "contract"
       ],
       "userType": 2,
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2026-01-05T10:20:15.123Z",
-      "updatedAt": null,
+      "updatedAt": "2026-01-16T05:12:12.644Z",
       "deletedAt": null
     },
     {

@@ -1,89 +1,93 @@
-import { Link } from "react-router-dom";
 import { useState } from "react";
-import "../style/sidebar.css";
+import { Link } from "react-router-dom";
+import {
+  Drawer,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  IconButton,
+  Box,
+  useMediaQuery,
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
+import HomeIcon from "@mui/icons-material/Home";
+import WorkIcon from "@mui/icons-material/Work";
+import BusinessIcon from "@mui/icons-material/Business";
 
-const Sidebar = () => {
-  const [collapsed, setCollapsed] = useState(true);
+const drawerWidth = 200;
+const collapsedWidth = 70;
+
+export default function Sidebar() {
+  const isMobile = useMediaQuery("(max-width:768px)");
+  const [open, setOpen] = useState(!isMobile);
+
+  const toggleDrawer = () => setOpen(!open);
 
   return (
-    <div className={`sidebar ${collapsed ? "collapsed" : ""}`}>
-
-      {/* TOP BAR */}
-      <div className="sidebar-header d-flex justify-content-between align-items-center p2">
-        
-        {!collapsed && <h6 className="mb-0">Menu</h6>}
-
-        {/* TOGGLE / CLOSE BUTTON */}
-        <button
-          className="toggle-btn"
-          onClick={() => setCollapsed(!collapsed)}
-          aria-label="Toggle Sidebar"
+    <>
+      {/* Hamburger button (Mobile) */}
+      {/* {isMobile && (
+        <IconButton
+          onClick={toggleDrawer}
+          sx={{ position: "fixed", top: 16, left: 16, zIndex: 1000 }}
         >
-          <i className={`bi ${collapsed ? "bi-list" : "bi-x-lg"}`}></i>
-        </button>
+          <MenuIcon />
+        </IconButton>
+      )} */}
 
-      </div>
+      <Drawer
+        variant={isMobile ? "temporary" : "permanent"}
+        open={open}
+        onClose={toggleDrawer}
+        sx={{
+          width: open ? drawerWidth : collapsedWidth,
+          flexShrink: 0,
+          "& .MuiDrawer-paper": {
+            width: open ? drawerWidth : collapsedWidth,
+            transition: "width 0.3s",
+            overflowX: "hidden",
+          },
+        }}
+      >
+        {/* Header */}
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent={open ? "space-between" : "center"}
+          p={2}
+        >
+          {open && <strong>Menu</strong>}
+          <IconButton onClick={toggleDrawer}>
+            {open ? <CloseIcon /> : <MenuIcon />}
+          </IconButton>
+        </Box>
 
-      <ul className="nav flex-column mt-3">
+        {/* Menu */}
+        <List>
+          <ListItemButton component={Link} to="/">
+            <ListItemIcon>
+              <HomeIcon />
+            </ListItemIcon>
+            {open && <ListItemText primary="Home" />}
+          </ListItemButton>
 
-        {/* Home */}
-        <li className="nav-item">
-          <Link className="nav-link" to="/">
-            <i className="bi bi-house"></i>
-            <span className="link-text">Home</span>
-          </Link>
-        </li>
+          <ListItemButton component={Link} to="/jobs">
+            <ListItemIcon>
+              <WorkIcon />
+            </ListItemIcon>
+            {open && <ListItemText primary="Jobs" />}
+          </ListItemButton>
 
-        {/* Jobs */}
-        <li className="nav-item">
-          <Link className="nav-link" to="/jobs">
-            <i className="bi bi-briefcase"></i>
-            <span className="link-text">Jobs</span>
-          </Link>
-        </li>
-
-        {/* Company */}
-        <li className="nav-item">
-          <Link className="nav-link" to="/companies">
-            <i className="bi bi-bank"></i>
-            <span className="link-text">Company</span>
-          </Link>
-        </li>
-
-        {/* Register Dropdown */}
-        <li className="nav-item dropdown">
-          <button
-            className="nav-link dropdown-toggle d-flex align-items-center gap-2 w-100"
-            data-bs-toggle="dropdown"
-          >
-            <i className="bi bi-person-workspace"></i>
-            <span className="link-text">Register</span>
-          </button>
-
-          <ul className="dropdown-menu">
-            <li>
-              <Link className="dropdown-item" to="/employer-register">
-                Employer
-              </Link>
-            </li>
-            <li>
-              <Link className="dropdown-item" to="/job-seeker-register">
-                Job Seeker
-              </Link>
-            </li>
-          </ul>
-        </li>
-        <li className="nav-item">
-          <Link className="nav-link" to="/employer-list">
-            <i className="bi bi-bank"></i>
-            <span className="link-text">Employer List</span>
-          </Link>
-        </li>
-
-
-      </ul>
-    </div>
+          <ListItemButton component={Link} to="/companies">
+            <ListItemIcon>
+              <BusinessIcon />
+            </ListItemIcon>
+            {open && <ListItemText primary="Companies" />}
+          </ListItemButton>
+        </List>
+      </Drawer>
+    </>
   );
-};
-
-export default Sidebar;
+}
