@@ -15,6 +15,8 @@ import Login from "./pages/login/Login";
 // import {EmployerRegister} from "./pages/register/employerregisterdetails/EmployerRegister";
 import EmployerRegister from "./pages/register/employerregisterdetails/EmployerRegister";
 import EmployerList from "./pages/register/employerregisterdetails/EmployerList";
+import KycForm from "./pages/companyinformation/CompanyInformation";
+import CompanyInformation from "./pages/companyinformation/CompanyInformation";
 
 
 
@@ -47,6 +49,7 @@ function App() {
           <Route path="/job-list" element={<Joblist />} />
           <Route path="/job-seeker-register" element={<JobSeekerRegister />} />
          <Route path="/employer-list" element={<EmployerList />} />
+         <Route path="/company-Information" element={<CompanyInformation />} />
 
           
           

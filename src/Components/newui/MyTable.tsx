@@ -314,7 +314,7 @@ function MyTable<T>({
           size={tableSize}
           sx={{
             "& .MuiTableCell-root": {
-              borderRight: "1px solid #d0d7de",
+              borderRight: "2px solid #d0d7de",
             },
             "& .MuiTableRow-root:last-child .MuiTableCell-root": {
               borderBottom: "1px solid #d0d7de",

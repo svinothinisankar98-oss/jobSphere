@@ -1,5 +1,17 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  Grid,
+  Box,
+  Paper,
+  Typography,
+  IconButton,
+  useMediaQuery,
+} from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+
 import CommonTextField from "../../Components/ui/CommonTextField";
 import CommonButton from "../../Components/ui/CommonButton";
 import CommonHeading from "../../Components/ui/CommonHeading";
@@ -7,8 +19,8 @@ import { toastService } from "../../utils/Toast";
 import { validateField } from "../../utils/validationService";
 import "./login.css";
 import { useUserService } from "../../hooks/useUserService";
-import { authStorage } from "../../utils/authStorage"; //stores login user in localstorage
-// import { userService } from "../../service/userService";
+import { authStorage } from "../../utils/authStorage";
+
 const { getUserByEmail, getEmployerByEmail } = useUserService();
 
 type LoginForm = {
@@ -23,34 +35,29 @@ type LoginErrors = {
 
 const Login = () => {
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const [form, setForm] = useState<LoginForm>({
     email: "",
     password: "",
   });
 
-  //state setting for error and passowrd//
-
   const [errors, setErrors] = useState<LoginErrors>({});
   const [showPassword, setShowPassword] = useState(false);
 
-  //handle change event for email password and onchange validation//
+ const handleChange = (
+  e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+) => {
+  const { name, value } = e.target;
+  setForm((prev) => ({ ...prev, [name]: value }));
 
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
-  ) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-
-    const errorMsg = validateField(name, value);
-
-    setErrors((prev) => ({
-      ...prev,
-      [name]: errorMsg,
-    }));
-  };
+  const errorMsg = validateField(name, value);
+  setErrors((prev) => ({
+    ...prev,
+    [name]: errorMsg,
+  }));
+};
 
   const validateForm = (): boolean => {
     const newErrors: LoginErrors = {};
@@ -63,207 +70,169 @@ const Login = () => {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length > 0) {
-      toastService.error(Object.values(newErrors)[0]!); // force it to be string
+      toastService.error(Object.values(newErrors)[0]!);
       return false;
     }
 
     return true;
   };
 
-  //handle submit for login page//
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!validateForm()) return;
 
-    //api for get user email//
-
-    //   const users = await userService.getUserByEmail(form.email);
-
-    //   //user and password validation//
-
-    //   if (!users || users.length === 0) {
-    //     toastService.error("User not found");
-    //     return;
-    //   }
-
-    //   const user = users[0];
-    //   console.log("what", user);
-
-    //   if (user.password !== form.password) {
-    //     toastService.error("Invalid credentials");
-    //     return;
-    //   }
-
-    //   toastService.success("Login successful");
-    //   navigate("/dashboard");
-    // };
-
-    //call api service//
-
     const user = await getUserByEmail(form.email);
-    const getEmployer = await getEmployerByEmail(form.email);
+    const employer = await getEmployerByEmail(form.email);
 
-    // USER NOT FOUND
-    if (!user && !getEmployer) {
+    if (!user && !employer) {
       toastService.error("User not found");
       return;
     }
 
-    // PASSWORD CHECK
-    // const userPassword = user?.password || "";
-    // const employerPassword = getEmployer?.password;
-    if (user) {
-      if ( user?.password !== form.password) {
-        console.log("user gettiong");
-        toastService.error("Invalid credentials");
-        return;
-      }
+    if (user && user.password !== form.password) {
+      toastService.error("Invalid credentials");
+      return;
     }
 
-    if (getEmployer) {
-      if ( getEmployer?.password !== form.password) {
-        console.log("user gettiong");
-        toastService.error("Invalid credentials");
-        return;
-      }
+    if (employer && employer.password !== form.password) {
+      toastService.error("Invalid credentials");
+      return;
     }
 
-    //usertype check//
+    const userType = user?.userType || employer?.userType || 0;
 
-    const dbUserType = user?.userType || 0;
-    const employeUserType = getEmployer?.userType || 0;
-    const userType: number = dbUserType || employeUserType;
-
-    if (userType == 1) {
+    if (userType === 1 || userType === 2) {
       authStorage.set({
-        //save into login state auth change and update ui instandly//
         id: user?.id,
         email: user?.email,
       });
       toastService.success("Login successful");
       navigate("/");
     }
-    if (userType == 2) {
-      authStorage.set({
-        //save into login state auth change and update ui instandly//
-        id: user?.id,
-        email: user?.email,
-      });
-      toastService.success("Login successful");
-      navigate("/");
-    }
-    if(userType==3){
 
-      navigate("/employer-list")
-    
-  }
+    if (userType === 3) {
+      navigate("/employer-list");
+    }
   };
 
-  
-
   return (
-    <div className="container-fluid min-vh-50 p-0">
-      <div className="row g-0 min-vh-50">
-        {/* LEFT SECTION */}
-        <div className="col-lg-6 d-flex align-items-center justify-content-center px-4">
-          <div className="left-info-card text-white">
-            <h1 className="fw-bold mb-3">Find Your Dream Job</h1>
+    <Grid container minHeight="100vh">
+      {/* LEFT SECTION */}
+      {!isMobile && (
+       <Grid  size={{ xs: 12, md: 6 }}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          px={4}
+          
+        >
+          <Box textAlign="center">
+            <Typography variant="h4" fontWeight="bold" mb={2}>
+              Find Your Dream Job
+            </Typography>
 
-            <p className="fs-6 mb-4">
+            <Typography mb={3}>
               Login to explore opportunities and hire talent faster.
-            </p>
+            </Typography>
 
-            <img
+            <Box
+              component="img"
               src="/image/jobSearch.png"
               alt="Job Search"
-              className="img-fluid"
-              style={{ maxWidth: "260px" }}
+              sx={{ maxWidth: 260, width: "100%" }}
             />
-          </div>
-        </div>
+          </Box>
+        </Grid>
+      )}
 
-        {/* RIGHT SECTION */}
-        <div className="col-lg-6 d-flex align-items-center justify-content-center px-4">
-          <div
-            className="card shadow-sm border-0 rounded-4 w-100"
-            style={{ maxWidth: "420px" }}
-          >
-            <div className="card-body p-4">
-              <CommonHeading
-                title="Welcome Back 👋"
-                subtitle="Login to your account"
+      {/* RIGHT SECTION */}
+      
+
+        <Grid  size={{ xs: 12, md: 6 }}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          px={2}
+          
+        >
+        <Paper
+          elevation={3}
+          sx={{
+            width: "100%",
+            maxWidth: 420,
+            p: 4,
+            borderRadius: 3,
+          }}
+        >
+          <CommonHeading
+            title="Welcome Back 👋"
+            subtitle="Login to your account"
+          />
+
+          <Box component="form" onSubmit={handleSubmit} mt={2}>
+            <CommonTextField
+              label="Email"
+              name="email"
+              type="email"
+              value={form.email}
+              placeholder="Enter email"
+              error={errors.email}
+              onChange={handleChange}
+            />
+
+            <Box position="relative">
+              <CommonTextField
+                label="Password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                value={form.password}
+                placeholder="Enter password"
+                error={errors.password}
+                onChange={handleChange}
               />
 
-              <form onSubmit={handleSubmit}>
-                <CommonTextField
-                  label="Email"
-                  name="email"
-                  type="email"
-                  value={form.email}
-                  placeholder="Enter email"
-                  error={errors.email}
-                  onChange={handleChange}
-                />
+              <IconButton
+                onClick={() => setShowPassword((prev) => !prev)}
+                sx={{
+                  position: "absolute",
+                  right: 8,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                }}
+              >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </Box>
 
-                <div className="position-relative">
-                  <CommonTextField
-                    label="Password"
-                    name="password"
-                    type={showPassword ? "text" : "password"}
-                    value={form.password}
-                    placeholder="Enter password"
-                    error={errors.password}
-                    onChange={handleChange}
-                  />
+            <Typography
+              variant="body2"
+              textAlign="right"
+              color="primary"
+              sx={{ cursor: "pointer", mt: 1 }}
+              onClick={() => navigate("/forgot-password")}
+            >
+              Forgot Password?
+            </Typography>
 
-                  <span
-                    className="password-eye"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                  >
-                    <i
-                      className={`bi ${
-                        showPassword ? "bi-eye-slash" : "bi-eye"
-                      }`}
-                    />
-                  </span>
-                </div>
+            <CommonButton
+              label="Login"
+              type="submit"
+              className="btn btn-primary w-100"
+            />
 
-                <div className="text-end mb-3">
-                  <small
-                    className="text-primary"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => navigate("/forgot-password")}
-                  >
-                    Forgot Password?
-                  </small>
-                </div>
-
-                <CommonButton
-                  label="Login"
-                  type="submit"
-                  className="btn btn-primary w-100"
-                />
-              </form>
-
-              <div className="text-center mt-3">
-                <small>
-                  Don’t have an account?{" "}
-                  <span
-                    className="text-primary fw-semibold"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => navigate("/register")}
-                  >
-                    Register
-                  </span>
-                </small>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+            <Typography textAlign="center" mt={2}>
+              Don’t have an account?{" "}
+              <span
+                style={{ color: "#1976d2", cursor: "pointer", fontWeight: 600 }}
+                onClick={() => navigate("/register")}
+              >
+                Register
+              </span>
+            </Typography>
+          </Box>
+        </Paper>
+      </Grid>
+    </Grid>
   );
 };
 

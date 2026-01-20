@@ -31,7 +31,7 @@ const MyButton: React.FC<ButtonProps> = ({
   onClick,
   icon,
   maxWidth,
-  fullWidth = false, // ✅ default
+  fullWidth = false, 
   sx,
 }) => {
   return (
@@ -43,7 +43,7 @@ const MyButton: React.FC<ButtonProps> = ({
       disabled={disabled}
       onClick={onClick}
       className={className}
-      fullWidth={fullWidth} // ✅ passed to MUI
+      fullWidth={fullWidth} 
       startIcon={
         typeof icon === "string" ? <Icon>{icon}</Icon> : icon
       }

@@ -25,7 +25,7 @@ const Footer = () => {
             alignItems: "center",
           }}
         >
-          {/* Left empty space */}
+         
           <Box />
 
           {/* Center */}

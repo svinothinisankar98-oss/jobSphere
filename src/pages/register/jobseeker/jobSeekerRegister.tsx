@@ -3,7 +3,6 @@ import { useForm, FormProvider, type SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { Box, Stack, Card, CardContent, Grid } from "@mui/material";
 
-
 import MyDropDown from "../../../Components/newui/MyDropDown";
 import MyButton from "../../../Components/newui/MyButton";
 import MyHeading from "../../../Components/newui/MyHeading";
@@ -33,8 +32,7 @@ import { useUserService } from "../../../hooks/useUserService";
 //   portfolio: "",
 //   resume: null,
 // };
-const { getUserByEmail,createUser } = useUserService();
-
+const { getUserByEmail, createUser } = useUserService();
 
 const JobSeekerRegister = () => {
   const navigate = useNavigate();
@@ -112,7 +110,11 @@ const JobSeekerRegister = () => {
             />
 
             <FormProvider {...jobseeker}>
-              <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
+              <Box
+                component="form"
+                onSubmit={handleSubmit(onSubmit)}
+                noValidate
+              >
                 <Grid container spacing={2.5}>
                   <Grid size={12}>
                     <MyTextField name="Name" label="Full Name" required />
@@ -181,7 +183,12 @@ const JobSeekerRegister = () => {
                   </Grid>
 
                   <Grid size={12}>
-                    <MyFileUpload name="resume" required accept=".pdf,.doc" />
+                    <MyFileUpload
+                      name="resume"
+                      // label="Upload Resume"
+                      accept=".pdf,.doc,.docx"
+                      buttonText="Upload Resume"
+                    />
                   </Grid>
 
                   {/* ACTION BUTTONS */}
@@ -195,25 +202,23 @@ const JobSeekerRegister = () => {
                       margin: "0 auto", // centers container
                     }}
                   >
-                   
-
                     <Grid>
                       <MyButton
                         label="Reset"
                         type="button"
                         variant="contained"
                         color="info"
-                        sx={{ minWidth: 160, height: 45,fontWeight: 600 }}
+                        sx={{ minWidth: 160, height: 45, fontWeight: 600 }}
                         onClick={() => reset()}
                       />
                     </Grid>
-                     <Grid>
+                    <Grid>
                       <MyButton
                         label="Register"
                         type="submit"
                         variant="contained"
                         color="primary"
-                        sx={{ minWidth: 160, height: 45 , fontWeight: 600}}
+                        sx={{ minWidth: 160, height: 45, fontWeight: 600 }}
                       />
                     </Grid>
 
@@ -223,7 +228,7 @@ const JobSeekerRegister = () => {
                         type="button"
                         variant="contained"
                         color="error"
-                        sx={{ minWidth: 160, height: 45 ,fontWeight: 600}}
+                        sx={{ minWidth: 160, height: 45, fontWeight: 600 }}
                         onClick={() => navigate("/")}
                       />
                     </Grid>

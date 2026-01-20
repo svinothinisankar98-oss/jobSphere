@@ -87,7 +87,7 @@ const SearchSection = ({
         <Grid size={{ xs: 12, md: 3 }}>
           <MyButton
             fullWidth
-            size="large"
+            size="medium"
             variant="contained"
             onClick={onSearch}
             label="Find Jobs"
