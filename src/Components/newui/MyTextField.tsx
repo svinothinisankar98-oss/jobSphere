@@ -32,7 +32,7 @@ const MyTextField = ({
   value,
   onChange,
 }: MyTextFieldProps) => {
-  const formContext = useFormContext(); // 👈 may be null
+  const formContext = useFormContext(); 
 
   /* ---------------- STANDALONE MODE ---------------- */
   if (!name || !formContext) {
@@ -76,12 +76,13 @@ const MyTextField = ({
           type={type}
           placeholder={placeholder}
           required={required}
+          inputRef={field.ref}
           size={size}
           inputMode={inputMode}
           multiline={Boolean(rows)}
           rows={rows}
           error={!!error}
-          helperText={error?.message as string}
+          helperText={error?.message || " "}
           sx={{
             "& .MuiFormLabel-asterisk": { color: "red" },
             ...sx,

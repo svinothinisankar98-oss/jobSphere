@@ -25,6 +25,8 @@ export default function Sidebar() {
 
   const toggleDrawer = () => setOpen(!open);
 
+  
+
   return (
     <>
       {/* Hamburger button (Mobile) */}
@@ -36,6 +38,8 @@ export default function Sidebar() {
           <MenuIcon />
         </IconButton>
       )} */}
+
+      
 
       <Drawer
         variant={isMobile ? "temporary" : "permanent"}

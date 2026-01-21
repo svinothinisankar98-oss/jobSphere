@@ -1,20 +1,51 @@
- export const CompanyInformationdefault = {
-      companyName: "",
-      companyEmail: "",
-      contacts: [
+//  export const CompanyInformationdefault = {
+//       companyName: "",
+//       companyEmail: "",
+//       contacts: [
+//         {
+//           contactName: "",
+//           contactPhone: "",
+//           contactEmail: "",
+//           profileImage: null,
+//         },
+//       ],
+//       branchContacts: [
+//         {
+//           branchContactName: "",
+//           branchContactPhone: "",
+//           branchperEmail: "",
+//           branchcity: "",
+//         },
+//       ],
+//     }
+
+export const CompanyInformationdefault = {
+  companyName: "",
+  companyEmail: "",
+
+  contact: [
+    {
+      name: "",
+      phone: "",
+      email: "",
+      profileImage: null,
+    },
+  ],
+
+  branches: [
+    {
+      branchName: "",
+      branchEmail: "",
+      branchContact: [
         {
-          contactName: "",
-          contactPhone: "",
-          contactEmail: "",
-          profileImage: null,
+          name: "",
+          phone: "",
+          email: "",
+          city: null,
         },
       ],
-      branchContacts: [
-        {
-          branchContactName: "",
-          branchContactPhone: "",
-          branchperEmail: "",
-          branchcity: "",
-        },
-      ],
-    }
+    },
+  ],
+};
+
+
