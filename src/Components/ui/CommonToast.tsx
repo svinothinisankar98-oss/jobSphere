@@ -22,10 +22,15 @@ const CommonToast = () => {
   }, []);
 
   return (
-    <div
-      className="toast-container position-fixed top-0 end-0 p-3"
-      style={{ zIndex: 9999 }}
-    >
+   <div
+  className="toast-container"
+  style={{
+    position: "fixed",
+    top: "20px",
+    right: "16px",
+    zIndex: 1301,
+  }}
+>
       {toasts.map((toast) => (
         <div
           key={toast.id}

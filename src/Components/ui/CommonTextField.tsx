@@ -1,5 +1,10 @@
 import React from "react";
-import { TextField, InputAdornment } from "@mui/material";
+import {
+  TextField,
+  InputAdornment,
+  type SxProps,
+  type Theme,
+} from "@mui/material";
 
 type Props = {
   label?: string;
@@ -11,13 +16,12 @@ type Props = {
   className?: string;
   error?: string;
   inputMode?: "text" | "numeric" | "decimal";
-  rows?: number; // textarea
-  startIcon?: React.ReactNode; 
-  endIcon?: React.ReactNode;   
+  rows?: number;
+  startIcon?: React.ReactNode;
+  endIcon?: React.ReactNode;
+  sx?: SxProps<Theme>;   // ✅ correct type
   onChange?: (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement
-    >
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
 };
 
@@ -34,9 +38,10 @@ const CommonTextField: React.FC<Props> = ({
   error = "",
   startIcon,
   endIcon,
+  sx,
   onChange,
 }) => {
-  const hasError = error.trim().length > 0;
+  const hasError = Boolean(error);
 
   return (
     <TextField
@@ -51,20 +56,19 @@ const CommonTextField: React.FC<Props> = ({
       helperText={hasError ? error : ""}
       multiline={!!rows}
       rows={rows}
-      inputProps={{
-        inputMode,
-      }}
+      sx={sx}            
+      inputProps={{ inputMode }}
       InputProps={{
-        startAdornment: startIcon ? (
+        startAdornment: startIcon && (
           <InputAdornment position="start">
             {startIcon}
           </InputAdornment>
-        ) : undefined,
-        endAdornment: endIcon ? (
+        ),
+        endAdornment: endIcon && (
           <InputAdornment position="end">
             {endIcon}
           </InputAdornment>
-        ) : undefined,
+        ),
       }}
       className={className}
       onChange={onChange}

@@ -5,21 +5,17 @@ import {
   Box,
   Paper,
   Typography,
-  IconButton,
   useMediaQuery,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 import CommonTextField from "../../Components/ui/CommonTextField";
-import CommonButton from "../../Components/ui/CommonButton";
-import CommonHeading from "../../Components/ui/CommonHeading";
-import { toastService } from "../../utils/Toast";
 import { validateField } from "../../utils/validationService";
-import "./login.css";
 import { useUserService } from "../../hooks/useUserService";
 import { authStorage } from "../../utils/authStorage";
+import { useSnackbar } from "../../Components/newui/MySnackBar";
+import MyButton from "../../Components/newui/MyButton";
+import { alignItems, justifyContent } from "@mui/system";
 
 const { getUserByEmail, getEmployerByEmail } = useUserService();
 
@@ -38,26 +34,25 @@ const Login = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
+  const { showSnackbar } = useSnackbar();
+
   const [form, setForm] = useState<LoginForm>({
     email: "",
     password: "",
   });
 
   const [errors, setErrors] = useState<LoginErrors>({});
-  const [showPassword, setShowPassword] = useState(false);
 
- const handleChange = (
-  e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-) => {
-  const { name, value } = e.target;
-  setForm((prev) => ({ ...prev, [name]: value }));
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
 
-  const errorMsg = validateField(name, value);
-  setErrors((prev) => ({
-    ...prev,
-    [name]: errorMsg,
-  }));
-};
+    setForm((prev) => ({ ...prev, [name]: value }));
+
+    const errorMsg = validateField(name, value);
+    setErrors((prev) => ({ ...prev, [name]: errorMsg }));
+  };
 
   const validateForm = (): boolean => {
     const newErrors: LoginErrors = {};
@@ -70,7 +65,7 @@ const Login = () => {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length > 0) {
-      toastService.error(Object.values(newErrors)[0]!);
+     
       return false;
     }
 
@@ -81,154 +76,167 @@ const Login = () => {
     e.preventDefault();
     if (!validateForm()) return;
 
-    const user = await getUserByEmail(form.email);
-    const employer = await getEmployerByEmail(form.email);
+    try {
+      const user = await getUserByEmail(form.email);
+      const employer = await getEmployerByEmail(form.email);
 
-    if (!user && !employer) {
-      toastService.error("User not found");
-      return;
-    }
+      if (!user && !employer) {
+        showSnackbar("User not found", "error");
+        return;
+      }
 
-    if (user && user.password !== form.password) {
-      toastService.error("Invalid credentials");
-      return;
-    }
+      if (user && user.password !== form.password) {
+        showSnackbar("Invalid credentials", "error");
+        return;
+      }
 
-    if (employer && employer.password !== form.password) {
-      toastService.error("Invalid credentials");
-      return;
-    }
+      if (employer && employer.password !== form.password) {
+        showSnackbar("Invalid credentials", "error");
+        return;
+      }
 
-    const userType = user?.userType || employer?.userType || 0;
+      const userType = user?.userType || employer?.userType || 0;
 
-    if (userType === 1 || userType === 2) {
-      authStorage.set({
-        id: user?.id,
-        email: user?.email,
-      });
-      toastService.success("Login successful");
-      navigate("/");
-    }
+      if (userType === 1 || userType === 2) {
+        authStorage.set({
+          id: user?.id,
+          email: user?.email,
+        });
 
-    if (userType === 3) {
-      navigate("/employer-list");
+        showSnackbar("Login successful", "success");
+        navigate("/");
+      } else if (userType === 3) {
+        navigate("/employer-list");
+      }
+    } catch {
+      showSnackbar("Something went wrong. Try again.", "error");
     }
   };
 
   return (
-    <Grid container minHeight="100vh">
-      {/* LEFT SECTION */}
-      {!isMobile && (
-       <Grid  size={{ xs: 12, md: 6 }}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          px={4}
-          
-        >
-          <Box textAlign="center">
-            <Typography variant="h4" fontWeight="bold" mb={2}>
-              Find Your Dream Job
-            </Typography>
+    <Grid container minHeight="100vh" bgcolor="#fff">
+      {/* LEFT IMAGE */}
+      <Grid size={{xs:12,md:6}}
+        
+        display={{ xs: "auto", md: "flex" }}
+        alignItems="center"
+        justifyContent="center"
+        px={6}
+      >
+        <Box
+          component="img"
+          src="/image/jobSearch.png"
+          sx={{ maxWidth: 420, width: "100%" }}
+        />
+      </Grid>
 
-            <Typography mb={3}>
-              Login to explore opportunities and hire talent faster.
-            </Typography>
-
-            <Box
-              component="img"
-              src="/image/jobSearch.png"
-              alt="Job Search"
-              sx={{ maxWidth: 260, width: "100%" }}
-            />
-          </Box>
-        </Grid>
-      )}
-
-      {/* RIGHT SECTION */}
-      
-
-        <Grid  size={{ xs: 12, md: 6 }}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          px={2}
-          
-        >
+      {/* RIGHT FORM */}
+      <Grid size={{xs:12,md:6}}
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        px={{ xs: 2, sm: 4 }}
+      >
         <Paper
-          elevation={3}
+          elevation={0}
           sx={{
             width: "100%",
-            maxWidth: 420,
-            p: 4,
+            maxWidth: 460,
+            p: { xs: 3, sm: 4 },
             borderRadius: 3,
+            border: "1px solid #e0e0e0",
           }}
         >
-          <CommonHeading
-            title="Welcome Back 👋"
-            subtitle="Login to your account"
-          />
+          <Typography
+            variant="h4"
+            textAlign="center"
+            fontWeight={600}
+            color="#3a2ee3"
+            mb={3}
+          >
+            Login
+          </Typography>
 
-          <Box component="form" onSubmit={handleSubmit} mt={2}>
+          <Box component="form" onSubmit={handleSubmit}>
             <CommonTextField
-              label="Email"
               name="email"
-              type="email"
+              placeholder="Email address"
               value={form.email}
-              placeholder="Enter email"
-              error={errors.email}
               onChange={handleChange}
+              error={errors.email}
+              sx={{
+                mb: 2,
+                "& input": { padding: "14px" },
+                
+                borderRadius: 1.5,
+              }}
             />
 
-            <Box position="relative">
-              <CommonTextField
-                label="Password"
-                name="password"
-                type={showPassword ? "text" : "password"}
-                value={form.password}
-                placeholder="Enter password"
-                error={errors.password}
-                onChange={handleChange}
-              />
-
-              <IconButton
-                onClick={() => setShowPassword((prev) => !prev)}
-                sx={{
-                  position: "absolute",
-                  right: 8,
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                }}
-              >
-                {showPassword ? <VisibilityOff /> : <Visibility />}
-              </IconButton>
-            </Box>
+            <CommonTextField
+              name="password"
+              type="password"
+              placeholder="Password"
+              value={form.password}
+              onChange={handleChange}
+              error={errors.password}
+              sx={{
+                mb: 2,
+                "& input": { padding: "14px" },
+               
+                borderRadius: 1.5,
+              }}
+            />
 
             <Typography
-              variant="body2"
               textAlign="right"
-              color="primary"
-              sx={{ cursor: "pointer", mt: 1 }}
+              color="#0e0bb3"
+              fontSize={14}
+              sx={{ cursor: "pointer", mb: 3 }}
               onClick={() => navigate("/forgot-password")}
             >
-              Forgot Password?
+              Forgot password?
             </Typography>
 
-            <CommonButton
-              label="Login"
-              type="submit"
-              className="btn btn-primary w-100"
-            />
+           <Box
+  display="flex"
+  justifyContent="center"
+   mt={{ xs: 2, sm: 3 }}
+>
+  <MyButton
+    label="Login"
+    type="submit"
+    variant="contained"
+    color="primary"
+    sx={{
+      minWidth: 160,
+      height: 45,
+      fontWeight: 600,
+    }}
+  />
+</Box>
 
-            <Typography textAlign="center" mt={2}>
-              Don’t have an account?{" "}
-              <span
-                style={{ color: "#1976d2", cursor: "pointer", fontWeight: 600 }}
-                onClick={() => navigate("/register")}
-              >
-                Register
-              </span>
-            </Typography>
+<Typography
+  textAlign="center"
+  mt={3}
+  color="text.secondary"
+>
+  New to this portal?
+</Typography>
+
+<Typography
+  textAlign="center"
+  color="primary.main"
+  fontWeight={600}
+  sx={{
+    cursor: "pointer",
+    mt: 0.5,
+    "&:hover": { textDecoration: "underline" },
+  }}
+  onClick={() => navigate("/register")}
+>
+  REGISTER HERE
+</Typography>
+
           </Box>
         </Paper>
       </Grid>

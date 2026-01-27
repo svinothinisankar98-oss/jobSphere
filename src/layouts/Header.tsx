@@ -6,13 +6,11 @@ import {
   Typography,
   Button,
   Box,
-  IconButton,
   Menu,
   MenuItem,
   Stack,
 } from "@mui/material";
 
-import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -41,10 +39,7 @@ export default function Header() {
     };
 
     window.addEventListener("auth-change", handleAuthChange);
-
-    return () => {
-      window.removeEventListener("auth-change", handleAuthChange);
-    };
+    return () => window.removeEventListener("auth-change", handleAuthChange);
   }, []);
 
   const handleLogin = () => navigate("/login");
@@ -56,29 +51,12 @@ export default function Header() {
   };
 
   return (
-    <AppBar position="fixed" color="inherit" elevation={1}>
-      <Toolbar
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          flexWrap: "wrap",
-          gap: 1,
-        }}
-      >
-        {/* LEFT SIDE */}
-        <Stack
-          direction="row"
-          alignItems="center"
-          spacing={{ xs: 1, md: 2 }}
-          sx={{ flexWrap: "wrap" }}
-        >
-          {/* Hamburger */}
-          <IconButton>
-            <MenuIcon />
-          </IconButton>
-
+    <AppBar position="sticky" color="inherit" elevation={1}>
+      <Toolbar sx={{ justifyContent: "space-between" }}>
+        
+        <Stack direction="row" alignItems="center" spacing={2} paddingLeft={9}>
           {/* Logo */}
-          <Typography
+          <Typography mr={10}
             variant="h6"
             component={Link}
             to="/"
@@ -92,43 +70,28 @@ export default function Header() {
             JobSphere
           </Typography>
 
-          {/* Menu Items (NOW VISIBLE ON MOBILE) */}
+          {/* Desktop Navigation ONLY */}
           <Stack
             direction="row"
-            spacing={{ xs: 1, md: 3 }}
-            sx={{ ml: { xs: 0, md: 3 } }}
+            spacing={3}
+            sx={{ display: { xs: "none", md: "flex" } }}
           >
-            <Button
-              component={Link}
-              to="/"
-              color="inherit"
-              sx={{ fontSize: { xs: "0.75rem", md: "0.875rem" } }}
-            >
+            <Button component={Link} to="/" color="inherit">
               Home
             </Button>
-            <Button
-              component={Link}
-              to="/jobs"
-              color="inherit"
-              sx={{ fontSize: { xs: "0.75rem", md: "0.875rem" } }}
-            >
+            <Button component={Link} to="/jobs" color="inherit">
               Jobs
             </Button>
-            <Button
-              component={Link}
-              to="/company"
-              color="inherit"
-              sx={{ fontSize: { xs: "0.75rem", md: "0.875rem" } }}
-            >
+            <Button component={Link} to="/company" color="inherit">
               Company
             </Button>
           </Stack>
         </Stack>
 
-        {/* RIGHT SIDE (NOW VISIBLE ON MOBILE) */}
+        {/* RIGHT SIDE */}
         <Box>
           {!user ? (
-            <Stack direction="row" spacing={{ xs: 1, md: 2 }}>
+            <Stack direction="row" spacing={2}>
               <MyButton
                 variant="contained"
                 icon={<AccountCircleIcon />}

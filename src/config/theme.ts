@@ -7,6 +7,26 @@ export const theme = createTheme({
         root: {
           marginLeft: 0,
           marginRight: 0,
+          minHeight: 0,
+          lineHeight: "1rem",
+          
+        },
+      },
+    },
+    
+   
+    MuiTextField: {
+      defaultProps: {
+        FormHelperTextProps: {
+          component: "div",
+        },
+      },
+    },
+
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          alignItems: "center",
         },
       },
     },
@@ -52,20 +72,6 @@ export const theme = createTheme({
         },
       },
     },
-
-    // MuiButton: {
-    //   defaultProps: {
-    //     variant: "contained",
-    //   },
-    //   styleOverrides: {
-    //     root: {
-    //       minWidth: 160,
-    //       height: 45,
-    //       fontWeight: 600,
-    //       textTransform: "none",
-    //       borderRadius: 8,
-    //     },
-    //   },
-    // },
   },
+  
 });

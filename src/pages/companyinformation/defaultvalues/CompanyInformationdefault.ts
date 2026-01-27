@@ -22,6 +22,7 @@
 export const CompanyInformationdefault = {
   companyName: "",
   companyEmail: "",
+  createdAt:new Date(),
 
   contact: [
     {
@@ -41,7 +42,7 @@ export const CompanyInformationdefault = {
           name: "",
           phone: "",
           email: "",
-          city: null,
+          Designation: "",
         },
       ],
     },

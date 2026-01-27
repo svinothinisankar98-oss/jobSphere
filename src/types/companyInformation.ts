@@ -23,7 +23,7 @@ export type Contact = {
   name: string;
   phone: string;
   email: string;
-  city?:  string | null;
+  Designation?:  string;
   profileImage?: File | null;
 };
 
@@ -34,9 +34,11 @@ export type Branch = {
 };
 
 export type CompanyInformationType = {
+  id?:number
   companyName: string;
   companyEmail: string;
   contact: Contact[];
-  branches: Branch[];   // 👈 multiple branches
+  branches: Branch[];   // multiple branches
+  createdAt?:Date;
 };
 

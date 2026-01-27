@@ -1,9 +1,20 @@
 import { useState, useMemo, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
-import SearchSection from "../home/SearchSection";
-import "./JobList.css";
 
+import {
+  Box,
+  Grid,
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  CircularProgress,
+  Paper,
+  Stack,
+} from "@mui/material";
+
+import SearchSection from "../home/SearchSection";
 
 /* Job Type */
 type Job = {
@@ -18,36 +29,28 @@ type Job = {
 };
 
 const JobList = () => {
-  // get data from Home page
   const location = useLocation();
 
-  /* Search text */
   const [searchText, setSearchText] = useState(location.state?.search || "");
-
-  /* Selected state (location) */
   const [selectedState, setSelectedState] = useState(
     location.state?.selected || ""
   );
 
-  /* Jobs from API */
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
-  /* Selected job for details view */
   const [activeJob, setActiveJob] = useState<Job | null>(null);
 
-  
-    //  API CALL USING AXIOS
- 
   const fetchJobs = async () => {
     try {
       setLoading(true);
       setError("");
-
       const response = await axios.get("http://localhost:4000/jobs");
+      const data = Array.isArray(response.data) ? response.data : [];
+      setJobs(data);
 
-      setJobs(Array.isArray(response.data) ? response.data : []);
+      // auto select first job (optional UX improvement)
+      if (data.length) setActiveJob(data[0]);
     } catch (err) {
       console.error(err);
       setError("Failed to load jobs");
@@ -56,30 +59,26 @@ const JobList = () => {
       setLoading(false);
     }
   };
-  useEffect(() => {
-  fetchJobs();
-}, []);
 
-  
-    //  FILTER JOBS
- 
+  useEffect(() => {
+    fetchJobs();
+  }, []);
+
   const filteredJobs = useMemo(() => {
     return jobs.filter((job) => {
       const titleMatch =
-        searchText === "" ||
+        !searchText ||
         job.title.toLowerCase().includes(searchText.toLowerCase());
 
-      const stateMatch = selectedState === "" || job.state === selectedState;
+      const stateMatch =
+        !selectedState || job.state === selectedState;
 
       return titleMatch && stateMatch;
     });
   }, [jobs, searchText, selectedState]);
 
- 
-    //  UI
-  
   return (
-    <div className="container-fluid job-page ">
+    <Box px={{ xs: 2, md: 4 }} py={2}>
       {/* Search Section */}
       <SearchSection
         search={searchText}
@@ -89,52 +88,102 @@ const JobList = () => {
         onSearch={() => {}}
       />
 
-      <div className="row mt-3 jobs">
-        {/* LEFT SIDE – Job List */}
-        <div className="col-md-5 job-list">
-          {loading && <p>Loading jobs...</p>}
-          {error && <p className="text-danger">{error}</p>}
+      <Grid container spacing={2} mt={2}>
+        {/* LEFT – Job List */}
+        
+          <Grid size = {{xs:12,md:5}}>
+          <Paper elevation={1} sx={{ p: 2, height: "100%",  ml: "50px" }}>
+            {loading && (
+              <Stack alignItems="center" py={4}>
+                <CircularProgress />
+              </Stack>
+            )}
 
-          {!loading && filteredJobs.length === 0 && <p>No jobs found</p>}
+            {error && <Typography color="error">{error}</Typography>}
 
-          {filteredJobs.map((job) => (
-            <div
-              key={job.id}
-              className={`job-card ${activeJob?.id === job.id ? "active" : ""}`}
-              onClick={() => setActiveJob(job)}
-            >
-              <h6>{job.title}</h6>
-              <p>{job.company}</p>
-              <p>
-                {job.location}, {job.state}
-              </p>
-            </div>
-          ))}
-        </div>
+            {!loading && filteredJobs.length === 0 && (
+              <Typography>No jobs found</Typography>
+            )}
 
-        {/* RIGHT SIDE – Job Details */}
-        <div className="col-md-7 job-details" >
-          {activeJob ? (
-            <>
-              <h4>{activeJob.title}</h4>
-              <p>{activeJob.company}</p>
-              <p>
-                {activeJob.location}, {activeJob.state}
-              </p>
-              <p>{activeJob.salary}</p>
+            <Stack spacing={2}>
+              {filteredJobs.map((job) => (
+                <Card
+                  key={job.id}
+                  onClick={() => setActiveJob(job)}
+                  sx={{
+                    cursor: "pointer",
+                    border:
+                      activeJob?.id === job.id
+                        ? "2px solid"
+                        : "1px solid",
+                    borderColor:
+                      activeJob?.id === job.id
+                        ? "primary.main"
+                        : "divider",
+                    "&:hover": { boxShadow: 3 },
+                  }}
+                >
+                  <CardContent>
+                    <Typography variant="subtitle1" fontWeight={600}>
+                      {job.title}
+                    </Typography>
+                    <Typography variant="body2">
+                      {job.company}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {job.location}, {job.state}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              ))}
+            </Stack>
+          </Paper>
+        </Grid>
 
-              <button className="btn btn-primary">Apply Now</button>
+        {/* RIGHT – Job Details */}
+      
+          <Grid size = {{xs:12, md:7}}>
+          <Paper elevation={1} sx={{ p: 3, height: "100%" , mr: "20px"}}>
+            {activeJob ? (
+              <>
+                <Typography variant="h5" fontWeight={600}>
+                  {activeJob.title}
+                </Typography>
 
-              <hr />
+                <Typography mt={1}>{activeJob.company}</Typography>
 
-              <p>{activeJob.description}</p>
-            </>
-          ) : (
-            <p>Select a job to see details</p>
-          )}
-        </div>
-      </div>
-    </div>
+                <Typography color="text.secondary">
+                  {activeJob.location}, {activeJob.state}
+                </Typography>
+
+                {activeJob.salary && (
+                  <Typography mt={1} fontWeight={500}>
+                    {activeJob.salary}
+                  </Typography>
+                )}
+
+                <Button variant="contained" sx={{ mt: 2 }}>
+                  Apply Now
+                </Button>
+
+                <Box mt={3}>
+                  <Typography variant="subtitle1" fontWeight={600}>
+                    Job Description
+                  </Typography>
+                  <Typography mt={1}>
+                    {activeJob.description}
+                  </Typography>
+                </Box>
+              </>
+            ) : (
+              <Typography color="text.secondary">
+                Select a job to see details
+              </Typography>
+            )}
+          </Paper>
+        </Grid>
+      </Grid>
+    </Box>
   );
 };
 

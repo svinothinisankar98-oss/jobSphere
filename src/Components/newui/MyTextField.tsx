@@ -12,7 +12,8 @@ type MyTextFieldProps = {
   helpertext?: string;
   size?: "small" | "medium";
   sx?: object;
-  
+  fullWidth?:boolean;
+  hideErrorText?: boolean;
 
   
   value?: string;
@@ -31,10 +32,13 @@ const MyTextField = ({
   sx,
   value,
   onChange,
+  helpertext,
+  hideErrorText
+  
 }: MyTextFieldProps) => {
   const formContext = useFormContext(); 
 
-  /* ---------------- STANDALONE MODE ---------------- */
+  // standalone mode//
   if (!name || !formContext) {
     return (
       <TextField
@@ -48,15 +52,17 @@ const MyTextField = ({
         inputMode={inputMode}
         multiline={Boolean(rows)}
         rows={rows}
+        helperText={helpertext}
         sx={{
           "& .MuiFormLabel-asterisk": { color: "red" },
           ...sx,
         }}
+        
       />
     );
   }
 
-  /* ---------------- FORM MODE ---------------- */
+ //form mode//
   const {
     control,
     formState: { errors },
@@ -82,11 +88,13 @@ const MyTextField = ({
           multiline={Boolean(rows)}
           rows={rows}
           error={!!error}
-          helperText={error?.message || " "}
+            // helperText={error?.message || " "}
+             helperText={hideErrorText ? undefined : error?.message}
           sx={{
             "& .MuiFormLabel-asterisk": { color: "red" },
             ...sx,
           }}
+          
         />
       )}
     />

@@ -1252,5 +1252,161 @@
       "createdAt": "2026-01-14T04:40:21.581Z",
       "updatedAt": null
     }
+  ],
+  "company-information": [
+    {
+      "id": "2885",
+      "companyName": "egrove Systems",
+      "companyEmail": "admin@egrovesystems.com",
+      "createdAt": "2026-01-27T16:39:50.493Z",
+      "contact": [
+        {
+          "name": "Priya",
+          "phone": "7894561235",
+          "email": "priya@egrovesys.com",
+          "profileImage": null
+        }
+      ],
+      "branches": [
+        {
+          "branchName": "eGroveSystems",
+          "branchEmail": "hr@egrovesystems.com",
+          "branchContact": [
+            {
+              "name": "gowsi",
+              "phone": "8745612457",
+              "email": "gowsi@gmail.com",
+              "Designation": "Employer"
+            },
+            {
+              "name": "kala",
+              "phone": "9874612155",
+              "email": "kala@gmail.com",
+              "Designation": "HR"
+            },
+            {
+              "name": "suba",
+              "phone": "9654125458",
+              "email": "suba@gmail.com",
+              "Designation": "Manager"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "65f8",
+      "companyName": "eWallHost",
+      "companyEmail": "admin@ewallhost.com",
+      "createdAt": "2026-01-27T16:39:50.493Z",
+      "contact": [
+        {
+          "name": "Priya",
+          "phone": "8541245788",
+          "email": "priya@ewallhost.com",
+          "profileImage": null
+        }
+      ],
+      "branches": [
+        {
+          "branchName": "eWall Solutions",
+          "branchEmail": "ewallsolutions@ewallsolutions.com",
+          "branchContact": [
+            {
+              "name": "vino",
+              "phone": "6512457825",
+              "email": "vino@ewallsolutions.com",
+              "Designation": "HR"
+            },
+            {
+              "name": "kala",
+              "phone": "9874612155",
+              "email": "kala@gmail.com",
+              "Designation": "Manager"
+            },
+            {
+              "name": "Priya",
+              "phone": "8512457458",
+              "email": "kdkd@gmail.com",
+              "Designation": "Sales Executive"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "eff9",
+      "companyName": "LogiTech",
+      "companyEmail": "logitech@logitech.com",
+      "createdAt": "2026-01-27T16:39:50.493Z",
+      "contact": [
+        {
+          "name": "vino",
+          "phone": "7894561235",
+          "email": "vinoz2jdkd@gmail.com",
+          "profileImage": null
+        }
+      ],
+      "branches": [
+        {
+          "branchName": "LogiTech Private Limited",
+          "branchEmail": "logitechche@logitech.com",
+          "branchContact": [
+            {
+              "name": "kdldl",
+              "phone": "6512345789",
+              "email": "dkkdd@gmail.com",
+              "Designation": "HR"
+            }
+          ]
+        },
+        {
+          "branchName": "logitech Private Limited",
+          "branchEmail": "logisolutions@logitech.com",
+          "branchContact": [
+            {
+              "name": "suresh",
+              "phone": "7845125478",
+              "email": "suresh@gmail.com",
+              "Designation": "Admin"
+            },
+            {
+              "name": "kavi",
+              "phone": "7894512547",
+              "email": "kavi@gmail.com",
+              "Designation": "Manager"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1e03",
+      "companyName": "noble Private Limited",
+      "companyEmail": "noble@noble.com",
+      "createdAt": "2026-01-27T16:39:50.493Z",
+      "contact": [
+        {
+          "name": "karthi",
+          "phone": "7894561235",
+          "email": "karthi@gmail.com",
+          "profileImage": null
+        }
+      ],
+      "branches": [
+        {
+          "branchName": "noble private ltd",
+          "branchEmail": "noble@noble.com",
+          "branchContact": [
+            {
+              "name": "kdldl",
+              "phone": "7894512457",
+              "email": "kdldl@gmail.com",
+              "Designation": "admin"
+            }
+          ]
+        }
+      ]
+    }
   ]
 }

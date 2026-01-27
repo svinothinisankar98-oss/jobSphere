@@ -12,7 +12,7 @@ html, body {
 
 .page-content {
   flex: 1; 
-  margin-top: 70px;      /* pushes footer down */
+  margin-top: 10px;      /* pushes footer down */
 }
 
 .search-group:focus-within {

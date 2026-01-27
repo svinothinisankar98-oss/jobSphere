@@ -56,6 +56,7 @@ type CommonTableProps<T> = {
   onDeleteSelected?: (ids: RowId[]) => void;
   onActivateSelected?: (ids: RowId[]) => void;
   enableColumnGrouping?: boolean; //when enable cloumnu grouping//
+   disablePagination?:  boolean,
 };
 
 //PaginationActionsProps//
@@ -119,6 +120,8 @@ function MyTable<T>({
   onActivateSelected,
   mode = "active",
   groupBy = null,
+    disablePagination = false,
+
   enableColumnGrouping = false,
 }: CommonTableProps<T>) {
   //States//
@@ -550,7 +553,7 @@ function MyTable<T>({
           </TableBody>
         </Table>
       </Box>
-
+{!disablePagination && (
       <Box display="flex" justifyContent="flex-end">
         <TablePagination
           component="div"
@@ -566,6 +569,7 @@ function MyTable<T>({
           ActionsComponent={CustomPaginationActions}
         />
       </Box>
+      )}
     </Paper>
   );
 }

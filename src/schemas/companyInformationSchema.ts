@@ -12,7 +12,7 @@ export const companyInformationSchema = yup.object({
     .required(RequiredMessage("Company Name"))
     .min(3, "Minimum 3 characters")
     .max(50, "Maximum 50 characters")
-    //   .matches(/^[A-Za-z0-9\s]+$/, "Only letters, numbers, and spaces are allowed")
+
     .trim(),
 
   companyEmail: yup
@@ -45,9 +45,9 @@ export const companyInformationSchema = yup.object({
         name: yup
           .string()
           .required(RequiredMessage("Contact Name"))
-          .min(2, "Name must be at least 2 characters")
+          .min(3, "Name must be at least 3 characters")
           .max(50, "Name must not exceed 50 characters")
-          .matches(/^[A-Za-z\s]+$/, "Only letters allowed")
+          .matches(REGEX.name, "Only letters allowed")
 
           .trim(),
 
@@ -82,24 +82,24 @@ export const companyInformationSchema = yup.object({
           .email(InvalidEmailMessage)
           .required(RequiredMessage("Branch Email"))
           .test(
-      "is-company-email",
-      "Enter your Company Email (not Gmail, Yahoo, Outlook, etc.)",
-      (value: string) => {
-        if (!value) return true;
+            "is-company-email",
+            "Enter your Company Email (not Gmail, Yahoo, Outlook, etc.)",
+            (value: string) => {
+              if (!value) return true;
 
-        const blockedDomains = [
-          "gmail.com",
-          "yahoo.com",
-          "outlook.com",
-          "hotmail.com",
-        ];
+              const blockedDomains = [
+                "gmail.com",
+                "yahoo.com",
+                "outlook.com",
+                "hotmail.com",
+              ];
 
-        const domain = value.split("@")[1]?.toLowerCase();
-        return domain ? !blockedDomains.includes(domain) : true;
-      },
-    )
-    .trim(),
-          
+              const domain = value.split("@")[1]?.toLowerCase();
+              return domain ? !blockedDomains.includes(domain) : true;
+            },
+          )
+          .trim(),
+
         branchContact: yup
           .array()
           .of(
@@ -107,12 +107,10 @@ export const companyInformationSchema = yup.object({
               name: yup
                 .string()
                 .required(RequiredMessage("Contact Name"))
-                .min(2, "Name must be at least 2 characters")
+                .min(2, "Name must be at least 3 characters")
                 .max(50, "Name must not exceed 50 characters")
-                .matches(
-                  /^[A-Za-z\s]+$/,
-                  "Only letters and spaces are allowed",
-                ),
+                .matches(REGEX.name, "Only letters allowed"),
+
               phone: yup
                 .string()
                 .required(RequiredMessage("Contact Phone"))
@@ -122,7 +120,7 @@ export const companyInformationSchema = yup.object({
                 .email(InvalidEmailMessage)
                 .required(RequiredMessage("Contact Email")),
 
-              city: yup.string().nullable(),
+              Designation: yup.string(),
             }),
           )
           .required()

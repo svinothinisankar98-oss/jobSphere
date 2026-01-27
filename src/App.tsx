@@ -17,6 +17,8 @@ import EmployerRegister from "./pages/register/employerregisterdetails/EmployerR
 import EmployerList from "./pages/register/employerregisterdetails/EmployerList";
 import KycForm from "./pages/companyinformation/CompanyInformation";
 import CompanyInformation from "./pages/companyinformation/CompanyInformation";
+import { MySnackBar } from "./Components/newui/MySnackBar";
+import CompanyInformationList from "./pages/companyinformation/CompanyInformationList";
 
 
 
@@ -27,18 +29,10 @@ function App() {
   return (
     <div className="app-container">
      
+     
       <Header />
-      
-      <CommonToast />
-      {/* <EmployerRegisterWithMUI/> */}
-    
-      
-      {/* <MainRegister/> 
-      <Navbar/>  */}
-      {/* <JobSeekerRegister/> */}
-      
-
-      <div className="page-content">
+       <MySnackBar children={undefined} />
+       <div className="page-content">
         {/* All page content goes here */}
         <Routes>
           <Route path="/" element={<Home />} />
@@ -50,6 +44,7 @@ function App() {
           <Route path="/job-seeker-register" element={<JobSeekerRegister />} />
          <Route path="/employer-list" element={<EmployerList />} />
          <Route path="/company-Information" element={<CompanyInformation />} />
+         <Route path="/company-Information-list" element={<CompanyInformationList />} />
 
           
           
@@ -57,6 +52,11 @@ function App() {
        
         </Routes>
       </div>
+      
+     
+      
+
+     
 
       <Sidebar />
       <Footer />
