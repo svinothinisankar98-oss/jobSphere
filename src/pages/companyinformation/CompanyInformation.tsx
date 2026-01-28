@@ -20,6 +20,7 @@ import MyFileUpload from "../../Components/newui/MyFileupLoad";
 
 import AddBusinessIcon from "@mui/icons-material/AddBusiness";
 
+import { useParams, useNavigate } from "react-router-dom";
 
 import {
   useForm,
@@ -47,12 +48,12 @@ export default function CompanyInformation() {
     mode: "onChange",
   });
 
-  const { createCompanyInformation } = useCompanyInformation();
-
+  const { createCompanyInformation, getCompanyById, updateCompanyInformation } =
+    useCompanyInformation();
 
   const { control, watch, setFocus, reset } = methods;
 
-   const { showSnackbar } = useSnackbar();
+  const { showSnackbar } = useSnackbar();
 
   //Prevent adding empty rows//
 
@@ -112,31 +113,41 @@ export default function CompanyInformation() {
     name: "branches",
   });
 
+  const { id } = useParams();
+  console.log("EDIT PARAM ID:", id);
+  const navigate = useNavigate();
+  const isEdit = Boolean(id);
+
+  React.useEffect(() => {
+    if (id) {
+      getCompanyById(Number(id)).then((data) => {
+        reset(data);
+      });
+    }
+  }, [id]);
+
   // const onsubmit: SubmitHandler<CompanyInformationType> = (data) => {
   //   console.log("Form Data:", data);
   // };
 
- const onsubmit: SubmitHandler<CompanyInformationType> = async (data) => {
-  try {  
-    
-   
-data.createdAt=new Date();
-console.log(data,"Data")
+  const onsubmit: SubmitHandler<CompanyInformationType> = async (data) => {
+    try {
+      if (isEdit) {
+        await updateCompanyInformation(Number(id), data);
+        showSnackbar("Company updated successfully!", "success");
+      } else {
+        data.createdAt = new Date();
+        await createCompanyInformation(data);
+        showSnackbar("Company information saved successfully!", "success");
+      }
 
-    const savedCompany = await createCompanyInformation(data);
-
-    console.log("Saved in DB:", savedCompany);
-
-    reset(); 
-   
-     showSnackbar("Company information saved successfully!", "success");
-
-  } catch (error) {
-    console.error("Failed to save company information", error);
-    alert("Something went wrong while saving");
-  }
-};
-
+      reset();
+      navigate("/company-information-list");
+    } catch (error) {
+      console.error("Save failed", error);
+      showSnackbar("Something went wrong", "error");
+    }
+  };
 
   const [companyExpanded, setCompanyExpanded] = React.useState(true);
   const [branchesExpanded, setBranchesExpanded] = React.useState(true);
@@ -176,18 +187,13 @@ console.log(data,"Data")
           </Box>
 
           {/* Company Details */}
-          {/* <Paper sx={{ mb: 1, width: "100%", }}> */}
+
           <MyAccordion
             title="Company Details"
             titleColor="#3d12e9"
             expanded={companyExpanded}
-            // onChange={(e, isExpanded) => setCompanyExpanded(isExpanded)}
             onChange={setCompanyExpanded}
           >
-            {/* <AccordionSummary >
-                <Typography fontWeight="bold" color="#2b32bd">Company Details</Typography>
-              </AccordionSummary> */}
-
             {/* <AccordionDetails> */}
             <Grid container spacing={2}>
               <Grid size={{ xs: 12, sm: 6 }}>
@@ -250,20 +256,14 @@ console.log(data,"Data")
                       Contact Person ({index + 1})
                     </Typography>
 
-                   <Box display="flex"justifyContent="end">
-                   
-                    
-
-                    <IconButton
-                      size="small"
-                      color="error"
-                      onClick={() => removeContactPerson(index)}
-                    >
-
-                      
-                      <DeleteIcon fontSize="medium" />
-
-                    </IconButton>
+                    <Box display="flex" justifyContent="end">
+                      <IconButton
+                        size="small"
+                        color="error"
+                        onClick={() => removeContactPerson(index)}
+                      >
+                        <DeleteIcon fontSize="medium" />
+                      </IconButton>
                     </Box>
                   </Box>
 
@@ -303,17 +303,14 @@ console.log(data,"Data")
                 </Box>
               ))}
             </Box>
-            {/* </AccordionDetails> */}
           </MyAccordion>
-          {/* </Paper> */}
 
           {/* Branches */}
-          {/* <Paper sx={{ mb: 2, width: "100%"}}> */}
+
           <MyAccordion
             title="Company Branches "
             titleColor="#ef10d9"
             expanded={branchesExpanded}
-            // onChange={(e, isExpanded) => setBranchesExpanded(isExpanded)}
             onChange={setBranchesExpanded}
             count={branchFields.length}
           >
@@ -338,7 +335,7 @@ console.log(data,"Data")
                         name: "",
                         phone: "",
                         email: "",
-                        Designation: "",
+                        designation: "",
                       },
                     ],
                   });
@@ -369,7 +366,6 @@ console.log(data,"Data")
                     color="error"
                     label="Remove Branch"
                     variant="contained"
-                    // onClick={() => removeBranch(branchIndex)}
                     onClick={() => {
                       if (
                         window.confirm(
@@ -408,12 +404,14 @@ console.log(data,"Data")
                 />
               </Box>
             ))}
-            {/* </AccordionDetails> */}
           </MyAccordion>
-          {/* </Paper> */}
 
           <Stack direction="row" spacing={2} justifyContent="center" mt={3}>
-            <MyButton type="submit" variant="contained" label="SUBMIT" />
+            <MyButton
+              type="submit"
+              variant="contained"
+              label={isEdit ? "UPDATE" : "SUBMIT"}
+            />
             <MyButton
               type="reset"
               variant="contained"
@@ -432,141 +430,191 @@ console.log(data,"Data")
 function BranchContacts({ nestIndex, control, watch }: any) {
   const name = `branches.${nestIndex}.branchContact`;
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name,
-  });
+  const { fields, append, remove } = useFieldArray({ control, name });
 
   const watched = watch(name);
-  const [editIndex, setEditIndex] = React.useState<number | null>(0);
+
+  const [editingId, setEditingId] = React.useState<string | null>(null);
+
+  const [newRowId, setNewRowId] = React.useState<string | null>(
+    fields[0]?.id || null,
+  );
+
+  React.useEffect(() => {
+    console.log("FIELDS:", fields);
+    if (fields.length && !editingId) {
+      setEditingId(fields[fields.length - 1].id);
+    }
+  }, [fields]);
 
   const isRowFilled = (row: any) =>
     row?.name?.trim() && row?.phone?.trim() && row?.email?.trim();
 
   const isLastFilled = () => {
-    if (!watched || watched.length === 0) return true;
+    if (!watched?.length) return true;
     if (watched.length >= 5) return false;
     return isRowFilled(watched[watched.length - 1]);
+  };
+
+  const isEditingRow = (id: string, index: number) => {
+    const row = watched?.[index];
+
+    const isEmptyRow =
+      !row?.name?.trim() || !row?.phone?.trim() || !row?.email?.trim();
+
+    // console.log(editingId === id , 'editingId === id || isEmptyRow',isEmptyRow)
+    return editingId === id || isEmptyRow;
+  };
+
+  const handleAdd = () => {
+    append({
+      name: "",
+      phone: "",
+      email: "",
+      designation: "",
+    });
+
+    setTimeout(() => {
+      const last = fields[fields.length];
+      if (last) {
+        setEditingId(last.id);
+        setNewRowId(last.id);
+      }
+    });
+  };
+
+  const handleSave = () => {
+    setEditingId(null);
+    setNewRowId(null);
+  };
+
+  const handleDelete = (index: number) => {
+    remove(index);
+    setEditingId(null);
+    setNewRowId(null);
   };
 
   const columns = [
     {
       id: "slno",
       label: "Person",
-      sortable: false,
-      render: (_: any, index: number) => index + 1,
+      render: (_: any, i: number) => i + 1,
     },
     {
       id: "name",
       label: "Contact Name",
-
-      render: (_: any, index: number) =>
-        editIndex === index ? (
+      render: (_: any, i: number) =>
+        isEditingRow(fields[i].id, i) ? (
           <MyTextField
-            name={`${name}.${index}.name`}
-            label=" Name"
+            name={`${name}.${i}.name`}
+            label="Name"
             required
             fullWidth
             hideErrorText
           />
         ) : (
-          <Typography>{watched?.[index]?.name}</Typography>
+          <Typography sx={{ textAlign: "left" }}>
+            {watched?.[i]?.name}
+          </Typography>
         ),
     },
     {
       id: "phone",
       label: "Phone",
-      render: (_: any, index: number) =>
-        editIndex === index ? (
+      render: (_: any, i: number) =>
+        isEditingRow(fields[i].id, i) ? (
           <MyTextField
-            name={`${name}.${index}.phone`}
-            placeholder="Phone"
+            name={`${name}.${i}.phone`}
             label="Phone"
             required
             fullWidth
             hideErrorText
           />
         ) : (
-          <Typography>{watched?.[index]?.phone}</Typography>
+          <Typography>{watched?.[i]?.phone}</Typography>
         ),
     },
     {
       id: "email",
       label: "Email",
-      render: (_: any, index: number) =>
-        editIndex === index ? (
+      render: (_: any, i: number) =>
+        isEditingRow(fields[i].id, i) ? (
           <MyTextField
-            name={`${name}.${index}.email`}
-            placeholder="Email"
+            name={`${name}.${i}.email`}
             label="Email"
             required
             fullWidth
             hideErrorText
           />
         ) : (
-          <Typography>{watched?.[index]?.email}</Typography>
+          <Typography>{watched?.[i]?.email}</Typography>
         ),
     },
     {
-      id: "Designation",
+      id: "designation",
       label: "Designation",
-      render: (_: any, index: number) =>
-        editIndex === index ? (
+      render: (_: any, i: number) =>
+        isEditingRow(fields[i].id, i) ? (
           <MyTextField
-            name={`${name}.${index}.Designation`}
-            placeholder="Designation"
+            name={`${name}.${i}.designation`}
             label="Designation"
             fullWidth
           />
         ) : (
-          <Typography>{watched?.[index]?.Designation}</Typography>
+          <Typography> {watched?.[i]?.designation?.trim() || "-"}</Typography>
         ),
     },
     {
-  id: "actions",
-  label: "Actions",
-  sortable: false,
-  render: (_: any, index: number) => {
-    const isEditing = editIndex === index;
+      id: "actions",
+      label: "Actions",
+      render: (_: any, i: number) => {
+        const isNew = newRowId === fields[i].id;
+        // const allFieldsAreEmpty = fields?.every(d=>d?.id)
+        const isAnyEmpty =
+          !watched?.[i]?.name?.trim() ||
+          !watched?.[i]?.email?.trim() ||
+          !watched?.[i]?.phone?.trim();
+        const isEditing = editingId === fields[i].id || isAnyEmpty;
+        // const watchedId =
+        //   !watched?.[i]?.name || !watched[i]?.email || !watched[i]?.phone;
+        // console.log(watchedId, "watched?.[i]");
 
-    return (
-      <Box display="flex" justifyContent="center" gap={1}>
-        {isEditing ? (
-          /* SAVE */
-          <IconButton
-            size="small"
-            color="success"
-            disabled={!isRowFilled(watched?.[index])}
-            onClick={() => setEditIndex(null)}
-          >
-            <CheckCircleIcon fontSize="small" />
-          </IconButton>
-        ) : (
-          <>
-            {/* EDIT */}
-            <IconButton
-              size="small"
-              color="primary"
-              onClick={() => setEditIndex(index)}
-            >
-              <EditIcon fontSize="small" />
-            </IconButton>
+        return (
+          <Box display="flex" justifyContent="center" gap={1}>
+            {isEditing && (
+              <IconButton
+                size="small"
+                color="success"
+                disabled={!isRowFilled(watched?.[i])}
+                onClick={handleSave}
+              >
+                <CheckCircleIcon fontSize="small" />
+              </IconButton>
+            )}
 
-            {/* DELETE */}
-            <IconButton
-              size="small"
-              color="error"
-              onClick={() => remove(index)}
-            >
-              <DeleteIcon fontSize="small" />
-            </IconButton>
-          </>
-        )}
-      </Box>
-    );
-  },
-}
+            {!isEditing && (
+              <IconButton
+                size="small"
+                color="primary"
+                onClick={() => setEditingId(fields[i].id)}
+              >
+                <EditIcon fontSize="small" />
+              </IconButton>
+            )}
 
+            {!isEditing || !isNew ? (
+              <IconButton
+                size="small"
+                color="error"
+                onClick={() => handleDelete(i)}
+              >
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            ) : null}
+          </Box>
+        );
+      },
+    },
   ];
 
   return (
@@ -579,31 +627,16 @@ function BranchContacts({ nestIndex, control, watch }: any) {
           variant="contained"
           color="primary"
           disabled={!isLastFilled()}
-          onClick={() => {
-            append({
-              name: "",
-              phone: "",
-              email: "",
-              Designation: "",
-            });
-            setEditIndex(fields.length);
-          }}
+          onClick={handleAdd}
         />
       </Box>
 
-      <Box
-        sx={{
-          width: "100%",
-          overflowX: { xs: "auto", sm: "visible" },
-        }}
-      >
-        <MyTable
-          rows={fields}
-          columns={columns}
-          tableSize="medium"
-          disablePagination
-        />
-      </Box>
+      <MyTable
+        rows={fields}
+        columns={columns}
+        tableSize="medium"
+        disablePagination
+      />
     </Box>
   );
 }

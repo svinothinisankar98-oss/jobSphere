@@ -43,8 +43,9 @@ function App() {
           <Route path="/job-list" element={<Joblist />} />
           <Route path="/job-seeker-register" element={<JobSeekerRegister />} />
          <Route path="/employer-list" element={<EmployerList />} />
-         <Route path="/company-Information" element={<CompanyInformation />} />
-         <Route path="/company-Information-list" element={<CompanyInformationList />} />
+            <Route path="/company-information/" element={<CompanyInformation />} />
+         <Route path="/company-information/edit/:id" element={<CompanyInformation />} />
+         <Route path="/company-information-list" element={<CompanyInformationList />} />
 
           
           

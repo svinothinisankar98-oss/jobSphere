@@ -23,7 +23,7 @@ export type Contact = {
   name: string;
   phone: string;
   email: string;
-  Designation?:  string;
+  designation?:  string;
   profileImage?: File | null;
 };
 

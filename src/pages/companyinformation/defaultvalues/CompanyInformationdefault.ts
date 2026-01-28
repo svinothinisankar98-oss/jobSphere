@@ -1,23 +1,4 @@
-//  export const CompanyInformationdefault = {
-//       companyName: "",
-//       companyEmail: "",
-//       contacts: [
-//         {
-//           contactName: "",
-//           contactPhone: "",
-//           contactEmail: "",
-//           profileImage: null,
-//         },
-//       ],
-//       branchContacts: [
-//         {
-//           branchContactName: "",
-//           branchContactPhone: "",
-//           branchperEmail: "",
-//           branchcity: "",
-//         },
-//       ],
-//     }
+
 
 export const CompanyInformationdefault = {
   companyName: "",
@@ -42,7 +23,7 @@ export const CompanyInformationdefault = {
           name: "",
           phone: "",
           email: "",
-          Designation: "",
+          designation: "",
         },
       ],
     },

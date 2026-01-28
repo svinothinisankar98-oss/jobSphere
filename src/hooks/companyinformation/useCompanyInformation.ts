@@ -21,7 +21,28 @@ export const useCompanyInformation = () => {
     }
   };
 
-   const deleteCompanyInformation = async (id: number) => {
+  const getCompanyById = async (id: number): Promise<CompanyInformationType> => {
+    try {
+      return await companyInformationService.getCompanyById(id);
+    } catch (error) {
+      console.error("Failed to load company by id", error);
+      throw error;
+    }
+  };
+
+  const updateCompanyInformation = async (
+    id: number,
+    data: CompanyInformationType
+  ) => {
+    try {
+      return await companyInformationService.updateCompanyInformation(id, data);
+    } catch (error) {
+      console.error("Failed to update company information", error);
+      throw error;
+    }
+  };
+
+  const deleteCompanyInformation = async (id: number) => {
     try {
       await companyInformationService.deleteCompanyInformation(id);
     } catch (error) {
@@ -33,6 +54,8 @@ export const useCompanyInformation = () => {
   return {
     createCompanyInformation,
     getAllCompanyInformation,
-    deleteCompanyInformation
+    getCompanyById,
+    updateCompanyInformation,
+    deleteCompanyInformation,
   };
 };

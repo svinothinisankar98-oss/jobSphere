@@ -16,6 +16,9 @@ import HomeIcon from "@mui/icons-material/Home";
 import WorkIcon from "@mui/icons-material/Work";
 import BusinessIcon from "@mui/icons-material/Business";
 import GroupIcon from "@mui/icons-material/Group";
+import ListAltIcon from "@mui/icons-material/ListAlt";
+import DomainIcon from "@mui/icons-material/Domain";
+import ApartmentIcon from "@mui/icons-material/Apartment";
 
 
 
@@ -100,7 +103,7 @@ export default function Sidebar() {
             onClick={isMobile ? toggleDrawer : undefined}
           >
             <ListItemIcon >
-              <HomeIcon  htmlColor={"primary"}/>
+              <HomeIcon  htmlColor={"primary"} />
             </ListItemIcon>
             {open && <ListItemText primary="Home" />}
           </ListItemButton>
@@ -122,7 +125,7 @@ export default function Sidebar() {
             onClick={isMobile ? toggleDrawer : undefined}
           >
             <ListItemIcon>
-              <BusinessIcon htmlColor={"primary"}/>
+              <ApartmentIcon htmlColor={"primary"}/>
             </ListItemIcon>
             {open && <ListItemText primary="Companies" />}
           </ListItemButton>
@@ -142,7 +145,7 @@ export default function Sidebar() {
             onClick={isMobile ? toggleDrawer : undefined}
           >
             <ListItemIcon>
-              <GroupIcon htmlColor={"primary"}/>
+              <DomainIcon htmlColor={"primary"}/>
             </ListItemIcon>
             {open && <ListItemText primary="Company Information" />}
           </ListItemButton>
@@ -152,7 +155,7 @@ export default function Sidebar() {
             onClick={isMobile ? toggleDrawer : undefined}
           >
             <ListItemIcon>
-              <GroupIcon htmlColor={"primary"}/>
+               <ListAltIcon color={"primary"} />
             </ListItemIcon>
             {open && <ListItemText primary="Company Information List" />}
           </ListItemButton>

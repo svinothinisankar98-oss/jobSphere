@@ -1255,94 +1255,14 @@
   ],
   "company-information": [
     {
-      "id": "2885",
-      "companyName": "egrove Systems",
-      "companyEmail": "admin@egrovesystems.com",
-      "createdAt": "2026-01-27T16:39:50.493Z",
-      "contact": [
-        {
-          "name": "Priya",
-          "phone": "7894561235",
-          "email": "priya@egrovesys.com",
-          "profileImage": null
-        }
-      ],
-      "branches": [
-        {
-          "branchName": "eGroveSystems",
-          "branchEmail": "hr@egrovesystems.com",
-          "branchContact": [
-            {
-              "name": "gowsi",
-              "phone": "8745612457",
-              "email": "gowsi@gmail.com",
-              "Designation": "Employer"
-            },
-            {
-              "name": "kala",
-              "phone": "9874612155",
-              "email": "kala@gmail.com",
-              "Designation": "HR"
-            },
-            {
-              "name": "suba",
-              "phone": "9654125458",
-              "email": "suba@gmail.com",
-              "Designation": "Manager"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "65f8",
-      "companyName": "eWallHost",
-      "companyEmail": "admin@ewallhost.com",
-      "createdAt": "2026-01-27T16:39:50.493Z",
-      "contact": [
-        {
-          "name": "Priya",
-          "phone": "8541245788",
-          "email": "priya@ewallhost.com",
-          "profileImage": null
-        }
-      ],
-      "branches": [
-        {
-          "branchName": "eWall Solutions",
-          "branchEmail": "ewallsolutions@ewallsolutions.com",
-          "branchContact": [
-            {
-              "name": "vino",
-              "phone": "6512457825",
-              "email": "vino@ewallsolutions.com",
-              "Designation": "HR"
-            },
-            {
-              "name": "kala",
-              "phone": "9874612155",
-              "email": "kala@gmail.com",
-              "Designation": "Manager"
-            },
-            {
-              "name": "Priya",
-              "phone": "8512457458",
-              "email": "kdkd@gmail.com",
-              "Designation": "Sales Executive"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "eff9",
+      "id": "9009",
       "companyName": "LogiTech",
       "companyEmail": "logitech@logitech.com",
-      "createdAt": "2026-01-27T16:39:50.493Z",
+      "createdAt": "2026-01-28T11:53:26.845Z",
       "contact": [
         {
           "name": "vino",
-          "phone": "7894561235",
+          "phone": "7894561238",
           "email": "vinoz2jdkd@gmail.com",
           "profileImage": null
         }
@@ -1356,7 +1276,7 @@
               "name": "kdldl",
               "phone": "6512345789",
               "email": "dkkdd@gmail.com",
-              "Designation": "HR"
+              "Designation": "Admin"
             }
           ]
         },
@@ -1374,35 +1294,82 @@
               "name": "kavi",
               "phone": "7894512547",
               "email": "kavi@gmail.com",
-              "Designation": "Manager"
+              "Designation": "admin"
             }
           ]
         }
       ]
     },
     {
-      "id": "1e03",
-      "companyName": "noble Private Limited",
-      "companyEmail": "noble@noble.com",
-      "createdAt": "2026-01-27T16:39:50.493Z",
+      "id": "9011",
+      "companyName": "eWallHost",
+      "companyEmail": "ewallhost@ewallhost.com",
+      "createdAt": "2026-01-28T13:05:41.271Z",
       "contact": [
         {
-          "name": "karthi",
+          "name": "vino",
           "phone": "7894561235",
-          "email": "karthi@gmail.com",
+          "email": "vinoz2jdkd@gmail.com",
           "profileImage": null
         }
       ],
       "branches": [
         {
-          "branchName": "noble private ltd",
-          "branchEmail": "noble@noble.com",
+          "branchName": "eWall Solutions",
+          "branchEmail": "ewallsolutions@ewallsolutions.com",
           "branchContact": [
             {
               "name": "kdldl",
-              "phone": "7894512457",
-              "email": "kdldl@gmail.com",
-              "Designation": "admin"
+              "phone": "8745125477",
+              "email": "vino@gmail.com",
+              "designation": "Admin"
+            },
+            {
+              "name": "kala",
+              "phone": "9874612155",
+              "email": "kala@gmail.com",
+              "designation": "admin"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "6651",
+      "companyName": "egrove Systems",
+      "companyEmail": "admin@egrovesystems.com",
+      "createdAt": "2026-01-28T13:32:47.222Z",
+      "contact": [
+        {
+          "name": "karthi",
+          "phone": "7894561211",
+          "email": "vinoz2jdkd@gmail.com",
+          "profileImage": null
+        }
+      ],
+      "branches": [
+        {
+          "branchName": "egrove Systems Private Limited",
+          "branchEmail": "hr@egrovesystems.com",
+          "branchContact": [
+            {
+              "name": "kdldl",
+              "phone": "8745125477",
+              "email": "vino@gmail.com",
+              "designation": ""
+            },
+            {
+              "name": "kala",
+              "phone": "9874612155",
+              "email": "kala@gmail.com",
+              "designation": "Student"
+            },
+            {
+              "name": "dldld",
+              "phone": "9874612156",
+              "email": "vino@gmail.com",
+              "Designation": "ddddddgg",
+              "designation": "Super Admin"
             }
           ]
         }

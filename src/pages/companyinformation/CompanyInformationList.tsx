@@ -11,6 +11,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
 } from "@mui/material";
 
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -24,13 +25,28 @@ import type { CompanyInformationType } from "../../types/companyInformation";
 import { useCompanyInformation } from "../../hooks/companyinformation/useCompanyInformation";
 import { useNavigate } from "react-router-dom";
 import { formatDate } from "../../utils/dateFormatter";
+import MyDialog from "../../Components/newui/MyDialog";
+import { useSnackbar } from "../../Components/newui/MySnackBar";
+import MyTextField from "../../Components/newui/MyTextField";
+import SearchIcon from "@mui/icons-material/Search";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 export default function CompanyInformationList() {
+  //usestate used//
   const [rows, setRows] = React.useState<CompanyInformationType[]>([]);
+  const [openDialog, setOpenDialog] = React.useState(false);
+  const [deleteId, setDeleteId] = React.useState<number | null>(null);
+
+  //navigate and usesnakbar//
+  const navigate = useNavigate();
+  const { showSnackbar } = useSnackbar();
+
+  const [search, setSearch] = React.useState("");
+
   const { getAllCompanyInformation, deleteCompanyInformation } =
     useCompanyInformation();
 
-  const navigate = useNavigate();
+  // Loading companies//
 
   React.useEffect(() => {
     loadCompanies();
@@ -40,25 +56,60 @@ export default function CompanyInformationList() {
     setRows(await getAllCompanyInformation());
   };
 
-  const handleDeleteCompany = async (id: number) => {
-    if (!window.confirm("Delete this company and all related data?")) return;
-    await deleteCompanyInformation(id);
-    await loadCompanies();
+  //Delete flow//
+
+  const handleDeleteClick = (id: number) => {
+    setDeleteId(id);
+    setOpenDialog(true);
   };
 
+  //Confirm delete//
+
+  const handleConfirmDelete = async () => {
+    if (!deleteId) return;
+
+    try {
+      await deleteCompanyInformation(deleteId);
+      await loadCompanies();
+
+      showSnackbar("Company deleted successfully!", "success");
+    } catch (error) {
+      showSnackbar("Failed to delete company", "error");
+    } finally {
+      setOpenDialog(false);
+      setDeleteId(null);
+    }
+  };
+  //Main company table layout//
   return (
     <Box>
       <Typography variant="h6" mb={3} textAlign="center" color="blue">
         Company & Branches List
       </Typography>
 
-      <Box display="flex" justifyContent="flex-end" mb={2} marginRight={34}>
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+        mb={2}
+        maxWidth={1000}
+        mx="auto"
+      >
         <MyButton
-          label="Add Company Information"
+          label=" Add Company "
           icon={<AddIcon />}
           size="small"
           variant="contained"
           onClick={() => navigate("/company-information")}
+        />
+
+        <MyTextField
+          size="small"
+          placeholder="company name or email..."
+          value={search}
+          icon={<SearchIcon />}
+          onChange={(e) => setSearch(e.target.value)}
+          sx={{ width: 300 }}
         />
       </Box>
 
@@ -83,16 +134,36 @@ export default function CompanyInformationList() {
           </TableHead>
 
           <TableBody>
-            {rows.map((row) => (
-              <CompanyRow
-                key={row.id}
-                row={row}
-                onDelete={handleDeleteCompany}
-              />
-            ))}
+            {rows
+              .filter(
+                (row) =>
+                  row.companyName
+                    .toLowerCase()
+                    .includes(search.toLowerCase()) ||
+                  row.companyEmail.toLowerCase().includes(search.toLowerCase()),
+              )
+              .map((row) => (
+                <CompanyRow
+                  key={row.id}
+                  row={row}
+                  onDelete={handleDeleteClick}
+                  onEdit={(id) =>
+                    navigate(`/company-information/edit/${row.id}`)
+                  }
+                />
+              ))}
           </TableBody>
         </Table>
       </TableContainer>
+      <MyDialog
+        open={openDialog}
+        title="Delete Company"
+        message="Are you sure you want to delete this company and all related data?"
+        confirmText="Delete"
+        confirmColor="error"
+        onClose={() => setOpenDialog(false)}
+        onConfirm={handleConfirmDelete}
+      />
     </Box>
   );
 }
@@ -102,16 +173,23 @@ export default function CompanyInformationList() {
 function CompanyRow({
   row,
   onDelete,
+  onEdit,
 }: {
   row: CompanyInformationType;
   onDelete: (id: number) => void;
+  onEdit: (id: number) => void;
 }) {
   const [open, setOpen] = React.useState(false);
 
   return (
     <>
       <TableRow hover>
-        <TableCell width={40}>
+        <TableCell
+          width={40}
+          sx={{
+            borderRight: "2px solid #e0e0e0",
+          }}
+        >
           <IconButton
             size="small"
             onClick={() => setOpen(!open)}
@@ -129,9 +207,17 @@ function CompanyRow({
         <TableCell>{formatDate(row.createdAt)}</TableCell>
 
         <TableCell align="center">
-          <IconButton color="primary">
+          {/* Preview */}
+          <IconButton color="info" onClick={() => setOpen(!open)}>
+            <VisibilityIcon />
+          </IconButton>
+
+          {/* Edit */}
+          <IconButton color="primary" onClick={() => onEdit(row.id!)}>
             <EditIcon />
           </IconButton>
+
+          {/* Delete */}
           <IconButton color="error" onClick={() => onDelete(row.id!)}>
             <DeleteIcon />
           </IconButton>
@@ -141,24 +227,40 @@ function CompanyRow({
       <TableRow>
         <TableCell colSpan={5} sx={{ p: 0 }}>
           <Collapse in={open} timeout="auto" unmountOnExit>
+            {/* <Box p={2} sx={{ backgroundColor: "#fafafa", borderRadius: 1 }}> */}
             <Box
               p={2}
-              sx={{ backgroundColor: "#fafafa", borderRadius: 1 }}
+              sx={{
+                backgroundColor: "#fafafa",
+                borderRadius: 1,
+                pl: 7,
+                ml: 1,
+              }}
             >
               {/* CONTACTS */}
               <Typography fontWeight={600} mb={1}>
                 Company Contacts
               </Typography>
 
-              <MyTable
-                rows={row.contact}
-                disablePagination
-                columns={[
-                  { id: "name", label: "Name" },
-                  { id: "phone", label: "Phone" },
-                  { id: "email", label: "Email" },
-                ]}
-              />
+              {row.contact.length === 0 ? (
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ py: 1 }}
+                >
+                  No contacts found
+                </Typography>
+              ) : (
+                <MyTable
+                  rows={row.contact}
+                  disablePagination
+                  columns={[
+                    { id: "name", label: "Name" },
+                    { id: "phone", label: "Phone" },
+                    { id: "email", label: "Email" },
+                  ]}
+                />
+              )}
 
               {/* BRANCHES */}
               <Typography fontWeight={600} mt={3} mb={1}>
@@ -196,7 +298,12 @@ function BranchRow({ branch }: any) {
   return (
     <>
       <TableRow hover>
-        <TableCell width={40}>
+        <TableCell
+          width={40}
+          sx={{
+            borderRight: "2px solid #e0e0e0",
+          }}
+        >
           <IconButton
             size="small"
             onClick={() => setOpen(!open)}
@@ -216,24 +323,46 @@ function BranchRow({ branch }: any) {
       <TableRow>
         <TableCell colSpan={3} sx={{ p: 0 }}>
           <Collapse in={open} timeout="auto" unmountOnExit>
+            {/* <Box p={2} sx={{ backgroundColor: "#fafafa", borderRadius: 1 }}> */}
+
             <Box
               p={2}
-              sx={{ backgroundColor: "#fafafa", borderRadius: 1 }}
+              sx={{
+                backgroundColor: "#fafafa",
+                borderRadius: 1,
+                pl: 5,
+                ml: 1,
+              }}
             >
               <Typography fontWeight={600} mb={1}>
                 Branch Contacts
               </Typography>
 
-              <MyTable
-                rows={branch.branchContact}
-                disablePagination
-                columns={[
-                  { id: "name", label: "Name" },
-                  { id: "phone", label: "Phone" },
-                  { id: "email", label: "Email" },
-                  { id: "Designation", label: "Designation" },
-                ]}
-              />
+              {branch.branchContact.length === 0 ? (
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ py: 1 }}
+                >
+                  No branch contacts found
+                </Typography>
+              ) : (
+                <MyTable
+                  rows={branch.branchContact?.map((d: any) => ({
+                    name: d?.name || "-",
+                    phone: d?.phone || "-",
+                    email: d?.email || "-",
+                    designation: d?.designation || "-",
+                  }))}
+                  disablePagination
+                  columns={[
+                    { id: "name", label: "Name" },
+                    { id: "phone", label: "Phone" },
+                    { id: "email", label: "Email" },
+                    { id: "designation", label: "Designation" },
+                  ]}
+                />
+              )}
             </Box>
           </Collapse>
         </TableCell>

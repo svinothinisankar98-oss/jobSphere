@@ -1,8 +1,15 @@
 import { Controller, useFormContext, get } from "react-hook-form";
 import TextField from "@mui/material/TextField";
+import type { ReactNode } from "react";
+import { InputAdornment } from "@mui/material";
+import Tooltip from "@mui/material/Tooltip";
+import InfoOutlined from "@mui/icons-material/InfoOutlined";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
+import PriorityHigh from "@mui/icons-material/PriorityHigh";
 
 type MyTextFieldProps = {
-  name?: string; //
+  name?: string;
   label?: string;
   required?: boolean;
   type?: "text" | "email" | "password" | "number";
@@ -12,10 +19,10 @@ type MyTextFieldProps = {
   helpertext?: string;
   size?: "small" | "medium";
   sx?: object;
-  fullWidth?:boolean;
+  fullWidth?: boolean;
   hideErrorText?: boolean;
+  icon?: ReactNode;
 
-  
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
@@ -33,12 +40,12 @@ const MyTextField = ({
   value,
   onChange,
   helpertext,
-  hideErrorText
-  
+  hideErrorText,
+  icon,
 }: MyTextFieldProps) => {
-  const formContext = useFormContext(); 
+  const formContext = useFormContext();
 
-  // standalone mode//
+  /* ================= Standalone mode ================= */
   if (!name || !formContext) {
     return (
       <TextField
@@ -53,16 +60,20 @@ const MyTextField = ({
         multiline={Boolean(rows)}
         rows={rows}
         helperText={helpertext}
+        InputProps={{
+          startAdornment: icon && (
+            <InputAdornment position="start">{icon}</InputAdornment>
+          ),
+        }}
         sx={{
           "& .MuiFormLabel-asterisk": { color: "red" },
           ...sx,
         }}
-        
       />
     );
   }
 
- //form mode//
+  /* ================= Form mode ================= */
   const {
     control,
     formState: { errors },
@@ -88,13 +99,28 @@ const MyTextField = ({
           multiline={Boolean(rows)}
           rows={rows}
           error={!!error}
-            // helperText={error?.message || " "}
-             helperText={hideErrorText ? undefined : error?.message}
+          helperText={hideErrorText ? undefined : error?.message}
+
+          InputProps={{
+            endAdornment: hideErrorText && error && (
+              <InputAdornment position="end">
+                <Tooltip title={error.message} arrow>
+                  <span onMouseDown={(e) => e.preventDefault()}>
+                    <PriorityHigh
+                      fontSize="small"
+                      color="error"
+                      style={{ cursor: "pointer" }}
+                    />
+                  </span>
+                </Tooltip>
+              </InputAdornment>
+            ),
+          }}
+
           sx={{
             "& .MuiFormLabel-asterisk": { color: "red" },
             ...sx,
           }}
-          
         />
       )}
     />
