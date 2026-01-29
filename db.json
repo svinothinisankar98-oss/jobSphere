@@ -1261,7 +1261,7 @@
       "createdAt": "2026-01-28T11:53:26.845Z",
       "contact": [
         {
-          "name": "vino",
+          "name": "vinojj",
           "phone": "7894561238",
           "email": "vinoz2jdkd@gmail.com",
           "profileImage": null
@@ -1294,7 +1294,8 @@
               "name": "kavi",
               "phone": "7894512547",
               "email": "kavi@gmail.com",
-              "Designation": "admin"
+              "Designation": "admin",
+              "designation": "sddddd"
             }
           ]
         }
@@ -1374,6 +1375,39 @@
           ]
         }
       ]
+    },
+    {
+      "id": "e276",
+      "branches": [
+        {
+          "branchName": "Noble Solutions",
+          "branchEmail": "noblesolutions@noble.com",
+          "branchContact": [
+            {
+              "name": "kdldl",
+              "phone": "7894512457",
+              "email": "kdldl@gmail.com",
+              "designation": "hr"
+            }
+          ]
+        }
+      ],
+      "contact": [
+        {
+          "name": "karthi",
+          "phone": "7894561235",
+          "email": "karthi@gmail.com",
+          "profileImage": null
+        },
+        {
+          "email": "rani@gmail.com",
+          "phone": "7561254788",
+          "name": "Rani"
+        }
+      ],
+      "companyEmail": "noble@noble.com",
+      "companyName": "noble Private Limited",
+      "createdAt": "2026-01-29T13:42:27.544Z"
     }
   ]
 }

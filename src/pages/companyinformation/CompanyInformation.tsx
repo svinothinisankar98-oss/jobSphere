@@ -10,9 +10,9 @@ import {
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+
+
 
 import MyTextField from "../../Components/newui/MyTextField";
 import MyButton from "../../Components/newui/MyButton";
@@ -20,13 +20,13 @@ import MyFileUpload from "../../Components/newui/MyFileupLoad";
 
 import AddBusinessIcon from "@mui/icons-material/AddBusiness";
 
-import { useParams, useNavigate } from "react-router-dom";
+import BranchContacts from "../companyinformation/BranchContacts";
 
 import {
   useForm,
   FormProvider,
   useFieldArray,
-  type SubmitHandler,
+ 
 } from "react-hook-form";
 
 import type { CompanyInformationType } from "../../types/companyInformation";
@@ -34,37 +34,51 @@ import { CompanyInformationdefault } from "./defaultvalues/CompanyInformationdef
 import { companyInformationSchema } from "../../schemas/companyInformationSchema";
 import { yupResolver } from "@hookform/resolvers/yup";
 import React from "react";
-import MyTable from "../../Components/newui/MyTable";
+
 
 import MyAccordion from "../../Components/newui/MyAccordion";
 
-import { useCompanyInformation } from "../../hooks/companyinformation/useCompanyInformation";
-import { useSnackbar } from "../../Components/newui/MySnackBar";
+// ✅ NEW hook (only addition)
+import { useCompanyInformationHandlers } from "../../hooks/companyinformation/useCompanyInformationHandler";
+import { COMPANY_INFORMATION_LIMITS } from "../../constants/CompanyInformationConstant";
+
+
+// ======================= MAIN ======================= //
 
 export default function CompanyInformation() {
+
   const methods = useForm<CompanyInformationType>({
     defaultValues: CompanyInformationdefault,
     resolver: yupResolver(companyInformationSchema),
     mode: "onChange",
   });
 
-  const { createCompanyInformation, getCompanyById, updateCompanyInformation } =
-    useCompanyInformation();
-
+  // helpers
   const { control, watch, setFocus, reset } = methods;
 
-  const { showSnackbar } = useSnackbar();
+  // ✅ only moved logic
+ const { isEdit, onSubmit } = useCompanyInformationHandlers(reset);
 
-  //Prevent adding empty rows//
+  // ---------------- Prevent adding empty rows ---------------- //
 
   const watchedContacts = watch("contact");
 
-  const isLastContactFilled = () => {
-    if (!watchedContacts || watchedContacts.length === 0) return true;
-    const last = watchedContacts[watchedContacts.length - 1];
+ const isLastContactFilled = () => {
+  if (!watchedContacts || watchedContacts.length === 0) return true;
 
-    return last?.name?.trim() && last?.phone?.trim() && last?.email?.trim();
-  };
+  
+  if (watchedContacts.length >= COMPANY_INFORMATION_LIMITS.MAX_COMPANY_CONTACTS) {
+    return false;
+  }
+
+  const last = watchedContacts[watchedContacts.length - 1];
+
+  return Boolean(
+    last?.name?.trim() &&
+    last?.phone?.trim() &&
+    last?.email?.trim()
+  );
+};
 
   const watchedBranches = watch("branches");
 
@@ -73,17 +87,10 @@ export default function CompanyInformation() {
 
     const last = watchedBranches[watchedBranches.length - 1];
 
-    // Check branch fields
-    if (!last?.branchName?.trim() || !last?.branchEmail?.trim()) {
-      return false;
-    }
+    if (!last?.branchName?.trim() || !last?.branchEmail?.trim()) return false;
 
-    // Check branch person exists
-    if (!last?.branchContact || last.branchContact.length === 0) {
-      return false;
-    }
+    if (!last?.branchContact || last.branchContact.length === 0) return false;
 
-    // Check last branch person filled
     const lastPerson = last.branchContact[last.branchContact.length - 1];
 
     return (
@@ -93,7 +100,8 @@ export default function CompanyInformation() {
     );
   };
 
-  // Company Contacts
+  // ---------------- Contacts ---------------- //
+
   const {
     fields: contactFields,
     append: addContactPerson,
@@ -103,7 +111,8 @@ export default function CompanyInformation() {
     name: "contact",
   });
 
-  // Branches
+  // ---------------- Branches ---------------- //
+
   const {
     fields: branchFields,
     append: addBranch,
@@ -113,41 +122,7 @@ export default function CompanyInformation() {
     name: "branches",
   });
 
-  const { id } = useParams();
-  console.log("EDIT PARAM ID:", id);
-  const navigate = useNavigate();
-  const isEdit = Boolean(id);
-
-  React.useEffect(() => {
-    if (id) {
-      getCompanyById(Number(id)).then((data) => {
-        reset(data);
-      });
-    }
-  }, [id]);
-
-  // const onsubmit: SubmitHandler<CompanyInformationType> = (data) => {
-  //   console.log("Form Data:", data);
-  // };
-
-  const onsubmit: SubmitHandler<CompanyInformationType> = async (data) => {
-    try {
-      if (isEdit) {
-        await updateCompanyInformation(Number(id), data);
-        showSnackbar("Company updated successfully!", "success");
-      } else {
-        data.createdAt = new Date();
-        await createCompanyInformation(data);
-        showSnackbar("Company information saved successfully!", "success");
-      }
-
-      reset();
-      navigate("/company-information-list");
-    } catch (error) {
-      console.error("Save failed", error);
-      showSnackbar("Something went wrong", "error");
-    }
-  };
+  // ---------------- Accordion ---------------- //
 
   const [companyExpanded, setCompanyExpanded] = React.useState(true);
   const [branchesExpanded, setBranchesExpanded] = React.useState(true);
@@ -158,10 +133,13 @@ export default function CompanyInformation() {
     setBranchesExpanded(next);
   };
 
+  // ======================= RENDER ======================= //
+
   return (
     <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onsubmit)} noValidate>
+      <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
         <Container maxWidth="lg">
+
           <Box
             display="flex"
             justifyContent="center"
@@ -186,7 +164,7 @@ export default function CompanyInformation() {
             />
           </Box>
 
-          {/* Company Details */}
+          {/* ================= Company Details ================= */}
 
           <MyAccordion
             title="Company Details"
@@ -194,7 +172,6 @@ export default function CompanyInformation() {
             expanded={companyExpanded}
             onChange={setCompanyExpanded}
           >
-            {/* <AccordionDetails> */}
             <Grid container spacing={2}>
               <Grid size={{ xs: 12, sm: 6 }}>
                 <MyTextField name="companyName" label="Company Name" required />
@@ -208,7 +185,8 @@ export default function CompanyInformation() {
               </Grid>
             </Grid>
 
-            {/* Company Contacts */}
+            {/* ================= Contacts ================= */}
+
             <Box mt={3}>
               <Box display="flex" justifyContent="space-between" mb={1}>
                 <Typography fontWeight="bold" color="primary">
@@ -256,15 +234,13 @@ export default function CompanyInformation() {
                       Contact Person ({index + 1})
                     </Typography>
 
-                    <Box display="flex" justifyContent="end">
-                      <IconButton
-                        size="small"
-                        color="error"
-                        onClick={() => removeContactPerson(index)}
-                      >
-                        <DeleteIcon fontSize="medium" />
-                      </IconButton>
-                    </Box>
+                    <IconButton
+                      size="small"
+                      color="error"
+                      onClick={() => removeContactPerson(index)}
+                    >
+                      <DeleteIcon fontSize="medium" />
+                    </IconButton>
                   </Box>
 
                   <Grid container spacing={2}>
@@ -305,7 +281,7 @@ export default function CompanyInformation() {
             </Box>
           </MyAccordion>
 
-          {/* Branches */}
+          {/* ================= Branches ================= */}
 
           <MyAccordion
             title="Company Branches "
@@ -314,7 +290,6 @@ export default function CompanyInformation() {
             onChange={setBranchesExpanded}
             count={branchFields.length}
           >
-            {/* <AccordionDetails> */}
             <Box mb={2} display="flex" justifyContent="flex-end">
               <MyButton
                 type="button"
@@ -346,6 +321,7 @@ export default function CompanyInformation() {
                 }}
               />
             </Box>
+
             {branchFields.map((branch, branchIndex) => (
               <Box
                 key={branch.id}
@@ -396,7 +372,6 @@ export default function CompanyInformation() {
                   </Grid>
                 </Grid>
 
-                {/* Branch Contacts */}
                 <BranchContacts
                   nestIndex={branchIndex}
                   control={control}
@@ -405,6 +380,8 @@ export default function CompanyInformation() {
               </Box>
             ))}
           </MyAccordion>
+
+          {/* ================= Buttons ================= */}
 
           <Stack direction="row" spacing={2} justifyContent="center" mt={3}>
             <MyButton
@@ -425,218 +402,212 @@ export default function CompanyInformation() {
     </FormProvider>
   );
 }
-//Nested Component: BranchContacts//
-/* Branch Contacts Component */
-function BranchContacts({ nestIndex, control, watch }: any) {
-  const name = `branches.${nestIndex}.branchContact`;
 
-  const { fields, append, remove } = useFieldArray({ control, name });
 
-  const watched = watch(name);
+// // ================= BranchContacts UNCHANGED ================= //
 
-  const [editingId, setEditingId] = React.useState<string | null>(null);
+// function BranchContacts({ nestIndex, control, watch }: any) {
+//   const name = `branches.${nestIndex}.branchContact`;
 
-  const [newRowId, setNewRowId] = React.useState<string | null>(
-    fields[0]?.id || null,
-  );
+//   const { fields, append, remove } = useFieldArray({ control, name });
 
-  React.useEffect(() => {
-    console.log("FIELDS:", fields);
-    if (fields.length && !editingId) {
-      setEditingId(fields[fields.length - 1].id);
-    }
-  }, [fields]);
+//   const watched = watch(name);
 
-  const isRowFilled = (row: any) =>
-    row?.name?.trim() && row?.phone?.trim() && row?.email?.trim();
+//   const [editingId, setEditingId] = React.useState<string | null>(null);
+//   const [newRowId, setNewRowId] = React.useState<string | null>(
+//     fields[0]?.id || null,
+//   );
 
-  const isLastFilled = () => {
-    if (!watched?.length) return true;
-    if (watched.length >= 5) return false;
-    return isRowFilled(watched[watched.length - 1]);
-  };
+//   React.useEffect(() => {
+//     if (fields.length && !editingId) {
+//       setEditingId(fields[fields.length - 1].id);
+//     }
+//   }, [fields]);
 
-  const isEditingRow = (id: string, index: number) => {
-    const row = watched?.[index];
+//   const isRowFilled = (row: any) =>
+//     row?.name?.trim() && row?.phone?.trim() && row?.email?.trim();
 
-    const isEmptyRow =
-      !row?.name?.trim() || !row?.phone?.trim() || !row?.email?.trim();
+//   const isLastFilled = () => {
+//     if (!watched?.length) return true;
+//     if (watched.length >= 5) return false;
+//     return isRowFilled(watched[watched.length - 1]);
+//   };
 
-    // console.log(editingId === id , 'editingId === id || isEmptyRow',isEmptyRow)
-    return editingId === id || isEmptyRow;
-  };
+//   const isEditingRow = (id: string, index: number) => {
+//     const row = watched?.[index];
+//     const isEmptyRow =
+//       !row?.name?.trim() || !row?.phone?.trim() || !row?.email?.trim();
 
-  const handleAdd = () => {
-    append({
-      name: "",
-      phone: "",
-      email: "",
-      designation: "",
-    });
+//     return editingId === id || isEmptyRow;
+//   };
 
-    setTimeout(() => {
-      const last = fields[fields.length];
-      if (last) {
-        setEditingId(last.id);
-        setNewRowId(last.id);
-      }
-    });
-  };
+//   const handleAdd = () => {
+//     append({
+//       name: "",
+//       phone: "",
+//       email: "",
+//       designation: "",
+//     });
 
-  const handleSave = () => {
-    setEditingId(null);
-    setNewRowId(null);
-  };
+//     const newIndex = fields.length;
 
-  const handleDelete = (index: number) => {
-    remove(index);
-    setEditingId(null);
-    setNewRowId(null);
-  };
+//     requestAnimationFrame(() => {
+//       setEditingId(fields[newIndex]?.id);
+//       setNewRowId(fields[newIndex]?.id);
+//     });
+//   };
 
-  const columns = [
-    {
-      id: "slno",
-      label: "Person",
-      render: (_: any, i: number) => i + 1,
-    },
-    {
-      id: "name",
-      label: "Contact Name",
-      render: (_: any, i: number) =>
-        isEditingRow(fields[i].id, i) ? (
-          <MyTextField
-            name={`${name}.${i}.name`}
-            label="Name"
-            required
-            fullWidth
-            hideErrorText
-          />
-        ) : (
-          <Typography sx={{ textAlign: "left" }}>
-            {watched?.[i]?.name}
-          </Typography>
-        ),
-    },
-    {
-      id: "phone",
-      label: "Phone",
-      render: (_: any, i: number) =>
-        isEditingRow(fields[i].id, i) ? (
-          <MyTextField
-            name={`${name}.${i}.phone`}
-            label="Phone"
-            required
-            fullWidth
-            hideErrorText
-          />
-        ) : (
-          <Typography>{watched?.[i]?.phone}</Typography>
-        ),
-    },
-    {
-      id: "email",
-      label: "Email",
-      render: (_: any, i: number) =>
-        isEditingRow(fields[i].id, i) ? (
-          <MyTextField
-            name={`${name}.${i}.email`}
-            label="Email"
-            required
-            fullWidth
-            hideErrorText
-          />
-        ) : (
-          <Typography>{watched?.[i]?.email}</Typography>
-        ),
-    },
-    {
-      id: "designation",
-      label: "Designation",
-      render: (_: any, i: number) =>
-        isEditingRow(fields[i].id, i) ? (
-          <MyTextField
-            name={`${name}.${i}.designation`}
-            label="Designation"
-            fullWidth
-          />
-        ) : (
-          <Typography> {watched?.[i]?.designation?.trim() || "-"}</Typography>
-        ),
-    },
-    {
-      id: "actions",
-      label: "Actions",
-      render: (_: any, i: number) => {
-        const isNew = newRowId === fields[i].id;
-        // const allFieldsAreEmpty = fields?.every(d=>d?.id)
-        const isAnyEmpty =
-          !watched?.[i]?.name?.trim() ||
-          !watched?.[i]?.email?.trim() ||
-          !watched?.[i]?.phone?.trim();
-        const isEditing = editingId === fields[i].id || isAnyEmpty;
-        // const watchedId =
-        //   !watched?.[i]?.name || !watched[i]?.email || !watched[i]?.phone;
-        // console.log(watchedId, "watched?.[i]");
+//   const handleSave = () => {
+//     setEditingId(null);
+//     setNewRowId(null);
+//   };
 
-        return (
-          <Box display="flex" justifyContent="center" gap={1}>
-            {isEditing && (
-              <IconButton
-                size="small"
-                color="success"
-                disabled={!isRowFilled(watched?.[i])}
-                onClick={handleSave}
-              >
-                <CheckCircleIcon fontSize="small" />
-              </IconButton>
-            )}
+//   const handleDelete = (index: number) => {
+//     remove(index);
+//     setEditingId(null);
+//     setNewRowId(null);
+//   };
 
-            {!isEditing && (
-              <IconButton
-                size="small"
-                color="primary"
-                onClick={() => setEditingId(fields[i].id)}
-              >
-                <EditIcon fontSize="small" />
-              </IconButton>
-            )}
+//   const columns = [
+//     {
+//       id: "slno",
+//       label: "Person",
+//       render: (_: any, i: number) => i + 1,
+//     },
+//     {
+//       id: "name",
+//       label: "Contact Name",
+//       render: (_: any, i: number) =>
+//         isEditingRow(fields[i].id, i) ? (
+//           <MyTextField
+//             name={`${name}.${i}.name`}
+//             label="Name"
+//             required
+//             fullWidth
+//             hideErrorText
+//           />
+//         ) : (
+//           <Typography sx={{ textAlign: "left" }}>
+//             {watched?.[i]?.name}
+//           </Typography>
+//         ),
+//     },
+//     {
+//       id: "phone",
+//       label: "Phone",
+//       render: (_: any, i: number) =>
+//         isEditingRow(fields[i].id, i) ? (
+//           <MyTextField
+//             name={`${name}.${i}.phone`}
+//             label="Phone"
+//             required
+//             fullWidth
+//             hideErrorText
+//           />
+//         ) : (
+//           <Typography>{watched?.[i]?.phone}</Typography>
+//         ),
+//     },
+//     {
+//       id: "email",
+//       label: "Email",
+//       render: (_: any, i: number) =>
+//         isEditingRow(fields[i].id, i) ? (
+//           <MyTextField
+//             name={`${name}.${i}.email`}
+//             label="Email"
+//             required
+//             fullWidth
+//             hideErrorText
+//           />
+//         ) : (
+//           <Typography>{watched?.[i]?.email}</Typography>
+//         ),
+//     },
+//     {
+//       id: "designation",
+//       label: "Designation",
+//       render: (_: any, i: number) =>
+//         isEditingRow(fields[i].id, i) ? (
+//           <MyTextField
+//             name={`${name}.${i}.designation`}
+//             label="Designation"
+//             fullWidth
+//           />
+//         ) : (
+//           <Typography> {watched?.[i]?.designation?.trim() || "-"}</Typography>
+//         ),
+//     },
+//     {
+//       id: "actions",
+//       label: "Actions",
+//       render: (_: any, i: number) => {
+//         const isNew = newRowId === fields[i].id;
+//         const isAnyEmpty =
+//           !watched?.[i]?.name?.trim() ||
+//           !watched?.[i]?.email?.trim() ||
+//           !watched?.[i]?.phone?.trim();
 
-            {!isEditing || !isNew ? (
-              <IconButton
-                size="small"
-                color="error"
-                onClick={() => handleDelete(i)}
-              >
-                <DeleteIcon fontSize="small" />
-              </IconButton>
-            ) : null}
-          </Box>
-        );
-      },
-    },
-  ];
+//         const isEditing = editingId === fields[i].id || isAnyEmpty;
 
-  return (
-    <Box mt={2}>
-      <Box display="flex" justifyContent="end" mb={1}>
-        <MyButton
-          size="small"
-          label="Add Branch Contact"
-          icon={<PersonAddAlt1Icon />}
-          variant="contained"
-          color="primary"
-          disabled={!isLastFilled()}
-          onClick={handleAdd}
-        />
-      </Box>
+//         return (
+//           <Box display="flex" justifyContent="center" gap={1}>
+//             {isEditing && (
+//               <IconButton
+//                 size="small"
+//                 color="success"
+//                 disabled={!isRowFilled(watched?.[i])}
+//                 onClick={handleSave}
+//               >
+//                 <CheckCircleIcon fontSize="small" />
+//               </IconButton>
+//             )}
 
-      <MyTable
-        rows={fields}
-        columns={columns}
-        tableSize="medium"
-        disablePagination
-      />
-    </Box>
-  );
-}
+//             {!isEditing && (
+//               <IconButton
+//                 size="small"
+//                 color="primary"
+//                 onClick={() => setEditingId(fields[i].id)}
+//               >
+//                 <EditIcon fontSize="small" />
+//               </IconButton>
+//             )}
+
+//             {!isEditing || !isNew ? (
+//               <IconButton
+//                 size="small"
+//                 color="error"
+//                 onClick={() => handleDelete(i)}
+//               >
+//                 <DeleteIcon fontSize="small" />
+//               </IconButton>
+//             ) : null}
+//           </Box>
+//         );
+//       },
+//     },
+//   ];
+
+//   return (
+//     <Box mt={2}>
+//       <Box display="flex" justifyContent="end" mb={1}>
+//         <MyButton
+//           size="small"
+//           label="Add Branch Contact"
+//           icon={<PersonAddAlt1Icon />}
+//           variant="contained"
+//           color="primary"
+//           disabled={!isLastFilled()}
+//           onClick={handleAdd}
+//         />
+//       </Box>
+
+//       <MyTable
+//         rows={fields}
+//         columns={columns}
+//         tableSize="medium"
+//         disablePagination
+//       />
+//     </Box>
+//   );
+// }

@@ -20,10 +20,10 @@ type MyTextFieldProps = {
   size?: "small" | "medium";
   sx?: object;
   fullWidth?: boolean;
-  hideErrorText?: boolean;
+  hideErrorText?: boolean;          // show tooltip instead of text
   icon?: ReactNode;
 
-  value?: string;
+  value?: string;                   //on change for standalone mode//
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
@@ -43,9 +43,9 @@ const MyTextField = ({
   hideErrorText,
   icon,
 }: MyTextFieldProps) => {
-  const formContext = useFormContext();
+  const formContext = useFormContext();        //get React Hook Form context//
 
-  /* ================= Standalone mode ================= */
+//standalone mode no react hook form//
   if (!name || !formContext) {
     return (
       <TextField
@@ -73,7 +73,7 @@ const MyTextField = ({
     );
   }
 
-  /* ================= Form mode ================= */
+ //form mode//
   const {
     control,
     formState: { errors },
@@ -100,6 +100,8 @@ const MyTextField = ({
           rows={rows}
           error={!!error}
           helperText={hideErrorText ? undefined : error?.message}
+
+          //tooltip error mode//
 
           InputProps={{
             endAdornment: hideErrorText && error && (

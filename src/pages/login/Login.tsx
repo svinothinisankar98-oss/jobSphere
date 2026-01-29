@@ -1,81 +1,48 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Grid,
   Box,
   Paper,
   Typography,
-  useMediaQuery,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 
-import CommonTextField from "../../Components/ui/CommonTextField";
-import { validateField } from "../../utils/validationService";
+
+
+import {
+  useForm,
+  FormProvider,
+} from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+
 import { useUserService } from "../../hooks/useUserService";
 import { authStorage } from "../../utils/authStorage";
 import { useSnackbar } from "../../Components/newui/MySnackBar";
 import MyButton from "../../Components/newui/MyButton";
-import { alignItems, justifyContent } from "@mui/system";
+
+import { loginSchema } from "../../schemas/LoginSchemas";
+import MyTextField from "../../Components/newui/MyTextField";
 
 const { getUserByEmail, getEmployerByEmail } = useUserService();
+
+
 
 type LoginForm = {
   email: string;
   password: string;
 };
 
-type LoginErrors = {
-  email?: string;
-  password?: string;
-};
-
 const Login = () => {
   const navigate = useNavigate();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-
   const { showSnackbar } = useSnackbar();
 
-  const [form, setForm] = useState<LoginForm>({
-    email: "",
-    password: "",
+  const methods = useForm<LoginForm>({
+    resolver: yupResolver(loginSchema),
+    mode: "onChange",
   });
 
-  const [errors, setErrors] = useState<LoginErrors>({});
+  const { handleSubmit, formState: { isSubmitting } } = methods;
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-
-    setForm((prev) => ({ ...prev, [name]: value }));
-
-    const errorMsg = validateField(name, value);
-    setErrors((prev) => ({ ...prev, [name]: errorMsg }));
-  };
-
-  const validateForm = (): boolean => {
-    const newErrors: LoginErrors = {};
-
-    (Object.keys(form) as (keyof LoginForm)[]).forEach((key) => {
-      const error = validateField(key, form[key], form);
-      if (error) newErrors[key] = error;
-    });
-
-    setErrors(newErrors);
-
-    if (Object.keys(newErrors).length > 0) {
-     
-      return false;
-    }
-
-    return true;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validateForm()) return;
-
+  const onSubmit = async (form: LoginForm) => {
     try {
       const user = await getUserByEmail(form.email);
       const employer = await getEmployerByEmail(form.email);
@@ -102,7 +69,6 @@ const Login = () => {
           id: user?.id,
           email: user?.email,
         });
-
         showSnackbar("Login successful", "success");
         navigate("/");
       } else if (userType === 3) {
@@ -114,82 +80,68 @@ const Login = () => {
   };
 
   return (
-    <Grid container minHeight="100vh" bgcolor="#fff">
-      {/* LEFT IMAGE */}
-      <Grid size={{xs:12,md:6}}
-        
-        display={{ xs: "auto", md: "flex" }}
-        alignItems="center"
-        justifyContent="center"
-        px={6}
+    <Grid
+      container
+      minHeight="80vh"
+      alignItems="center"
+      justifyContent="center"
+      
+    >
+      <Paper
+        elevation={0}
+        sx={{
+          width: "100%",
+          maxWidth: 460,
+          p: { xs: 3, sm: 4 },
+          borderRadius: 4,
+          
+          boxShadow: "0 12px 40px rgba(0,0,0,0.08)",
+          border: "1px solid rgba(0,0,0,0.06)",
+        }}
       >
-        <Box
-          component="img"
-          src="/image/jobSearch.png"
-          sx={{ maxWidth: 420, width: "100%" }}
-        />
-      </Grid>
-
-      {/* RIGHT FORM */}
-      <Grid size={{xs:12,md:6}}
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        px={{ xs: 2, sm: 4 }}
-      >
-        <Paper
-          elevation={0}
-          sx={{
-            width: "100%",
-            maxWidth: 460,
-            p: { xs: 3, sm: 4 },
-            borderRadius: 3,
-            border: "1px solid #e0e0e0",
-          }}
+        <Typography
+          variant="h4"
+          textAlign="center"
+          fontWeight={600}
+          mb={3}
+          sx={{ color: "#3a2ee3" }}
         >
-          <Typography
-            variant="h4"
-            textAlign="center"
-            fontWeight={600}
-            color="#3a2ee3"
-            mb={3}
-          >
-            Login
-          </Typography>
+          Welcome Back
+        </Typography>
 
-          <Box component="form" onSubmit={handleSubmit}>
-            <CommonTextField
+        <FormProvider {...methods}>
+          <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
+            <MyTextField
               name="email"
-              placeholder="Email address"
-              value={form.email}
-              onChange={handleChange}
-              error={errors.email}
+                label="Email address"
+                fullWidth
+             size="medium"
+              required
               sx={{
                 mb: 2,
-                "& input": { padding: "14px" },
+               
                 
-                borderRadius: 1.5,
               }}
             />
 
-            <CommonTextField
+            <MyTextField
               name="password"
-              type="password"
-              placeholder="Password"
-              value={form.password}
-              onChange={handleChange}
-              error={errors.password}
+               type="password"
+                label="Password"
+                size="medium"
+              fullWidth
+              required
+              
               sx={{
                 mb: 2,
-                "& input": { padding: "14px" },
+                
                
-                borderRadius: 1.5,
               }}
             />
 
             <Typography
               textAlign="right"
-              color="#0e0bb3"
+              color="#3a2ee3"
               fontSize={14}
               sx={{ cursor: "pointer", mb: 3 }}
               onClick={() => navigate("/forgot-password")}
@@ -197,49 +149,45 @@ const Login = () => {
               Forgot password?
             </Typography>
 
-           <Box
-  display="flex"
-  justifyContent="center"
-   mt={{ xs: 2, sm: 3 }}
->
-  <MyButton
-    label="Login"
-    type="submit"
-    variant="contained"
-    color="primary"
-    sx={{
-      minWidth: 160,
-      height: 45,
-      fontWeight: 600,
-    }}
-  />
-</Box>
+            <Box display="flex" justifyContent="center">
+              <MyButton
+                label="Login"
+                type="submit"
+                
+                sx={{
+                  minWidth: 180,
+                  height: 46,
+                  fontWeight: 600,
+                  borderRadius: 12,
+                  transition: "0.25s",
+                  "&:hover": {
+                    transform: "translateY(-2px)",
+                    boxShadow: "0 8px 20px rgba(58,46,227,.35)",
+                  },
+                }}
+              />
+            </Box>
 
-<Typography
-  textAlign="center"
-  mt={3}
-  color="text.secondary"
->
-  New to this portal?
-</Typography>
+            <Typography textAlign="center" mt={3} color="text.secondary">
+              New to this portal?
+            </Typography>
 
-<Typography
-  textAlign="center"
-  color="primary.main"
-  fontWeight={600}
-  sx={{
-    cursor: "pointer",
-    mt: 0.5,
-    "&:hover": { textDecoration: "underline" },
-  }}
-  onClick={() => navigate("/register")}
->
-  REGISTER HERE
-</Typography>
-
+            <Typography
+              textAlign="center"
+              color="#3a2ee3"
+              fontWeight={600}
+              sx={{
+                cursor: "pointer",
+                mt: 0.5,
+                "&:hover": { textDecoration: "underline" },
+              }}
+              onClick={() => navigate("/job-seeker-register")}
+            >
+              REGISTER HERE
+            </Typography>
           </Box>
-        </Paper>
-      </Grid>
+        </FormProvider>
+      </Paper>
     </Grid>
   );
 };
