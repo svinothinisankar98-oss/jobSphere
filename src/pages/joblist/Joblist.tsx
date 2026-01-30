@@ -12,11 +12,14 @@ import {
   CircularProgress,
   Paper,
   Stack,
+  Chip,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 
 import SearchSection from "../home/SearchSection";
 
-/* Job Type */
+/* Types */
 type Job = {
   id: number;
   title: string;
@@ -41,20 +44,21 @@ const JobList = () => {
   const [error, setError] = useState("");
   const [activeJob, setActiveJob] = useState<Job | null>(null);
 
+  /* Filters */
+  const [remoteOnly, setRemoteOnly] = useState(false);
+  const [jobType, setJobType] = useState("");
+  const [salaryRange, setSalaryRange] = useState("");
+
+  /* Fetch */
   const fetchJobs = async () => {
     try {
       setLoading(true);
-      setError("");
-      const response = await axios.get("http://localhost:4000/jobs");
-      const data = Array.isArray(response.data) ? response.data : [];
+      const res = await axios.get("http://localhost:4000/jobs");
+      const data = Array.isArray(res.data) ? res.data : [];
       setJobs(data);
-
-      // auto select first job (optional UX improvement)
       if (data.length) setActiveJob(data[0]);
-    } catch (err) {
-      console.error(err);
+    } catch {
       setError("Failed to load jobs");
-      setJobs([]);
     } finally {
       setLoading(false);
     }
@@ -64,6 +68,7 @@ const JobList = () => {
     fetchJobs();
   }, []);
 
+  /* Filtering */
   const filteredJobs = useMemo(() => {
     return jobs.filter((job) => {
       const titleMatch =
@@ -73,13 +78,19 @@ const JobList = () => {
       const stateMatch =
         !selectedState || job.state === selectedState;
 
-      return titleMatch && stateMatch;
+      const remoteMatch =
+        !remoteOnly || job.tags.includes("remote");
+
+      const typeMatch =
+        !jobType || job.tags.includes(jobType);
+
+      return titleMatch && stateMatch && remoteMatch && typeMatch;
     });
-  }, [jobs, searchText, selectedState]);
+  }, [jobs, searchText, selectedState, remoteOnly, jobType]);
 
   return (
     <Box px={{ xs: 2, md: 4 }} py={2}>
-      {/* Search Section */}
+      {/* Search */}
       <SearchSection
         search={searchText}
         setSearch={setSearchText}
@@ -88,11 +99,43 @@ const JobList = () => {
         onSearch={() => {}}
       />
 
+      {/* FILTER BAR */}
+      <Box mt={2} marginLeft={10} >
+        <Stack direction="row" spacing={1} flexWrap="wrap">
+          <Chip
+            label={remoteOnly ? "Remote ✓" : "Remote"}
+            clickable
+            color={remoteOnly ? "primary" : "default"}
+            onClick={() => setRemoteOnly((p) => !p)}
+          />
+
+          <Chip 
+            label={jobType || "Job Type"}
+            clickable
+            onClick={() =>
+              setJobType(jobType === "fulltime" ? "" : "fulltime")
+            }
+            color={jobType ? "primary" : "default"}
+          />
+
+          <Chip
+            label="Clear Filters"
+            onClick={() => {
+              setRemoteOnly(false);
+              setJobType("");
+              setSalaryRange("");
+            }}
+            variant="outlined"
+          />
+        </Stack>
+      </Box>
+
       <Grid container spacing={2} mt={2}>
-        {/* LEFT – Job List */}
-        
-          <Grid size = {{xs:12,md:5}}>
-          <Paper elevation={1} sx={{ p: 2, height: "100%",  ml: "50px" }}>
+
+        {/* LEFT LIST */}
+       
+          <Grid size={{xs:12,md:5}}>
+          <Paper sx={{ p: 2, height: "75vh", overflow: "auto" ,marginLeft:5 }}>
             {loading && (
               <Stack alignItems="center" py={4}>
                 <CircularProgress />
@@ -120,16 +163,18 @@ const JobList = () => {
                       activeJob?.id === job.id
                         ? "primary.main"
                         : "divider",
-                    "&:hover": { boxShadow: 3 },
+                    "&:hover": { boxShadow: 4 },
                   }}
                 >
                   <CardContent>
-                    <Typography variant="subtitle1" fontWeight={600}>
+                    <Typography fontWeight={600}>
                       {job.title}
                     </Typography>
+
                     <Typography variant="body2">
                       {job.company}
                     </Typography>
+
                     <Typography variant="caption" color="text.secondary">
                       {job.location}, {job.state}
                     </Typography>
@@ -140,10 +185,18 @@ const JobList = () => {
           </Paper>
         </Grid>
 
-        {/* RIGHT – Job Details */}
-      
-          <Grid size = {{xs:12, md:7}}>
-          <Paper elevation={1} sx={{ p: 3, height: "100%" , mr: "20px"}}>
+        {/* RIGHT PREVIEW */}
+     
+          <Grid size={{xs:12,md:7}}>
+          <Paper
+            sx={{
+              p: 3,
+              height: "75vh",
+              overflow: "auto",
+              position: "sticky",
+              top: 16,
+            }}
+          >
             {activeJob ? (
               <>
                 <Typography variant="h5" fontWeight={600}>
@@ -167,7 +220,7 @@ const JobList = () => {
                 </Button>
 
                 <Box mt={3}>
-                  <Typography variant="subtitle1" fontWeight={600}>
+                  <Typography fontWeight={600}>
                     Job Description
                   </Typography>
                   <Typography mt={1}>
@@ -177,7 +230,7 @@ const JobList = () => {
               </>
             ) : (
               <Typography color="text.secondary">
-                Select a job to see details
+                Select a job
               </Typography>
             )}
           </Paper>

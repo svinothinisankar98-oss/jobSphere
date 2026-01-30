@@ -19,7 +19,7 @@ type Props = {
   rows?: number;
   startIcon?: React.ReactNode;
   endIcon?: React.ReactNode;
-  sx?: SxProps<Theme>;   // ✅ correct type
+  sx?: SxProps<Theme>;  
   onChange?: (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;

@@ -18,6 +18,7 @@ import PersonIcon from "@mui/icons-material/Person";
 
 import { authStorage } from "../utils/authStorage";
 import MyButton from "../Components/newui/MyButton";
+import { fontWeight } from "@mui/system";
 
 type AuthUser = {
   id: number;
@@ -62,7 +63,7 @@ export default function Header() {
             to="/"
             sx={{
               textDecoration: "none",
-              color: "primary.main",
+              color: "blue",
               fontWeight: "bold",
               fontSize: { xs: "1rem", md: "1.25rem" },
             }}
@@ -76,13 +77,13 @@ export default function Header() {
             spacing={3}
             sx={{ display: { xs: "none", md: "flex" } }}
           >
-            <Button component={Link} to="/" color="inherit">
+            <Button component={Link} to="/" color="inherit"   sx={{ fontWeight: 600 }}>
               Home
             </Button>
-            <Button component={Link} to="/jobs" color="inherit">
+            <Button component={Link} to="/jobs" color="inherit"  sx={{ fontWeight: 600 }}>
               Jobs
             </Button>
-            <Button component={Link} to="/company" color="inherit">
+            <Button component={Link} to="/company" color="inherit"  sx={{ fontWeight: 600 }}>
               Company
             </Button>
           </Stack>
@@ -97,6 +98,7 @@ export default function Header() {
                 icon={<AccountCircleIcon />}
                 onClick={handleLogin}
                 label="Login"
+                sx={{ fontWeight: "600" }}
               />
 
               <MyButton
@@ -104,6 +106,7 @@ export default function Header() {
                 icon={<PersonAddIcon />}
                 onClick={(e) => setRegisterAnchor(e.currentTarget)}
                 label="Register"
+                sx={{ fontWeight: "600" }}
               />
 
               <Menu
@@ -111,14 +114,14 @@ export default function Header() {
                 open={Boolean(registerAnchor)}
                 onClose={() => setRegisterAnchor(null)}
               >
-                <MenuItem
+                <MenuItem sx={{ fontWeight: "600" }}
                   component={Link}
                   to="/employer-register"
                   onClick={() => setRegisterAnchor(null)}
                 >
                   Employer
                 </MenuItem>
-                <MenuItem
+                <MenuItem sx={{ fontWeight: "600" }}
                   component={Link}
                   to="/job-seeker-register"
                   onClick={() => setRegisterAnchor(null)}

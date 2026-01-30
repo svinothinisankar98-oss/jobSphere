@@ -31,8 +31,8 @@ const Footer = () => {
           {/* Center */}
           <Typography
             variant="body2"
-            color="text.secondary"
-            sx={{ textAlign: "center" }}
+            
+            sx={{ textAlign: "center", fontWeight:"500" }}
           >
             © {new Date().getFullYear()} Copyright JobSphere
           </Typography>

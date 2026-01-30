@@ -374,7 +374,7 @@ const EmployerList = () => {
               placeholder="Company Name"
               value={companyName}
               onChange={(e) => setCompanyName(e.target.value)}
-              name={""}
+              name="Company Name"
             />
           </Grid>
 

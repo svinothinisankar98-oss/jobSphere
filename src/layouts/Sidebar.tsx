@@ -21,7 +21,7 @@ import ListAltIcon from "@mui/icons-material/ListAlt";
 import DomainIcon from "@mui/icons-material/Domain";
 import ApartmentIcon from "@mui/icons-material/Apartment";
 
-const drawerWidth = 200;
+const drawerWidth = 250;
 const collapsedWidth = 70;
 
 export default function Sidebar() {
@@ -46,20 +46,19 @@ export default function Sidebar() {
     }
   }, [open, isMobile]);
 
-  const toggleDrawer = () => setOpen(prev => !prev);
+  const toggleDrawer = () => setOpen((prev) => !prev);
 
   const navItemStyle = (active: boolean) => ({
     borderRadius: 2,
     mx: 0.5,
     mb: 0.5,
-    transition: "background-color 0.2s ease",
 
-    "&:hover": {
-      backgroundColor: "#e3f2fd",
-    },
+    // "&:hover": {
+    //   backgroundColor: "#e3f2fd",
+    // },
 
     ...(active && {
-      backgroundColor: "#bbdefb",
+      backgroundColor: "#3690da",
     }),
   });
 
@@ -109,16 +108,20 @@ export default function Sidebar() {
         </Box>
 
         {/* Navigation */}
-        <List sx={{ px: 1 }}>
-          <ListItemButton
+        <List sx={{ px: 0 }}>
+          <ListItemButton 
             component={Link}
             to="/"
             selected={isActive("/")}
             sx={navItemStyle(isActive("/"))}
             onClick={isMobile ? toggleDrawer : undefined}
           >
-            <ListItemIcon>
-              <HomeIcon color="primary" />
+            <ListItemIcon
+              sx={{
+                minWidth: 36,
+              }}
+            >
+              <HomeIcon htmlColor="blue" />
             </ListItemIcon>
             {open && <ListItemText primary="Home" />}
           </ListItemButton>
@@ -129,8 +132,13 @@ export default function Sidebar() {
             selected={isActive("/jobs")}
             sx={navItemStyle(isActive("/jobs"))}
           >
-            <ListItemIcon>
-              <WorkIcon color="primary" />
+            <ListItemIcon
+            sx={{
+                minWidth: 36,
+              }}
+            
+            >
+              <WorkIcon htmlColor="blue" />
             </ListItemIcon>
             {open && <ListItemText primary="Jobs" />}
           </ListItemButton>
@@ -141,8 +149,12 @@ export default function Sidebar() {
             selected={isActive("/companies")}
             sx={navItemStyle(isActive("/companies"))}
           >
-            <ListItemIcon>
-              <ApartmentIcon color="primary" />
+            <ListItemIcon
+            
+            sx={{
+                minWidth: 36,
+              }}>
+              <ApartmentIcon htmlColor="blue" />
             </ListItemIcon>
             {open && <ListItemText primary="Companies" />}
           </ListItemButton>
@@ -153,8 +165,12 @@ export default function Sidebar() {
             selected={isActive("/Employer-List")}
             sx={navItemStyle(isActive("/Employer-List"))}
           >
-            <ListItemIcon>
-              <GroupIcon color="primary" />
+            <ListItemIcon
+            
+            sx={{
+                minWidth: 36,
+              }}>
+              <GroupIcon htmlColor="blue" />
             </ListItemIcon>
             {open && <ListItemText primary="Employer List" />}
           </ListItemButton>
@@ -165,8 +181,12 @@ export default function Sidebar() {
             selected={isActive("/company-information")}
             sx={navItemStyle(isActive("/company-information"))}
           >
-            <ListItemIcon>
-              <DomainIcon color="primary" />
+            <ListItemIcon
+            
+            sx={{
+                minWidth: 36,
+              }}>
+              <DomainIcon htmlColor="blue" />
             </ListItemIcon>
             {open && <ListItemText primary="Company Information" />}
           </ListItemButton>
@@ -177,8 +197,12 @@ export default function Sidebar() {
             selected={isActive("/company-information-list")}
             sx={navItemStyle(isActive("/company-information-list"))}
           >
-            <ListItemIcon>
-              <ListAltIcon color="primary" />
+            <ListItemIcon
+            
+            sx={{
+                minWidth: 36,
+              }}>
+              <ListAltIcon htmlColor="blue" />
             </ListItemIcon>
             {open && <ListItemText primary="Company Information List" />}
           </ListItemButton>
