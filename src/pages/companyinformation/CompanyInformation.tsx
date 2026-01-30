@@ -11,9 +11,6 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-
-
-
 import MyTextField from "../../Components/newui/MyTextField";
 import MyButton from "../../Components/newui/MyButton";
 import MyFileUpload from "../../Components/newui/MyFileupLoad";
@@ -22,12 +19,7 @@ import AddBusinessIcon from "@mui/icons-material/AddBusiness";
 
 import BranchContacts from "../companyinformation/BranchContacts";
 
-import {
-  useForm,
-  FormProvider,
-  useFieldArray,
- 
-} from "react-hook-form";
+import { useForm, FormProvider, useFieldArray } from "react-hook-form";
 
 import type { CompanyInformationType } from "../../types/companyInformation";
 import { CompanyInformationdefault } from "./defaultvalues/CompanyInformationdefault";
@@ -35,18 +27,15 @@ import { companyInformationSchema } from "../../schemas/companyInformationSchema
 import { yupResolver } from "@hookform/resolvers/yup";
 import React from "react";
 
-
 import MyAccordion from "../../Components/newui/MyAccordion";
 
-// ✅ NEW hook (only addition)
+//  use Hook for companyinformation handlers//
 import { useCompanyInformationHandlers } from "../../hooks/companyinformation/useCompanyInformationHandler";
 import { COMPANY_INFORMATION_LIMITS } from "../../constants/CompanyInformationConstant";
 
-
-// ======================= MAIN ======================= //
+//component//
 
 export default function CompanyInformation() {
-
   const methods = useForm<CompanyInformationType>({
     defaultValues: CompanyInformationdefault,
     resolver: yupResolver(companyInformationSchema),
@@ -56,29 +45,30 @@ export default function CompanyInformation() {
   // helpers
   const { control, watch, setFocus, reset } = methods;
 
-  // ✅ only moved logic
- const { isEdit, onSubmit } = useCompanyInformationHandlers(reset);
+ //is edit and onsubmit for handlers//
+  const { isEdit, onSubmit } = useCompanyInformationHandlers(reset);
 
-  // ---------------- Prevent adding empty rows ---------------- //
+  //  Prevent adding empty rows  //
 
   const watchedContacts = watch("contact");
 
- const isLastContactFilled = () => {
-  if (!watchedContacts || watchedContacts.length === 0) return true;
+  const isLastContactFilled = () => {
+    if (!watchedContacts || watchedContacts.length === 0) return true;
 
+    if (
+      watchedContacts.length >= COMPANY_INFORMATION_LIMITS.MAX_COMPANY_CONTACTS    //constants default set//
+    ) {
+      return false;
+    }
+
+    const last = watchedContacts[watchedContacts.length - 1];
+
+    return Boolean(
+      last?.name?.trim() && last?.phone?.trim() && last?.email?.trim(),
+    );
+  };
   
-  if (watchedContacts.length >= COMPANY_INFORMATION_LIMITS.MAX_COMPANY_CONTACTS) {
-    return false;
-  }
-
-  const last = watchedContacts[watchedContacts.length - 1];
-
-  return Boolean(
-    last?.name?.trim() &&
-    last?.phone?.trim() &&
-    last?.email?.trim()
-  );
-};
+  //watch branches//
 
   const watchedBranches = watch("branches");
 
@@ -100,7 +90,7 @@ export default function CompanyInformation() {
     );
   };
 
-  // ---------------- Contacts ---------------- //
+  // Contacts//
 
   const {
     fields: contactFields,
@@ -111,7 +101,7 @@ export default function CompanyInformation() {
     name: "contact",
   });
 
-  // ---------------- Branches ---------------- //
+  // Branches //
 
   const {
     fields: branchFields,
@@ -122,10 +112,12 @@ export default function CompanyInformation() {
     name: "branches",
   });
 
-  // ---------------- Accordion ---------------- //
+  //  Accordion //
 
   const [companyExpanded, setCompanyExpanded] = React.useState(true);
   const [branchesExpanded, setBranchesExpanded] = React.useState(true);
+
+  //golobal expand all//
 
   const handleGlobalToggle = () => {
     const next = !(companyExpanded && branchesExpanded);
@@ -133,13 +125,12 @@ export default function CompanyInformation() {
     setBranchesExpanded(next);
   };
 
-  // ======================= RENDER ======================= //
+  // Render//
 
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
         <Container maxWidth="lg">
-
           <Box
             display="flex"
             justifyContent="center"
@@ -164,7 +155,7 @@ export default function CompanyInformation() {
             />
           </Box>
 
-          {/* ================= Company Details ================= */}
+          {/*  Company Details */}
 
           <MyAccordion
             title="Company Details"
@@ -185,7 +176,7 @@ export default function CompanyInformation() {
               </Grid>
             </Grid>
 
-            {/* ================= Contacts ================= */}
+            {/*  Contacts */}
 
             <Box mt={3}>
               <Box display="flex" justifyContent="space-between" mb={1}>
@@ -281,7 +272,7 @@ export default function CompanyInformation() {
             </Box>
           </MyAccordion>
 
-          {/* ================= Branches ================= */}
+          {/*  Branches */}
 
           <MyAccordion
             title="Company Branches "
@@ -381,7 +372,7 @@ export default function CompanyInformation() {
             ))}
           </MyAccordion>
 
-          {/* ================= Buttons ================= */}
+          {/*  Buttons */}
 
           <Stack direction="row" spacing={2} justifyContent="center" mt={3}>
             <MyButton
@@ -402,7 +393,6 @@ export default function CompanyInformation() {
     </FormProvider>
   );
 }
-
 
 // // ================= BranchContacts UNCHANGED ================= //
 

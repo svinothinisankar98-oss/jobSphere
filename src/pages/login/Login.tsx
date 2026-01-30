@@ -19,7 +19,7 @@ import { authStorage } from "../../utils/authStorage";
 import { useSnackbar } from "../../Components/newui/MySnackBar";
 import MyButton from "../../Components/newui/MyButton";
 
-import { loginSchema } from "../../schemas/LoginSchemas";
+import { loginSchema } from "../../schemas/loginSchemas";
 import MyTextField from "../../Components/newui/MyTextField";
 
 const { getUserByEmail, getEmployerByEmail } = useUserService();
@@ -40,7 +40,7 @@ const Login = () => {
     mode: "onChange",
   });
 
-  const { handleSubmit, formState: { isSubmitting } } = methods;
+  const { handleSubmit, formState: {  } } = methods;
 
   const onSubmit = async (form: LoginForm) => {
     try {

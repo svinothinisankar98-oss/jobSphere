@@ -1,10 +1,13 @@
 import * as yup from "yup";
+import { InvalidEmailMessage, RequiredMessage } from "../constants/ValidationMessages";
 
 export const loginSchema = yup.object({
-  email: yup
-    .string()
-    .required("Email is required")
-    .email("Enter valid email"),
+ 
+
+      email: yup
+        .string()
+        .email(InvalidEmailMessage)
+        .required(RequiredMessage("Email")),
   password: yup
     .string()
     .required("Password is required")

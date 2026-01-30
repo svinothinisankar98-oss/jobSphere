@@ -37,7 +37,7 @@ import MyDialog from "../../../Components/newui/MyDialog";
 import MyTabs from "../../../Components/newui/MyTab";
 
 import { useEmployerListHandlers } from "../../../hooks/employer/useEmployerListHandlers";
-import type { borderRadius } from "@mui/system";
+
 
 import { Switch, FormControlLabel } from "@mui/material";
 
@@ -89,44 +89,7 @@ const EmployerList = () => {
     pendingRows,
   } = useEmployerListHandlers(updateUser, showSnackbar);
 
-  //data loading tab change//
-
-  // const loadDefaultData = async () => {
-  //   try {
-  //     setLoading(true);
-  //     // const response = await getRecruiterDetails();
-  //     handleSearch();
-
-  //     // const active = response.filter((d) => d.isActive === true);
-  //     // const inactive = response.filter((d) => d.isActive === false);
-
-  //     // console.log(active?.length, "active");
-
-  //     // setActiveCount(active.length);
-  //     // setInactiveCount(inactive.length);
-
-  //     // const tabFiltered = activeTab === 0 ? active : inactive;
-  //     // setData(tabFiltered);
-
-  //     // let tabFiltered = [] as any;
-
-  //     // if (activeTab === 0) {
-  //     //   tabFiltered = response;
-  //     // } else if (activeTab === 1) {
-  //     //   tabFiltered = active;
-  //     // } else if (activeTab === 2) {
-  //     //   tabFiltered = inactive;
-  //     // }
-
-  //     // setData(tabFiltered);
-  //   } catch (err) {
-  //     console.error(err);
-  //     setData([]);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
+ 
   // clear//
   const handleClear = async () => {
     setCompanyName("");
@@ -231,11 +194,7 @@ const EmployerList = () => {
         );
       });
 
-      // const tabFiltered = filtered.filter((d: employerRegisterType) =>
-      //   activeTab === 0 ? d.isActive === true : d.isActive === false
-      // );
-
-      // setData(tabFiltered);
+      
 
       let tabFiltered = [] as any;
 

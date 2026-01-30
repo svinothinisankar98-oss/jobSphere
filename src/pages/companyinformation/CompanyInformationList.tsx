@@ -1,4 +1,5 @@
 import React from "react";
+import { useState,useEffect } from "react";
 import {
   Box,
   Collapse,
@@ -30,19 +31,22 @@ import type { CompanyInformationType } from "../../types/companyInformation";
 import { useCompanyInformation } from "../../hooks/companyinformation/useCompanyInformation";
 import { useNavigate } from "react-router-dom";
 import { formatDate } from "../../utils/dateFormatter";
-import ContactsIcon from "@mui/icons-material/Contacts";
+
 
 import PreviewCompanyInfoList from "../companyinformation/PreviewCompanyInfoList";
 export default function CompanyInformationList() {
-  const [rows, setRows] = React.useState<CompanyInformationType[]>([]);
-  const [openDialog, setOpenDialog] = React.useState(false);
-  const [deleteId, setDeleteId] = React.useState<number | null>(null);
-  const [search, setSearch] = React.useState("");
+
+  //use state set//
+
+  const [rows, setRows] = useState<CompanyInformationType[]>([]);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [search, setSearch] = useState("");
 
   const [previewRow, setPreviewRow] =
-    React.useState<CompanyInformationType | null>(null);
+    useState<CompanyInformationType | null>(null);
 
-  const [expandAll, setExpandAll] = React.useState(false);
+  const [expandAll, setExpandAll] = useState(false);
 
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
@@ -50,7 +54,7 @@ export default function CompanyInformationList() {
   const { getAllCompanyInformation, deleteCompanyInformation } =
     useCompanyInformation();
 
-  React.useEffect(() => {
+  useEffect(() => {
     loadCompanies();
   }, []);
 
@@ -198,9 +202,9 @@ function CompanyRow({
   onEdit: () => void;
   onPreview: () => void;
 }) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setOpen(expandAll);
   }, [expandAll]);
 
@@ -289,7 +293,7 @@ function CompanyRow({
 /* ================= BRANCH ROW ================= */
 
 function BranchRow({ branch }: any) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   return (
     <>

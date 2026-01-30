@@ -3,6 +3,8 @@ import { companyInformationService } from "../../service/companyInformation";
 
 export const useCompanyInformation = () => {
 
+  //create company information//
+
   const createCompanyInformation = async (data: CompanyInformationType) => {
     try {
       return await companyInformationService.createCompanyInformation(data);
@@ -11,6 +13,8 @@ export const useCompanyInformation = () => {
       throw error;
     }
   };
+
+  //get all company informationlist//
 
   const getAllCompanyInformation = async (): Promise<CompanyInformationType[]> => {
     try {
@@ -21,6 +25,8 @@ export const useCompanyInformation = () => {
     }
   };
 
+  //get company information by id//
+
   const getCompanyById = async (id: number): Promise<CompanyInformationType> => {
     try {
       return await companyInformationService.getCompanyById(id);
@@ -29,6 +35,8 @@ export const useCompanyInformation = () => {
       throw error;
     }
   };
+
+  //update the company information//
 
   const updateCompanyInformation = async (
     id: number,
@@ -42,6 +50,9 @@ export const useCompanyInformation = () => {
     }
   };
 
+
+  // delete company information//
+  
   const deleteCompanyInformation = async (id: number) => {
     try {
       await companyInformationService.deleteCompanyInformation(id);

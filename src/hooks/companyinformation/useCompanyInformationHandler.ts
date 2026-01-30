@@ -21,7 +21,7 @@ export function useCompanyInformationHandlers(reset: any) {
 
   const { showSnackbar } = useSnackbar();
 
-  // 🔹 Fetch company when editing
+  //  Fetch company when editing
   React.useEffect(() => {
     if (!id) return;
 
@@ -30,7 +30,7 @@ export function useCompanyInformationHandlers(reset: any) {
     });
   }, [id]);
 
-  // 🔹 Submit logic
+  //  Submit logic
   const onSubmit: SubmitHandler<CompanyInformationType> = async (data) => {
     try {
       if (isEdit) {

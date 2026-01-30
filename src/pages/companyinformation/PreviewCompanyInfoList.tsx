@@ -3,7 +3,7 @@ import ContactsIcon from "@mui/icons-material/Contacts";
 
 import MyTable from "../../Components/newui/MyTable";
 import type { CompanyInformationType } from "../../types/companyInformation";
-import { alignItems, justifyContent } from "@mui/system";
+
 import BusinessIcon from "@mui/icons-material/Business";
 
 export default function PreviewCompanyInfoList({

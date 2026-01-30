@@ -1,4 +1,5 @@
 import React from "react";
+import { useState,useEffect } from "react";
 import { Box, Typography, IconButton } from "@mui/material";
 
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
@@ -15,7 +16,7 @@ import MyTable from "../../Components/newui/MyTable";
 
 import { COMPANY_INFORMATION_LIMITS } from "../../constants/CompanyInformationConstant";
 
-// ⚠️ EXACT logic moved — nothing changed
+//  Branch Contacts//
 
 export default function BranchContacts({ nestIndex, control, watch }: any) {
 
@@ -25,13 +26,15 @@ export default function BranchContacts({ nestIndex, control, watch }: any) {
 
   const watched = watch(name);
 
-  const [editingId, setEditingId] = React.useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
-  const [newRowId, setNewRowId] = React.useState<string | null>(
+  const [newRowId, setNewRowId] = useState<string | null>(
     fields[0]?.id || null,
   );
 
-  React.useEffect(() => {
+  //Auto edit newly added row//
+
+useEffect(() => {
     if (fields.length && !editingId) {
       setEditingId(fields[fields.length - 1].id);
     }
@@ -49,6 +52,8 @@ export default function BranchContacts({ nestIndex, control, watch }: any) {
     return isRowFilled(watched[watched.length - 1]);
   };
 
+  //row is editmode//
+
   const isEditingRow = (id: string, index: number) => {
     const row = watched?.[index];
     const isEmptyRow =
@@ -56,6 +61,8 @@ export default function BranchContacts({ nestIndex, control, watch }: any) {
 
     return editingId === id || isEmptyRow;
   };
+
+  //append new row//
 
   const handleAdd = () => {
     append({
@@ -73,10 +80,14 @@ export default function BranchContacts({ nestIndex, control, watch }: any) {
     });
   };
 
+  //save row//
+
   const handleSave = () => {
     setEditingId(null);
     setNewRowId(null);
   };
+
+  //handle delete//
 
   const handleDelete = (index: number) => {
     remove(index);

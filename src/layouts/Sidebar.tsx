@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   Drawer,
   List,
@@ -10,6 +10,7 @@ import {
   Box,
   useMediaQuery,
 } from "@mui/material";
+
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import HomeIcon from "@mui/icons-material/Home";
@@ -20,14 +21,15 @@ import ListAltIcon from "@mui/icons-material/ListAlt";
 import DomainIcon from "@mui/icons-material/Domain";
 import ApartmentIcon from "@mui/icons-material/Apartment";
 
-
-
 const drawerWidth = 200;
 const collapsedWidth = 70;
 
 export default function Sidebar() {
   const isMobile = useMediaQuery("(max-width:768px)");
   const [open, setOpen] = useState(false);
+  const location = useLocation();
+
+  const isActive = (path: string) => location.pathname === path;
 
   useEffect(() => {
     const saved = localStorage.getItem("sidebar-open");
@@ -46,9 +48,23 @@ export default function Sidebar() {
 
   const toggleDrawer = () => setOpen(prev => !prev);
 
+  const navItemStyle = (active: boolean) => ({
+    borderRadius: 2,
+    mx: 0.5,
+    mb: 0.5,
+    transition: "background-color 0.2s ease",
+
+    "&:hover": {
+      backgroundColor: "#e3f2fd",
+    },
+
+    ...(active && {
+      backgroundColor: "#bbdefb",
+    }),
+  });
+
   return (
     <>
-      
       {isMobile && !open && (
         <IconButton
           onClick={toggleDrawer}
@@ -57,8 +73,6 @@ export default function Sidebar() {
             top: 12,
             left: 12,
             zIndex: 1400,
-            // backgroundColor: "white",
-            // boxShadow: 2,
           }}
         >
           <MenuIcon />
@@ -73,7 +87,6 @@ export default function Sidebar() {
         sx={{
           width: isMobile ? drawerWidth : open ? drawerWidth : collapsedWidth,
           flexShrink: 0,
-          paddingBottom:0,
           "& .MuiDrawer-paper": {
             width: isMobile ? drawerWidth : open ? drawerWidth : collapsedWidth,
             transition: "width 0.3s",
@@ -81,29 +94,31 @@ export default function Sidebar() {
           },
         }}
       >
-        {/* Sidebar Header */}
+        {/* Header */}
         <Box
           display="flex"
           alignItems="center"
           justifyContent={open ? "space-between" : "center"}
-          p={2} color={"black"}
-          sx={{paddingBottom:"0 !important"}}
+          p={2}
+          sx={{ paddingBottom: "0 !important" }}
         >
           {open && <strong>Menu</strong>}
-          <IconButton onClick={toggleDrawer} >
-            {open ? <CloseIcon /> : <MenuIcon   htmlColor={"primary"}/>}
+          <IconButton onClick={toggleDrawer}>
+            {open ? <CloseIcon /> : <MenuIcon />}
           </IconButton>
         </Box>
 
         {/* Navigation */}
-        <List sx={{ px: 1}}>
+        <List sx={{ px: 1 }}>
           <ListItemButton
             component={Link}
             to="/"
+            selected={isActive("/")}
+            sx={navItemStyle(isActive("/"))}
             onClick={isMobile ? toggleDrawer : undefined}
           >
-            <ListItemIcon >
-              <HomeIcon  htmlColor={"primary"} />
+            <ListItemIcon>
+              <HomeIcon color="primary" />
             </ListItemIcon>
             {open && <ListItemText primary="Home" />}
           </ListItemButton>
@@ -111,10 +126,11 @@ export default function Sidebar() {
           <ListItemButton
             component={Link}
             to="/jobs"
-            onClick={isMobile ? toggleDrawer : undefined}
+            selected={isActive("/jobs")}
+            sx={navItemStyle(isActive("/jobs"))}
           >
             <ListItemIcon>
-              <WorkIcon htmlColor={"primary"}/>
+              <WorkIcon color="primary" />
             </ListItemIcon>
             {open && <ListItemText primary="Jobs" />}
           </ListItemButton>
@@ -122,44 +138,50 @@ export default function Sidebar() {
           <ListItemButton
             component={Link}
             to="/companies"
-            onClick={isMobile ? toggleDrawer : undefined}
+            selected={isActive("/companies")}
+            sx={navItemStyle(isActive("/companies"))}
           >
             <ListItemIcon>
-              <ApartmentIcon htmlColor={"primary"}/>
+              <ApartmentIcon color="primary" />
             </ListItemIcon>
             {open && <ListItemText primary="Companies" />}
           </ListItemButton>
+
           <ListItemButton
             component={Link}
             to="/Employer-List"
-            onClick={isMobile ? toggleDrawer : undefined}
+            selected={isActive("/Employer-List")}
+            sx={navItemStyle(isActive("/Employer-List"))}
           >
             <ListItemIcon>
-              <GroupIcon htmlColor={"primary"}/>
+              <GroupIcon color="primary" />
             </ListItemIcon>
             {open && <ListItemText primary="Employer List" />}
           </ListItemButton>
+
           <ListItemButton
             component={Link}
             to="/company-information"
-            onClick={isMobile ? toggleDrawer : undefined}
+            selected={isActive("/company-information")}
+            sx={navItemStyle(isActive("/company-information"))}
           >
             <ListItemIcon>
-              <DomainIcon htmlColor={"primary"}/>
+              <DomainIcon color="primary" />
             </ListItemIcon>
             {open && <ListItemText primary="Company Information" />}
           </ListItemButton>
+
           <ListItemButton
             component={Link}
             to="/company-information-list"
-            onClick={isMobile ? toggleDrawer : undefined}
+            selected={isActive("/company-information-list")}
+            sx={navItemStyle(isActive("/company-information-list"))}
           >
             <ListItemIcon>
-               <ListAltIcon color={"primary"} />
+              <ListAltIcon color="primary" />
             </ListItemIcon>
             {open && <ListItemText primary="Company Information List" />}
           </ListItemButton>
-
         </List>
       </Drawer>
     </>

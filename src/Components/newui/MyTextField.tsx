@@ -3,9 +3,7 @@ import TextField from "@mui/material/TextField";
 import type { ReactNode } from "react";
 import { InputAdornment } from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
-import InfoOutlined from "@mui/icons-material/InfoOutlined";
-import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
-import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
+
 import PriorityHigh from "@mui/icons-material/PriorityHigh";
 
 type MyTextFieldProps = {

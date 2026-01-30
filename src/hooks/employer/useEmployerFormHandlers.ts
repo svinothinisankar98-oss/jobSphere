@@ -13,7 +13,7 @@ export function useEmployerFormHandlers(
   const [completedTabs, setCompletedTabs] = useState<number[]>([]);
   const [errorTabs, setErrorTabs] = useState<number[]>([]);
 
-  /* ---------- COMMON TAB VALIDATION ---------- */
+  //COMMON TAB VALIDATION //
   const validateCurrentTab = async () => {
     const fields = stepFields[activeTab];
     const valid = await trigger(fields);
@@ -32,9 +32,11 @@ export function useEmployerFormHandlers(
     return valid;
   };
 
-  /* ---------- NEXT ---------- */
+//Next//
   const handleNext = async () => {
     const valid = await validateCurrentTab();
+
+    console.log("valid",valid)
     // if (!valid) return;
 
     setActiveTab((prev) =>
@@ -42,19 +44,19 @@ export function useEmployerFormHandlers(
     );
   };
 
-  /* ---------- BACK ---------- */
+  //Back//
   const handleBack = async () => {
     await validateCurrentTab();
     setActiveTab((prev) => Math.max(prev - 1, 0));
   };
 
-  /* ---------- TAB CLICK ---------- */
+ //tab Click//
   const handleTabChange = async (nextTab: number) => {
     await validateCurrentTab();
     setActiveTab(nextTab);
   };
 
-  /* ---------- RESET ---------- */
+  //Reset//
   const handleResetState = () => {
     setActiveTab(0);
     setCompletedTabs([]);
