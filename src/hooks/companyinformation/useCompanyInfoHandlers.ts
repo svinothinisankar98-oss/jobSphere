@@ -4,10 +4,10 @@ import type { SubmitHandler } from "react-hook-form";
 
 import type { CompanyInformationType } from "../../types/companyInformation";
 
-import { useCompanyInformation } from "../../hooks/companyinformation/useCompanyInformation";
+import { useCompanyInformation } from "./useCompanyInformation";
 import { useSnackbar } from "../../Components/newui/MySnackBar";
 
-export function useCompanyInformationHandlers(reset: any) {
+export function useCompanyInfoHandlers(reset: any) {
   const { id } = useParams();
   const navigate = useNavigate();
 

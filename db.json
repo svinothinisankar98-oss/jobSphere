@@ -383,10 +383,9 @@
       "deletedAt": "2026-01-08T13:48:03.080Z"
     },
     {
-      "id": "3454",
-      "companyName": "Logic Private Limited",
+      "companyName": "Logic Private Limited dkd",
       "email": "ooo@gmail.com",
-      "phone": "8745612345",
+      "phone": "8745612346",
       "website": "https://www.egrovesys.com/ecommerce-accessibility/",
       "industry": "Finance",
       "companySize": "1–10",
@@ -408,9 +407,10 @@
         "full_time"
       ],
       "userType": 2,
-      "isActive": true,
+      "isActive": false,
+      "id": "3454",
       "serialNo": 3,
-      "updatedAt": "2026-01-16T07:12:02.312Z"
+      "updatedAt": "2026-01-30T16:13:26.872Z"
     },
     {
       "id": "8767",
@@ -472,8 +472,8 @@
       "userType": 2,
       "serialNo": 5,
       "isDelete": true,
-      "isActive": false,
-      "updatedAt": "2026-01-13T03:56:35.853Z"
+      "isActive": true,
+      "updatedAt": "2026-01-30T16:13:18.169Z"
     },
     {
       "id": "5566",

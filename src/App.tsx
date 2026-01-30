@@ -18,7 +18,7 @@ import EmployerList from "./pages/register/employerregisterdetails/EmployerList"
 import KycForm from "./pages/companyinformation/CompanyInformation";
 import CompanyInformation from "./pages/companyinformation/CompanyInformation";
 import { MySnackBar } from "./Components/newui/MySnackBar";
-import CompanyInformationList from "./pages/companyinformation/CompanyInformationList";
+import CompanyInformationList from "./pages/companyinformation/CompanyInfoList";
 
 
 

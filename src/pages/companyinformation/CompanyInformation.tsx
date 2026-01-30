@@ -30,7 +30,7 @@ import React from "react";
 import MyAccordion from "../../Components/newui/MyAccordion";
 
 //  use Hook for companyinformation handlers//
-import { useCompanyInformationHandlers } from "../../hooks/companyinformation/useCompanyInformationHandler";
+import { useCompanyInfoHandlers } from "../../hooks/companyinformation/useCompanyInfoHandlers";
 import { COMPANY_INFORMATION_LIMITS } from "../../constants/CompanyInformationConstant";
 
 //component//
@@ -46,7 +46,7 @@ export default function CompanyInformation() {
   const { control, watch, setFocus, reset } = methods;
 
  //is edit and onsubmit for handlers//
-  const { isEdit, onSubmit } = useCompanyInformationHandlers(reset);
+  const { isEdit, onSubmit } = useCompanyInfoHandlers(reset);
 
   //  Prevent adding empty rows  //
 
