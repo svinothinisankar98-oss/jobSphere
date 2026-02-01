@@ -10,54 +10,51 @@ import Home from "./pages/home/Home";
 import Joblist from "./pages/joblist/Joblist";
 import JobSeekerRegister from "./pages/register/jobseeker/jobSeekerRegister";
 import JobList from "./pages/joblist/Joblist";
-import CommonToast from "./Components/ui/CommonToast";
+
 import Login from "./pages/login/Login";
 // import {EmployerRegister} from "./pages/register/employerregisterdetails/EmployerRegister";
 import EmployerRegister from "./pages/register/employerregisterdetails/EmployerRegister";
 import EmployerList from "./pages/register/employerregisterdetails/EmployerList";
-import KycForm from "./pages/companyinformation/CompanyInformation";
+
 import CompanyInformation from "./pages/companyinformation/CompanyInformation";
 import { MySnackBar } from "./Components/newui/MySnackBar";
 import CompanyInformationList from "./pages/companyinformation/CompanyInfoList";
-
-
-
-
-
+import JobAdd from "./pages/joblist/JobAdd";
 
 function App() {
   return (
     <div className="app-container">
-     
-     
       <Header />
-       <MySnackBar children={undefined} />
-       <div className="page-content">
+       <MySnackBar children={undefined} /> 
+      <div className="page-content">
         {/* All page content goes here */}
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/jobs" element={<JobList />} />
-          <Route path="/employer-register" element={<EmployerRegister/>} />
-          <Route path="/employer-register/edit/:id" element={<EmployerRegister />} />
+          <Route path="/employer-register" element={<EmployerRegister />} />
+          <Route
+            path="/employer-register/edit/:id"
+            element={<EmployerRegister />}
+          />
           <Route path="/job-list" element={<Joblist />} />
           <Route path="/job-seeker-register" element={<JobSeekerRegister />} />
-         <Route path="/employer-list" element={<EmployerList />} />
-            <Route path="/company-information/" element={<CompanyInformation />} />
-         <Route path="/company-information/edit/:id" element={<CompanyInformation />} />
-         <Route path="/company-information-list" element={<CompanyInformationList />} />
-
-          
-          
-          
-       
+          <Route path="/employer-list" element={<EmployerList />} />
+          <Route
+            path="/company-information/"
+            element={<CompanyInformation />}
+          />
+          <Route
+            path="/company-information/edit/:id"
+            element={<CompanyInformation />}
+          />
+          <Route
+            path="/company-information-list"
+            element={<CompanyInformationList />}
+          />
+          <Route path="/job-list-add" element={<JobAdd />} />
         </Routes>
       </div>
-      
-     
-      
-
-     
 
       <Sidebar />
       <Footer />

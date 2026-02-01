@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import {  useLocation, useNavigate } from "react-router-dom";
+
 import {
   Drawer,
   List,
@@ -15,19 +16,115 @@ import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import HomeIcon from "@mui/icons-material/Home";
 import WorkIcon from "@mui/icons-material/Work";
-import BusinessIcon from "@mui/icons-material/Business";
 import GroupIcon from "@mui/icons-material/Group";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import DomainIcon from "@mui/icons-material/Domain";
 import ApartmentIcon from "@mui/icons-material/Apartment";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
+import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
+
+
 
 const drawerWidth = 250;
 const collapsedWidth = 70;
 
+//role based menu//
+
+type Role = 1 | 2 | 3 | 4;
+
+type MenuItem = {
+  item: string;
+  path: string;
+};
+
+//routes set//
+
+const MENU_CONFIG: Record<Role, MenuItem[]> = {
+
+  //JobSeeker//
+
+  1: [
+    { item: "Home", path: "/" },
+    { item: "Profile", path: "/profile" },
+    { item: "Jobs", path: "/jobs" },
+    // { item: "Logout", path: "/logout" },
+  ],
+
+  //employer//
+  2: [
+    { item: "Home", path: "/" },
+    { item: "Profile", path: "/profile" },
+    { item: "Company Information", path: "/company-information" },
+    { item: "Post a Job", path: "/job-list-add" },
+    // { item: "Logout", path: "/logout" },
+  ],
+
+  //admin//
+
+  3: [
+    // { item: "Profile", path: "/profile" },
+    { item: "Company Information", path: "/company-information" },
+    { item: "Company Information List", path: "/company-information-list" },
+    { item: "Post a Job", path: "/job-list-add" },
+    { item: "Jobs", path: "/jobs" },
+    { item: "Employer List", path: "/Employer-List" },
+    { item: "Job Seeker", path: "/job-seeker-register" },
+    { item: "Employer", path: "/employer-register" },
+    // { item: "Logout", path: "/logout" },
+  ],
+
+  //all//
+  4: [
+    // { item: "Profile", path: "/profile" },
+    { item: "Home", path: "/" },
+    { item: "Company Information", path: "/company-information" },
+    { item: "Company Information List", path: "/company-information-list" },
+    { item: "Post a Job", path: "/job-list-add" },
+    { item: "Jobs", path: "/jobs" },
+    { item: "Employer List", path: "/Employer-List" },
+    { item: "Job Seeker", path: "/job-seeker-register" },
+    { item: "Employer", path: "/employer-register" },
+    // { item: "Logout", path: "/logout" },
+  ],
+};
+
+
+//icon mapping//
+
+const ICON_MAP: any = {
+  Home: <HomeIcon htmlColor="blue" />,
+  Profile: <AccountCircleIcon htmlColor="blue" />,
+  Jobs: <WorkIcon htmlColor="blue" />,
+  "Post a Job": <ApartmentIcon htmlColor="blue" />,
+  "Company Information": <DomainIcon htmlColor="blue" />,
+  "Company Information List": <ListAltIcon htmlColor="blue" />,
+  "Employer List": <GroupIcon htmlColor="blue" />,
+  "Job Seeker": <PersonOutlineIcon htmlColor="blue" />,
+  Employer: <AssignmentIndIcon htmlColor="blue" />,
+  Logout: <CloseIcon htmlColor="blue" />,
+};
+
+//component//
 export default function Sidebar() {
+  //mobile deduction//
+
   const isMobile = useMediaQuery("(max-width:768px)");
   const [open, setOpen] = useState(false);
+
   const location = useLocation();
+  const navigate = useNavigate();
+
+  //User role from localStorage//
+
+  const authUser = JSON.parse(localStorage.getItem("authUser") || "null");    //if login userrole//
+  const userType = authUser?.userType || 4;
+
+  //loads for menu//
+
+  const roleMenu = MENU_CONFIG[userType as 1 | 2 | 3] || [];
+
+  //active menu hightligh//
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -52,27 +149,29 @@ export default function Sidebar() {
     borderRadius: 2,
     mx: 0.5,
     mb: 0.5,
-
-    // "&:hover": {
-    //   backgroundColor: "#e3f2fd",
-    // },
-
     ...(active && {
-      backgroundColor: "#3690da",
+      backgroundColor: "#53a2e3",
+      color: "#0f0f0f",
     }),
   });
+//. Navigation logic//
+  const handleMenuClick = (path: string) => {
+    if (path === "/logout") {
+      localStorage.clear();
+      navigate("/login");
+    } else {
+      navigate(path);
+    }
+
+    if (isMobile) setOpen(false);
+  };
 
   return (
     <>
       {isMobile && !open && (
         <IconButton
           onClick={toggleDrawer}
-          sx={{
-            position: "fixed",
-            top: 12,
-            left: 12,
-            zIndex: 1400,
-          }}
+          sx={{ position: "fixed", top: 12, left: 12, zIndex: 1400 }}
         >
           <MenuIcon />
         </IconButton>
@@ -93,7 +192,7 @@ export default function Sidebar() {
           },
         }}
       >
-        {/* Header */}
+        {/* HEADER */}
         <Box
           display="flex"
           alignItems="center"
@@ -107,105 +206,24 @@ export default function Sidebar() {
           </IconButton>
         </Box>
 
-        {/* Navigation */}
+        {/* //Menu rendering// */}
         <List sx={{ px: 0 }}>
-          <ListItemButton 
-            component={Link}
-            to="/"
-            selected={isActive("/")}
-            sx={navItemStyle(isActive("/"))}
-            onClick={isMobile ? toggleDrawer : undefined}
-          >
-            <ListItemIcon
-              sx={{
-                minWidth: 36,
-              }}
+
+          
+          {roleMenu.map((menu) => (
+            <ListItemButton
+              key={menu.item}
+              selected={isActive(menu.path)}
+              sx={navItemStyle(isActive(menu.path))}
+              onClick={() => handleMenuClick(menu.path)}
             >
-              <HomeIcon htmlColor="blue" />
-            </ListItemIcon>
-            {open && <ListItemText primary="Home" />}
-          </ListItemButton>
+              <ListItemIcon sx={{ minWidth: 36 }}>
+                {ICON_MAP[menu.item]}
+              </ListItemIcon>
 
-          <ListItemButton
-            component={Link}
-            to="/jobs"
-            selected={isActive("/jobs")}
-            sx={navItemStyle(isActive("/jobs"))}
-          >
-            <ListItemIcon
-            sx={{
-                minWidth: 36,
-              }}
-            
-            >
-              <WorkIcon htmlColor="blue" />
-            </ListItemIcon>
-            {open && <ListItemText primary="Jobs" />}
-          </ListItemButton>
-
-          <ListItemButton
-            component={Link}
-            to="/companies"
-            selected={isActive("/companies")}
-            sx={navItemStyle(isActive("/companies"))}
-          >
-            <ListItemIcon
-            
-            sx={{
-                minWidth: 36,
-              }}>
-              <ApartmentIcon htmlColor="blue" />
-            </ListItemIcon>
-            {open && <ListItemText primary="Companies" />}
-          </ListItemButton>
-
-          <ListItemButton
-            component={Link}
-            to="/Employer-List"
-            selected={isActive("/Employer-List")}
-            sx={navItemStyle(isActive("/Employer-List"))}
-          >
-            <ListItemIcon
-            
-            sx={{
-                minWidth: 36,
-              }}>
-              <GroupIcon htmlColor="blue" />
-            </ListItemIcon>
-            {open && <ListItemText primary="Employer List" />}
-          </ListItemButton>
-
-          <ListItemButton
-            component={Link}
-            to="/company-information"
-            selected={isActive("/company-information")}
-            sx={navItemStyle(isActive("/company-information"))}
-          >
-            <ListItemIcon
-            
-            sx={{
-                minWidth: 36,
-              }}>
-              <DomainIcon htmlColor="blue" />
-            </ListItemIcon>
-            {open && <ListItemText primary="Company Information" />}
-          </ListItemButton>
-
-          <ListItemButton
-            component={Link}
-            to="/company-information-list"
-            selected={isActive("/company-information-list")}
-            sx={navItemStyle(isActive("/company-information-list"))}
-          >
-            <ListItemIcon
-            
-            sx={{
-                minWidth: 36,
-              }}>
-              <ListAltIcon htmlColor="blue" />
-            </ListItemIcon>
-            {open && <ListItemText primary="Company Information List" />}
-          </ListItemButton>
+              {open && <ListItemText primary={menu.item} />}
+            </ListItemButton>
+          ))}
         </List>
       </Drawer>
     </>

@@ -1,17 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import {
-  Grid,
-  Box,
-  Paper,
-  Typography,
-} from "@mui/material";
+import { Grid, Box, Paper, Typography } from "@mui/material";
 
-
-
-import {
-  useForm,
-  FormProvider,
-} from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import { useUserService } from "../../hooks/useUserService";
@@ -24,8 +14,6 @@ import MyTextField from "../../Components/newui/MyTextField";
 
 const { getUserByEmail, getEmployerByEmail } = useUserService();
 
-
-
 type LoginForm = {
   email: string;
   password: string;
@@ -35,17 +23,22 @@ const Login = () => {
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
 
+  //React Hook Form, Yup//
+
   const methods = useForm<LoginForm>({
     resolver: yupResolver(loginSchema),
     mode: "onChange",
   });
 
-  const { handleSubmit, formState: {  } } = methods;
+  const {
+    handleSubmit,
+    formState: {},
+  } = methods;
 
   const onSubmit = async (form: LoginForm) => {
     try {
-      const user = await getUserByEmail(form.email);
-      const employer = await getEmployerByEmail(form.email);
+      const user = await getUserByEmail(form.email);    //jobseeker email//              
+      const employer = await getEmployerByEmail(form.email);   //employer emaill//
 
       if (!user && !employer) {
         showSnackbar("User not found", "error");
@@ -61,23 +54,28 @@ const Login = () => {
         showSnackbar("Invalid credentials", "error");
         return;
       }
+//Determine role//
 
       const userType = user?.userType || employer?.userType || 0;
 
-      if (userType === 1 || userType === 2) {
-        authStorage.set({
+     
+      console.log(userType, "userType");
+
+      if (userType === 1 || userType === 2 || userType === 3) {
+        authStorage.set({                                         
           id: user?.id,
           email: user?.email,
+          userType: userType
         });
         showSnackbar("Login successful", "success");
         navigate("/");
-      } else if (userType === 3) {
-        navigate("/employer-list");
-      }
+      } 
     } catch {
       showSnackbar("Something went wrong. Try again.", "error");
     }
   };
+
+  //ui rendering//
 
   return (
     <Grid
@@ -85,7 +83,6 @@ const Login = () => {
       minHeight="80vh"
       alignItems="center"
       justifyContent="center"
-      
     >
       <Paper
         elevation={0}
@@ -94,7 +91,7 @@ const Login = () => {
           maxWidth: 460,
           p: { xs: 3, sm: 4 },
           borderRadius: 4,
-          
+
           boxShadow: "0 12px 40px rgba(0,0,0,0.08)",
           border: "1px solid rgba(0,0,0,0.06)",
         }}
@@ -113,29 +110,24 @@ const Login = () => {
           <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
             <MyTextField
               name="email"
-                label="Email address"
-                fullWidth
-             size="medium"
+              label="Email address"
+              fullWidth
+              size="medium"
               required
               sx={{
                 mb: 2,
-               
-                
               }}
             />
 
             <MyTextField
               name="password"
-               type="password"
-                label="Password"
-                size="medium"
+              type="password"
+              label="Password"
+              size="medium"
               fullWidth
               required
-              
               sx={{
                 mb: 2,
-                
-               
               }}
             />
 
@@ -153,7 +145,7 @@ const Login = () => {
               <MyButton
                 label="Login"
                 type="submit"
-                
+                variant="contained"
                 sx={{
                   minWidth: 180,
                   height: 46,

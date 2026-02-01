@@ -366,8 +366,8 @@ export default function CompanyInformation() {
                 <BranchContacts
                   nestIndex={branchIndex}
                   control={control}
-                  watch={watch}
-                />
+                  watch={watch}            
+                  />
               </Box>
             ))}
           </MyAccordion>

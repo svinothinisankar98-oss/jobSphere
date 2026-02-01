@@ -1,6 +1,7 @@
 
 
 export const CompanyInformationdefault = {
+ 
   companyName: "",
   companyEmail: "",
   createdAt:new Date(),
@@ -16,6 +17,7 @@ export const CompanyInformationdefault = {
 
   branches: [
     {
+       id:0,
       branchName: "",
       branchEmail: "",
       branchContact: [

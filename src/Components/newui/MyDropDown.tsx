@@ -26,24 +26,26 @@ const MyDropDown = ({ name, label, options, required = false, sx }: Props) => {
     <Controller
       name={name}
       control={control}
+      defaultValue=""   // ✅ critical
       render={({ field }) => (
         <TextField
           {...field}
+          value={field.value ?? ""}   // ✅ prevents undefined forever
           select
           fullWidth
-          size="small"       
+          size="small"
           label={label}
           required={required}
           error={!!error}
           helperText={error?.message as string}
-           slotProps={{                 //aligns helper text perfectly under the input//
-    formHelperText: {
-      sx: {
-        marginLeft: 0,
-        marginRight: 0,
-      },
-    },
-  }}
+          slotProps={{
+            formHelperText: {
+              sx: {
+                marginLeft: 0,
+                marginRight: 0,
+              },
+            },
+          }}
           sx={{
             "& .MuiFormLabel-asterisk": {
               color: "red",
@@ -51,6 +53,11 @@ const MyDropDown = ({ name, label, options, required = false, sx }: Props) => {
             ...sx,
           }}
         >
+          {/* Placeholder */}
+          <MenuItem value="" disabled>
+            Select {label}
+          </MenuItem>
+
           {options.map((option) => (
             <MenuItem key={option.id} value={option.item}>
               {option.item}

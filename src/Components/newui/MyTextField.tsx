@@ -95,6 +95,7 @@ const MyTextField = ({
           size={size}
           inputMode={inputMode}
           multiline={Boolean(rows)}
+          
           rows={rows}
           error={!!error}
           helperText={hideErrorText ? undefined : error?.message}

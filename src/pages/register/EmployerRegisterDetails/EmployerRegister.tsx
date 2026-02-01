@@ -257,7 +257,7 @@ const EmployerRegister = () => {
                       height: 45,
                       fontWeight: 600,
                     }}
-                    onClick={() => window.history.back()}
+                     onClick={() => navigate("/login")}
                   />
                 </Grid>
               </form>

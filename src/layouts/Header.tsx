@@ -18,7 +18,7 @@ import PersonIcon from "@mui/icons-material/Person";
 
 import { authStorage } from "../utils/authStorage";
 import MyButton from "../Components/newui/MyButton";
-import { fontWeight } from "@mui/system";
+
 
 type AuthUser = {
   id: number;
@@ -28,10 +28,25 @@ type AuthUser = {
 export default function Header() {
   const navigate = useNavigate();
   const [user, setUser] = useState<AuthUser | null>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [registerAnchor, setRegisterAnchor] = useState<null | HTMLElement>(null);
+  const [registerAnchor, setRegisterAnchor] = useState<null | HTMLElement>(
+    null,
+  );
 
+  const handleProfileClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+    console.log("wrong working");
+    setIsMenuOpen(true);
+  };
+
+  console.log(isMenuOpen, "isMenuOpen");
+
+  const handleClose = () => {
+    setAnchorEl(null);
+    setIsMenuOpen(false);
+  };
   useEffect(() => {
     setUser(authStorage.get());
 
@@ -49,15 +64,16 @@ export default function Header() {
     authStorage.remove();
     setUser(null);
     navigate("/login");
+    setIsMenuOpen(false);
   };
 
   return (
     <AppBar position="sticky" color="inherit" elevation={1}>
       <Toolbar sx={{ justifyContent: "space-between" }}>
-        
         <Stack direction="row" alignItems="center" spacing={2} paddingLeft={9}>
           {/* Logo */}
-          <Typography mr={10}
+          <Typography
+            mr={10}
             variant="h6"
             component={Link}
             to="/"
@@ -77,14 +93,21 @@ export default function Header() {
             spacing={3}
             sx={{ display: { xs: "none", md: "flex" } }}
           >
-            <Button component={Link} to="/" color="inherit"   sx={{ fontWeight: 600 }}>
+            <Button
+              component={Link}
+              to="/"
+              color="inherit"
+              sx={{ fontWeight: 600 }}
+            >
               Home
             </Button>
-            <Button component={Link} to="/jobs" color="inherit"  sx={{ fontWeight: 600 }}>
+            <Button
+              component={Link}
+              to="/jobs"
+              color="inherit"
+              sx={{ fontWeight: 600 }}
+            >
               Jobs
-            </Button>
-            <Button component={Link} to="/company" color="inherit"  sx={{ fontWeight: 600 }}>
-              Company
             </Button>
           </Stack>
         </Stack>
@@ -114,14 +137,16 @@ export default function Header() {
                 open={Boolean(registerAnchor)}
                 onClose={() => setRegisterAnchor(null)}
               >
-                <MenuItem sx={{ fontWeight: "600" }}
+                <MenuItem
+                  sx={{ fontWeight: "600" }}
                   component={Link}
                   to="/employer-register"
                   onClick={() => setRegisterAnchor(null)}
                 >
                   Employer
                 </MenuItem>
-                <MenuItem sx={{ fontWeight: "600" }}
+                <MenuItem
+                  sx={{ fontWeight: "600" }}
                   component={Link}
                   to="/job-seeker-register"
                   onClick={() => setRegisterAnchor(null)}
@@ -136,21 +161,19 @@ export default function Header() {
                 variant="outlined"
                 size="small"
                 startIcon={<AccountCircleIcon />}
-                onClick={(e) => setAnchorEl(e.currentTarget)}
+                onClick={handleProfileClick}
               >
                 {user.name}
               </Button>
 
               <Menu
                 anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={() => setAnchorEl(null)}
+                open={isMenuOpen}
+                onClose={handleClose}
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                transformOrigin={{ vertical: "top", horizontal: "right" }}
               >
-                <MenuItem
-                  component={Link}
-                  to="/profile"
-                  onClick={() => setAnchorEl(null)}
-                >
+                <MenuItem component={Link} to="/profile" onClick={handleClose}>
                   <PersonIcon sx={{ mr: 1 }} /> My Profile
                 </MenuItem>
 

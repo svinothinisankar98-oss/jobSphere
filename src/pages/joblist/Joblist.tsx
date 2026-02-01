@@ -1,243 +1,233 @@
-import { useState, useMemo, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
-import axios from "axios";
 
 import {
   Box,
-  Grid,
   Card,
-  CardContent,
   Typography,
-  Button,
-  CircularProgress,
-  Paper,
+  Divider,
   Stack,
-  Chip,
-  Menu,
-  MenuItem,
+  IconButton,
 } from "@mui/material";
 
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
+
+import { useJobService } from "../../hooks/joblist/useJobService";
+import type { jobsListType } from "../../types/jobListType";
+import MyButton from "../../Components/newui/MyButton";
 import SearchSection from "../home/SearchSection";
+import JobFilters from "../joblist/JobFilters";
 
-/* Types */
-type Job = {
-  id: number;
-  title: string;
-  company: string;
-  state: string;
-  location: string;
-  salary?: string;
-  tags: string[];
-  description: string;
-};
-
-const JobList = () => {
+export default function JobList() {
+  const { getAllJobs } = useJobService();
   const location = useLocation();
 
-  const [searchText, setSearchText] = useState(location.state?.search || "");
-  const [selectedState, setSelectedState] = useState(
-    location.state?.selected || ""
-  );
+  const [jobs, setJobs] = useState<jobsListType[]>([]);
+  const [selectedJob, setSelectedJob] = useState<jobsListType | null>(null);
+  const [saved, setSaved] = useState(false);
 
-  const [jobs, setJobs] = useState<Job[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [activeJob, setActiveJob] = useState<Job | null>(null);
+  /* SEARCH INPUT */
+  const [searchInput, setSearchInput] = useState(location.state?.search || "");
+  const [selectedInput, setSelectedInput] = useState(location.state?.selected || "");
+  console.log("location.state",location.state)
 
-  /* Filters */
-  const [remoteOnly, setRemoteOnly] = useState(false);
-  const [jobType, setJobType] = useState("");
-  const [salaryRange, setSalaryRange] = useState("");
+  /* APPLIED SEARCH */
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedQuery, setSelectedQuery] = useState("");
+  const [searched, setSearched] = useState(false);
 
-  /* Fetch */
-  const fetchJobs = async () => {
-    try {
-      setLoading(true);
-      const res = await axios.get("http://localhost:4000/jobs");
-      const data = Array.isArray(res.data) ? res.data : [];
-      setJobs(data);
-      if (data.length) setActiveJob(data[0]);
-    } catch {
-      setError("Failed to load jobs");
-    } finally {
-      setLoading(false);
-    }
-  };
+  /* FILTER STATES */
+  const [jobType, setJobType] = useState<string[]>([]);
+  const [experience, setExperience] = useState<string[]>([]);
+  const [salary, setSalary] = useState<string[]>([]);
 
+  /* FETCH JOBS */
   useEffect(() => {
-    fetchJobs();
+    getAllJobs().then(setJobs);
+
   }, []);
 
-  /* Filtering */
+  useEffect(() => {
+  setSearchQuery(searchInput);
+  setSelectedQuery(selectedInput);
+}, [searchInput, selectedInput]);
+
+useEffect(() => {
+  window.history.replaceState({}, document.title);
+}, []);
+
+  /*  FILTER LOGIC */
   const filteredJobs = useMemo(() => {
     return jobs.filter((job) => {
+      const salarys = parseInt(salary?.toString() || "0");
+      console.log(salarys)
+
+    
       const titleMatch =
-        !searchText ||
-        job.title.toLowerCase().includes(searchText.toLowerCase());
+        !searchQuery ||
+        job.title.toLowerCase().includes(searchQuery.toLowerCase());
 
-      const stateMatch =
-        !selectedState || job.state === selectedState;
+      const stateMatch = !selectedQuery || job.state === selectedQuery;
 
-      const remoteMatch =
-        !remoteOnly || job.tags.includes("remote");
+      const jobTypeMatch =
+        jobType.length === 0 || jobType.includes(job.jobType);
 
-      const typeMatch =
-        !jobType || job.tags.includes(jobType);
+      const experienceMatch =
+        experience.length === 0 || experience.includes(job.experience);
 
-      return titleMatch && stateMatch && remoteMatch && typeMatch;
+      const jobSalary = job.salary?.replace(/,/g, "") || "0";
+
+      //  MULTI salary filter
+      const salaryMatch = salary.length === 0 || salary.includes(jobSalary);
+
+      // console.log(salarys, "jobTypeMatch", salarys, parseInt(job.salary));
+
+      return (
+        titleMatch &&
+        stateMatch &&
+        jobTypeMatch &&
+        experienceMatch &&
+        salaryMatch
+      );
     });
-  }, [jobs, searchText, selectedState, remoteOnly, jobType]);
+  }, [jobs, searchQuery, selectedQuery, jobType, experience, salary]);
+
+  /* AUTO SELECT FIRST RESULT */
+  useEffect(() => {
+    if (filteredJobs.length) setSelectedJob(filteredJobs[0]);
+    else setSelectedJob(null);
+  }, [filteredJobs]);
+
+  console.log(selectedInput,'selectedInput')
 
   return (
-    <Box px={{ xs: 2, md: 4 }} py={2}>
-      {/* Search */}
-      <SearchSection
-        search={searchText}
-        setSearch={setSearchText}
-        selected={selectedState}
-        setSelected={setSelectedState}
-        onSearch={() => {}}
-      />
-
-      {/* FILTER BAR */}
-      <Box mt={2} marginLeft={10} >
-        <Stack direction="row" spacing={1} flexWrap="wrap">
-          <Chip
-            label={remoteOnly ? "Remote ✓" : "Remote"}
-            clickable
-            color={remoteOnly ? "primary" : "default"}
-            onClick={() => setRemoteOnly((p) => !p)}
-          />
-
-          <Chip 
-            label={jobType || "Job Type"}
-            clickable
-            onClick={() =>
-              setJobType(jobType === "fulltime" ? "" : "fulltime")
-            }
-            color={jobType ? "primary" : "default"}
-          />
-
-          <Chip
-            label="Clear Filters"
-            onClick={() => {
-              setRemoteOnly(false);
-              setJobType("");
-              setSalaryRange("");
-            }}
-            variant="outlined"
-          />
-        </Stack>
+    <Box height="100vh" display="flex" flexDirection="column">
+      {/*  SEARCH BAR */}
+      <Box px={4} py={2}>
+        <SearchSection
+          search={searchInput}
+          setSearch={setSearchInput}
+          selected={selectedInput}
+          setSelected={setSelectedInput}
+          onSearch={() => {
+            setSearchQuery(searchInput);
+            setSelectedQuery(selectedInput);
+            setSearched(true);
+          }}
+        />
       </Box>
 
-      <Grid container spacing={2} mt={2}>
+      {/* 🎛 FILTERS */}
+      <JobFilters
+        jobType={jobType}
+        setJobType={setJobType}
+        experience={experience}
+        setExperience={setExperience}
+        salary={salary}
+        setSalary={setSalary}
+      />
 
+      {/* MAIN CONTENT */}
+      <Box display="flex" gap={2} px={2} flex={1} overflow="hidden">
         {/* LEFT LIST */}
-       
-          <Grid size={{xs:12,md:5}}>
-          <Paper sx={{ p: 2, height: "75vh", overflow: "auto" ,marginLeft:5 }}>
-            {loading && (
-              <Stack alignItems="center" py={4}>
-                <CircularProgress />
-              </Stack>
-            )}
+        <Box width="35%" overflow="auto" marginLeft={10} marginTop={4}>
+          {searched && filteredJobs.length === 0 && (
+            <Typography p={2}>No jobs found</Typography>
+          )}
 
-            {error && <Typography color="error">{error}</Typography>}
+          {filteredJobs.map((job) => (
+            <Card
+              key={job.id}
+              onClick={() => setSelectedJob(job)}
+              sx={{
+                p: 2,
+                mb: 2,
+                cursor: "pointer",
+                border:
+                  selectedJob?.id === job.id
+                    ? "2px solid #1976d2"
+                    : "1px solid #eee",
+              }}
+            >
+              <Typography fontWeight={600}>{job.title}</Typography>
+              <Typography color="text.secondary">{job.companyName}</Typography>
+              <Typography variant="body2">{job.location}</Typography>
+              <Typography fontWeight={500}>₹ {job.salary}</Typography>
+            </Card>
+          ))}
+        </Box>
 
-            {!loading && filteredJobs.length === 0 && (
-              <Typography>No jobs found</Typography>
-            )}
-
-            <Stack spacing={2}>
-              {filteredJobs.map((job) => (
-                <Card
-                  key={job.id}
-                  onClick={() => setActiveJob(job)}
-                  sx={{
-                    cursor: "pointer",
-                    border:
-                      activeJob?.id === job.id
-                        ? "2px solid"
-                        : "1px solid",
-                    borderColor:
-                      activeJob?.id === job.id
-                        ? "primary.main"
-                        : "divider",
-                    "&:hover": { boxShadow: 4 },
-                  }}
-                >
-                  <CardContent>
-                    <Typography fontWeight={600}>
-                      {job.title}
-                    </Typography>
-
-                    <Typography variant="body2">
-                      {job.company}
-                    </Typography>
-
-                    <Typography variant="caption" color="text.secondary">
-                      {job.location}, {job.state}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              ))}
-            </Stack>
-          </Paper>
-        </Grid>
-
-        {/* RIGHT PREVIEW */}
-     
-          <Grid size={{xs:12,md:7}}>
-          <Paper
-            sx={{
-              p: 3,
-              height: "75vh",
-              overflow: "auto",
-              position: "sticky",
-              top: 16,
-            }}
-          >
-            {activeJob ? (
-              <>
-                <Typography variant="h5" fontWeight={600}>
-                  {activeJob.title}
-                </Typography>
-
-                <Typography mt={1}>{activeJob.company}</Typography>
-
-                <Typography color="text.secondary">
-                  {activeJob.location}, {activeJob.state}
-                </Typography>
-
-                {activeJob.salary && (
-                  <Typography mt={1} fontWeight={500}>
-                    {activeJob.salary}
-                  </Typography>
-                )}
-
-                <Button variant="contained" sx={{ mt: 2 }}>
-                  Apply Now
-                </Button>
-
-                <Box mt={3}>
-                  <Typography fontWeight={600}>
-                    Job Description
-                  </Typography>
-                  <Typography mt={1}>
-                    {activeJob.description}
-                  </Typography>
-                </Box>
-              </>
-            ) : (
-              <Typography color="text.secondary">
-                Select a job
+        {/* RIGHT DETAILS */}
+        <Box width="65%" overflow="auto">
+          {selectedJob ? (
+            <Card sx={{ p: 3 }}>
+              <Typography variant="h5" fontWeight={600}>
+                {selectedJob.title}
               </Typography>
-            )}
-          </Paper>
-        </Grid>
-      </Grid>
+
+              <Typography color="text.secondary">
+                {selectedJob.companyName} • {selectedJob.location}
+              </Typography>
+
+              <Typography fontWeight={600} mt={1}>
+                ₹ {selectedJob.salary}
+              </Typography>
+
+              <Stack direction="row" spacing={1} my={2}>
+                <MyButton label="Apply now" variant="contained" />
+
+                <IconButton onClick={() => setSaved(!saved)}>
+                  {saved ? (
+                    <BookmarkIcon color="primary" />
+                  ) : (
+                    <BookmarkBorderIcon />
+                  )}
+                </IconButton>
+
+                
+              </Stack>
+
+              <Divider sx={{ my: 2 }} />
+
+              <Typography>
+                <b>Job Type:</b> {selectedJob.jobType}
+              </Typography>
+              <Typography>
+                <b>Experience:</b> {selectedJob.experience}
+              </Typography>
+              <Typography>
+                <b>Openings:</b> {selectedJob.noOfOpenings}
+              </Typography>
+              <Typography>
+                <b>Skills:</b> {selectedJob.tags}
+              </Typography>
+
+              <Divider sx={{ my: 2 }} />
+
+              <Typography
+                fontWeight={600}
+                display="flex"
+                justifyContent="left"
+                marginBottom={2}
+              >
+                Job Description
+              </Typography>
+
+              {selectedJob.description
+                .split("\n")
+                .filter(Boolean)
+                .map((line, i) => (
+                  <Typography key={i} mb={0.5}>
+                    {line}
+                  </Typography>
+                ))}
+            </Card>
+          ) : (
+            <Typography p={2} color="text.secondary"></Typography>
+          )}
+        </Box>
+      </Box>
     </Box>
   );
-};
-
-export default JobList;
+}

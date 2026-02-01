@@ -1,112 +1,116 @@
 {
   "jobs": [
     {
-      "id": "1",
+      "id": "1769873428001",
+      "companyName": "egrove Systems",
+      "website": "https://www.egrovesys.com",
+      "title": "Customer Support Associate",
+      "jobType": "remote",
+      "state": "Tamil Nadu",
+      "location": "Chennai, Tamil Nadu",
+      "experience": "0–1 Years",
+      "salary": "6,00,000",
+      "tags": "Customer Support, Voice Process",
+      "benefits": "Work From Home, Flexible Shifts",
+      "noOfOpenings": 9,
+      "educationQualification": [
+        "bachelors"
+      ],
+      "description": "Handle inbound calls\nSupport e-commerce customers\nWork from home\nRotational shifts\n6 working days"
+    },
+    {
+      "id": "1769873428002",
+      "companyName": "Kerala Tech Labs",
+      "website": "https://keralatechlabs.in",
       "title": "Frontend Developer",
-      "company": "TechWave",
-      "state": "Tamil Nadu",
-      "location": "Chennai",
-      "salary": "₹6,00,000 a year",
-      "tags": [
-        "React",
-        "Full-time"
-      ],
-      "description": "Build responsive UI using React and modern CSS frameworks."
-    },
-    {
-      "id": "2",
-      "title": "HR Executive",
-      "company": "PeopleFirst",
+      "jobType": "hybrid",
       "state": "Kerala",
-      "location": "Kochi",
-      "salary": "₹3,50,000 a year",
-      "tags": [
-        "HR",
-        "Full-time"
+      "location": "Kochi, Kerala",
+      "experience": "1–3 Years",
+      "salary": "8,00,000",
+      "tags": "React, JavaScript, UI",
+      "benefits": "Hybrid Work, Health Insurance",
+      "noOfOpenings": 4,
+      "educationQualification": [
+        "bachelors",
+        "masters"
       ],
-      "description": "Handle recruitment, onboarding, and employee engagement activities."
+      "description": "Build web UI\nOptimize performance\nWork with designers\nFix bugs"
     },
     {
-      "id": "3",
+      "id": "1769873428003",
+      "companyName": "Bangalore SoftWorks",
+      "website": "https://softworks.in",
       "title": "Backend Developer",
-      "company": "CodeBase",
+      "jobType": "onsite",
       "state": "Karnataka",
-      "location": "Bangalore",
-      "salary": "₹8,00,000 a year",
-      "tags": [
-        "Node.js",
-        "Express"
+      "location": "Bangalore, Karnataka",
+      "experience": "2–4 Years",
+      "salary": "10,00,000",
+      "tags": "Node.js, APIs, MongoDB",
+      "benefits": "Paid Leaves, Bonus",
+      "noOfOpenings": 5,
+      "educationQualification": [
+        "bachelors"
       ],
-      "description": "Develop scalable backend APIs using Node.js and Express."
+      "description": "Develop backend services\nCreate APIs\nManage databases\nDeploy applications"
     },
     {
-      "id": "4",
-      "title": "Full Stack Developer",
-      "company": "InnoSoft",
-      "state": "Telangana",
-      "location": "Hyderabad",
-      "salary": "₹10,00,000 a year",
-      "tags": [
-        "React",
-        "Node.js",
-        "Full-time"
-      ],
-      "description": "Work on both frontend and backend to deliver end-to-end solutions."
-    },
-    {
-      "id": "5",
-      "title": "UI/UX Designer",
-      "company": "Creative Minds",
-      "state": "Maharashtra",
-      "location": "Mumbai",
-      "salary": "₹5,00,000 a year",
-      "tags": [
-        "UI",
-        "UX",
-        "Figma"
-      ],
-      "description": "Design intuitive user experiences and interfaces for web applications."
-    },
-    {
-      "id": "6",
+      "id": "1769873428004",
+      "companyName": "Pondy Digital",
+      "website": "https://pondydigital.com",
       "title": "Digital Marketing Executive",
-      "company": "MarketBoost",
-      "state": "Delhi",
-      "location": "New Delhi",
-      "salary": "₹4,50,000 a year",
-      "tags": [
-        "SEO",
-        "Marketing"
+      "jobType": "remote",
+      "state": "Puducherry",
+      "location": "Puducherry",
+      "experience": "1–2 Years",
+      "salary": "4,50,000",
+      "tags": "SEO, Ads, Content",
+      "benefits": "Remote Work, Training",
+      "noOfOpenings": 6,
+      "educationQualification": [
+        "diploma",
+        "bachelors"
       ],
-      "description": "Plan and execute digital marketing campaigns to increase brand reach."
+      "description": "Run marketing campaigns\nSEO optimization\nSocial media handling\nAnalytics tracking"
     },
     {
-      "id": "7",
-      "title": "Software Tester",
-      "company": "QualityFirst",
+      "id": "1769873428005",
+      "companyName": "Chennai AI Solutions",
+      "website": "https://chennaiAI.com",
+      "title": "Data Analyst",
+      "jobType": "hybrid",
       "state": "Tamil Nadu",
-      "location": "Coimbatore",
-      "salary": "₹4,00,000 a year",
-      "tags": [
-        "Testing",
-        "Manual",
-        "Automation"
+      "location": "Coimbatore, Tamil Nadu",
+      "experience": "2–3 Years",
+      "salary": "9,00,000",
+      "tags": "SQL, Power BI, Excel",
+      "benefits": "Insurance, Performance Bonus",
+      "noOfOpenings": 3,
+      "educationQualification": [
+        "bachelors",
+        "masters"
       ],
-      "description": "Test applications, identify bugs, and ensure product quality."
+      "description": "Analyze business data\nBuild dashboards\nPrepare reports\nSupport decision making"
     },
     {
-      "id": "8",
-      "title": "DevOps Engineer",
-      "company": "CloudOps",
-      "state": "Karnataka",
-      "location": "Bangalore",
-      "salary": "₹12,00,000 a year",
-      "tags": [
-        "AWS",
-        "Docker",
-        "CI/CD"
+      "id": 1769939402817,
+      "noOfOpenings": 10,
+      "educationQualification": [
+        "bachelors",
+        "masters"
       ],
-      "description": "Manage cloud infrastructure and automate deployment pipelines."
+      "description": "Believing on this we provide the Digital Marketing solutions to the clients which adds to their marketing tactics and build the business.\n\ndConsumerI Solutions is a Global Digital Marketing Consulting and Education Company. We aim to provide research on clients' much needed online presence to generate maximum value and build brand reputation online through digital media channels.\n\n\ndConsumerI is a vivacious team of young marketing professionals specialized in digital space. We love creativity; we love every bit of being digital and technology marketing. Our young brigade strive harder to monitor marketing campaigns for better results. With our professional outlook and dynamism we create unique ideas in digital space\n\n\nIn a Short Span of its existence, company is managing the online portfolio of one of the best companies of their respective industry, this is because of the quality services, consulting we provide.\n\n\nYou add value, help people/society/collogues to grow, be the good person and we are there to take care of everything and.\n\n\nIf your heart says I can create a space in this brigade,\n\n\nShow the spark and we are open to take you up.\n\n\nJob Description\n\nJob Description: - SEO Specialist\n\nUsage of popular tools and url's for SEO purposes\nThe candidate should have a sound knowledge of on-site and off-site web marketing. Complete knowledge about SEO\nConceptualise and execute on-page optimisations as well as internal and external link building strategies\nCandidate Profile:-\n\nShould have a Good behavior and learning attitude, egos to be kept outside the office\nUG - Any Graduate - Any Specialization, B.Tech/B.E. - Any Specialization\nPG - Any Postgraduate - Any Specialization, Post Graduation Not Required\nDoctorate - Any Doctorate - Any Specialization, Doctorate Not Required\nLocation: - Nagpur\n\nAdditional Information\n\nAll your information will be kept confidential according to EEO guidelines.\n\n",
+      "tags": "On Page SEO,Off Page SEO,Link Building",
+      "benefits": "Health Insurance",
+      "salary": "6,00,000",
+      "experience": "0–1 Years",
+      "location": "Karnataka",
+      "state": "Nagpur",
+      "jobType": "Full Time",
+      "title": "SEO Specialist",
+      "website": "https://www.dconsumerl.com",
+      "companyName": "dConsumerI Solutions"
     }
   ],
   "locations": [
@@ -1288,7 +1292,8 @@
               "name": "suresh",
               "phone": "7845125478",
               "email": "suresh@gmail.com",
-              "Designation": "Admin"
+              "Designation": "Admin",
+              "designation": "hr"
             },
             {
               "name": "kavi",
@@ -1329,7 +1334,7 @@
               "name": "kala",
               "phone": "9874612155",
               "email": "kala@gmail.com",
-              "designation": "admin"
+              "designation": "kkkk"
             }
           ]
         }
@@ -1409,5 +1414,49 @@
       "companyName": "noble Private Limited",
       "createdAt": "2026-01-29T13:42:27.544Z"
     }
-  ]
+  ],
+  "menu":{
+    "1":[
+      {
+        "item":"Home"
+      },
+      {
+        "item":"Profile"
+        
+    },{
+      "item":"Logout"
+    },{
+      "item":"Job"
+    }],
+    "2":[
+       {
+        "item":"Home"
+      },{
+      "item":"Profile"
+    },{
+      "item":"Logout"
+    },{
+      "item":"Company Information"
+    },{
+      "item":"Post a Job"
+    }],
+    "3":[{
+      "item":"Profile"
+    },{
+      "item":"Logout"
+    },{
+      "item":"Company Information"
+    },{
+      "item":"Company Information List" 
+    }
+    
+    ,{
+      "item":"Post a Job"
+    },{
+      "item":"Job"
+    },{
+      "item":"EMployeer List"
+    }]
+
+  }
 }

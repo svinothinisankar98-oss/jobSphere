@@ -1,11 +1,10 @@
 import { apiService } from "./apiService";
 
+export type Option = {
+  id: number;
+  item: string;
+};
+
 export const locationService = {
-  getLocations: () => {
-    try {
-      return apiService.get("/locations");
-    } catch (error: any) {
-      throw new Error(error);
-    }
-  },
+  getLocations: () => apiService.get<Option[]>("/locations"),
 };

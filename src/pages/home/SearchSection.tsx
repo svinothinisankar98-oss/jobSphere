@@ -3,6 +3,7 @@ import { Grid, Paper, useMediaQuery } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { useTheme } from "@mui/material/styles";
+
 import { locationService } from "../../service/locationService";
 import MyButton from "../../Components/newui/MyButton";
 import CommonDropdown from "../../Components/ui/CommonDropdown";
@@ -21,25 +22,26 @@ type Props = {
   onSearch: () => void;
 };
 
-const SearchSection = ({
+export default function SearchSection({
   search,
   setSearch,
   selected,
   setSelected,
   onSearch,
-}: Props) => {
+}: Props) {
   const [locations, setLocations] = useState<Option[]>([]);
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  console.log(isMobile)
 
   useEffect(() => {
     const fetchLocations = async () => {
       try {
         const data = await locationService.getLocations();
         setLocations(Array.isArray(data) ? data : []);
-      } catch (error) {
-        console.error("Failed to fetch locations", error);
+      } catch (err) {
+        console.error("Failed to load locations", err);
       }
     };
 
@@ -49,17 +51,11 @@ const SearchSection = ({
   return (
     <Paper
       elevation={3}
-      sx={{
-        p: 2,
-        borderRadius: 2,
-        maxWidth: 1000,
-        mx: "auto",
-      }}
+      sx={{ p: 2, borderRadius: 2, maxWidth: 1000, mx: "auto" }}
     >
       <Grid container spacing={2} alignItems="center">
-        {/* Search Input */}
 
-        <Grid size={{ xs: 12, md: 5 }}>
+        <Grid size={{xs:12 ,md:5} }>
           <CommonTextField
             name="search"
             value={search}
@@ -69,9 +65,7 @@ const SearchSection = ({
           />
         </Grid>
 
-        {/* Location Dropdown */}
-
-        <Grid size={{ xs: 12, md: 4 }}>
+         <Grid size={{xs:12 ,md:4} }>
           <CommonDropdown
             name="location"
             value={selected}
@@ -82,12 +76,9 @@ const SearchSection = ({
           />
         </Grid>
 
-        {/* Button */}
-
-        <Grid size={{ xs: 12, md: 3 }}>
+         <Grid size={{xs:12 ,md:3} }>
           <MyButton
             fullWidth
-            size="medium"
             variant="contained"
             onClick={onSearch}
             label="Find Jobs"
@@ -96,6 +87,4 @@ const SearchSection = ({
       </Grid>
     </Paper>
   );
-};
-
-export default SearchSection;
+}

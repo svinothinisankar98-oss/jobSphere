@@ -28,7 +28,7 @@ const PopularJobs = () => {
       </Typography>
 
       <Grid container spacing={2} justifyContent="center">
-        {jobs.map((job) => (
+        {jobs?.map((job) => (
          <Grid size={{ xs: 6, sm: 4, md: 3 }}>
             <Chip
               icon={job.icon}
