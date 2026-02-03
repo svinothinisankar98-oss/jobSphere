@@ -4,7 +4,7 @@ import {
   InvalidPhoneMessage,
   RequiredMessage,
 } from "../constants/ValidationMessages";
-import { REGEX } from "../constants/regex";
+import { REGEX } from "../constants/ValidationRegex";
 
 export const companyInformationSchema = yup.object({
   companyName: yup

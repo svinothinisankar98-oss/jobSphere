@@ -5,11 +5,11 @@ import {
   InvalidPhoneMessage,
   PasswordMismatchMessage,
   SelectMessage,
-   URL_REGEX,
+  
   InvalidUrlMessage,
 } from "../constants/ValidationMessages";
 
-import { REGEX } from "../constants/regex"
+import { REGEX } from "../constants/Validationregex"
 
 export const employerSchema = yup.object({
   companyName: yup.string().required(RequiredMessage("Company Name")),

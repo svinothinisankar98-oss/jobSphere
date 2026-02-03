@@ -6,10 +6,11 @@ import {
   PasswordMismatchMessage,
   RequiredMessage,
   SelectMessage,
-   URL_REGEX,
+  
 } from "../constants/ValidationMessages";
+import { REGEX } from "../constants/Validationregex"
 
-import { REGEX } from "../constants/regex"
+
 
 export const jobSeekerSchema = yup.object({
   Name: yup.string().required(RequiredMessage("Name")),

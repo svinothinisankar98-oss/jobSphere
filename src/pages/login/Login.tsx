@@ -6,11 +6,12 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 import { useUserService } from "../../hooks/useUserService";
 import { authStorage } from "../../utils/authStorage";
-import { useSnackbar } from "../../Components/newui/MySnackBar";
+
 import MyButton from "../../Components/newui/MyButton";
 
 import { loginSchema } from "../../schemas/loginSchemas";
 import MyTextField from "../../Components/newui/MyTextField";
+import { useSnackbar } from "../../context/SnackbarProvider";
 
 const { getUserByEmail, getEmployerByEmail } = useUserService();
 
@@ -39,6 +40,7 @@ const Login = () => {
     try {
       const user = await getUserByEmail(form.email);    //jobseeker email//              
       const employer = await getEmployerByEmail(form.email);   //employer emaill//
+      console.log(employer,"employer")
 
       if (!user && !employer) {
         showSnackbar("User not found", "error");
@@ -57,16 +59,17 @@ const Login = () => {
 //Determine role//
 
       const userType = user?.userType || employer?.userType || 0;
+      
 
      
       console.log(userType, "userType");
 
       if (userType === 1 || userType === 2 || userType === 3) {
-        authStorage.set({                                         
-          id: user?.id,
-          email: user?.email,
-          userType: userType
-        });
+       authStorage.set({
+  id: user?.id || employer?.id,
+  email: user?.email || employer?.email,  
+  userType: userType
+});
         showSnackbar("Login successful", "success");
         navigate("/");
       } 

@@ -11,6 +11,8 @@ export interface User {
   email: string;
   password: string;
   userType: number;
+
+
 }
 type CreateUserPayload = employerRegisterType | JobSeeker;
 

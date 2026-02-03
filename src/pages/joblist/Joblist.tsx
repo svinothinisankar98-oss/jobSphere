@@ -18,6 +18,7 @@ import type { jobsListType } from "../../types/jobListType";
 import MyButton from "../../Components/newui/MyButton";
 import SearchSection from "../home/SearchSection";
 import JobFilters from "../joblist/JobFilters";
+import { authStorage } from "../../utils/authStorage";
 
 export default function JobList() {
   const { getAllJobs } = useJobService();
@@ -25,45 +26,79 @@ export default function JobList() {
 
   const [jobs, setJobs] = useState<jobsListType[]>([]);
   const [selectedJob, setSelectedJob] = useState<jobsListType | null>(null);
-  const [saved, setSaved] = useState(false);
 
-  /* SEARCH INPUT */
+  const [showDetails, setShowDetails] = useState(false);
+
+  const getAuthUser = authStorage.get() || {};
+  /* SAVED JOBS */
+  const [savedJobs, setSavedJobs] = useState<any[]>(() => {
+    const stored = localStorage.getItem("savedJobs");
+    return stored ? JSON.parse(stored) : [];
+  });
+
+  const authUserId = getAuthUser?.id;
+
+    console.log(authUserId,'fro')
+
+  const toggleSave = (id: number) => {
+    // const updated = savedJobs.includes(id)
+    //   ? savedJobs.filter((j) => j !== id)
+    //   : [...savedJobs, id];
+
+    
+
+    const alreadySaved = savedJobs.some(
+      (job: any) => job.id === authUserId && job.jobId === id,
+    );
+
+    let savedJobData = [...savedJobs];
+
+    if (!alreadySaved) {
+      savedJobData.push({
+        id: authUserId,
+        jobId: id,
+      });
+    }
+
+    setSavedJobs(savedJobData);
+    localStorage.setItem("savedJobs", JSON.stringify(savedJobData));
+    window.dispatchEvent(new Event("savedJobsUpdated"));
+  };
+
+  const isSaved = (id: number) => savedJobs.some((d: any) => d?.jobId == id&&d?.id==authUserId);
+
+  /* SEARCH */
   const [searchInput, setSearchInput] = useState(location.state?.search || "");
-  const [selectedInput, setSelectedInput] = useState(location.state?.selected || "");
-  console.log("location.state",location.state)
+  const [selectedInput, setSelectedInput] = useState(
+    location.state?.selected || "",
+  );
 
-  /* APPLIED SEARCH */
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedQuery, setSelectedQuery] = useState("");
   const [searched, setSearched] = useState(false);
 
-  /* FILTER STATES */
+  /* FILTERS */
   const [jobType, setJobType] = useState<string[]>([]);
   const [experience, setExperience] = useState<string[]>([]);
   const [salary, setSalary] = useState<string[]>([]);
 
-  /* FETCH JOBS */
+  /* FETCH */
   useEffect(() => {
     getAllJobs().then(setJobs);
-
   }, []);
 
   useEffect(() => {
-  setSearchQuery(searchInput);
-  setSelectedQuery(selectedInput);
-}, [searchInput, selectedInput]);
+    setSearchQuery(searchInput);
+    setSelectedQuery(selectedInput);
+  }, [searchInput, selectedInput]);
 
-useEffect(() => {
-  window.history.replaceState({}, document.title);
-}, []);
+  useEffect(() => {
+    window.history.replaceState({}, document.title);
+  }, []);
 
-  /*  FILTER LOGIC */
+  /* FILTER */
   const filteredJobs = useMemo(() => {
     return jobs.filter((job) => {
-      const salarys = parseInt(salary?.toString() || "0");
-      console.log(salarys)
-
-    
       const titleMatch =
         !searchQuery ||
         job.title.toLowerCase().includes(searchQuery.toLowerCase());
@@ -78,10 +113,7 @@ useEffect(() => {
 
       const jobSalary = job.salary?.replace(/,/g, "") || "0";
 
-      //  MULTI salary filter
       const salaryMatch = salary.length === 0 || salary.includes(jobSalary);
-
-      // console.log(salarys, "jobTypeMatch", salarys, parseInt(job.salary));
 
       return (
         titleMatch &&
@@ -93,18 +125,17 @@ useEffect(() => {
     });
   }, [jobs, searchQuery, selectedQuery, jobType, experience, salary]);
 
-  /* AUTO SELECT FIRST RESULT */
   useEffect(() => {
     if (filteredJobs.length) setSelectedJob(filteredJobs[0]);
     else setSelectedJob(null);
   }, [filteredJobs]);
 
-  console.log(selectedInput,'selectedInput')
+  const isMobile = window.innerWidth < 900;
 
   return (
     <Box height="100vh" display="flex" flexDirection="column">
-      {/*  SEARCH BAR */}
-      <Box px={4} py={2}>
+      {/* SEARCH */}
+      <Box px={{ xs: 1, md: 4 }} py={2}>
         <SearchSection
           search={searchInput}
           setSearch={setSearchInput}
@@ -118,7 +149,7 @@ useEffect(() => {
         />
       </Box>
 
-      {/* 🎛 FILTERS */}
+      {/* FILTERS */}
       <JobFilters
         jobType={jobType}
         setJobType={setJobType}
@@ -128,41 +159,74 @@ useEffect(() => {
         setSalary={setSalary}
       />
 
-      {/* MAIN CONTENT */}
-      <Box display="flex" gap={2} px={2} flex={1} overflow="hidden">
-        {/* LEFT LIST */}
-        <Box width="35%" overflow="auto" marginLeft={10} marginTop={4}>
-          {searched && filteredJobs.length === 0 && (
-            <Typography p={2}>No jobs found</Typography>
-          )}
+      {/* CONTENT */}
+      <Box
+        display="flex"
+        flexDirection={{ xs: "column", md: "row" }}
+        gap={2}
+        px={{ xs: 1, md: 2 }}
+        flex={1}
+        overflow="hidden"
+      >
+        {/* JOB LIST */}
+        {(!showDetails || !isMobile) && (
+          <Box
+            width={{ xs: "100%", md: "40%" }}
+            overflow="auto"
+            ml={{ xs: 0, md: 10 }}
+            mt={{ xs: 1, md: 4 }}
+          >
+            {searched && filteredJobs.length === 0 && (
+              <Typography p={2}>No jobs found</Typography>
+            )}
 
-          {filteredJobs.map((job) => (
-            <Card
-              key={job.id}
-              onClick={() => setSelectedJob(job)}
-              sx={{
-                p: 2,
-                mb: 2,
-                cursor: "pointer",
-                border:
-                  selectedJob?.id === job.id
-                    ? "2px solid #1976d2"
-                    : "1px solid #eee",
-              }}
-            >
-              <Typography fontWeight={600}>{job.title}</Typography>
-              <Typography color="text.secondary">{job.companyName}</Typography>
-              <Typography variant="body2">{job.location}</Typography>
-              <Typography fontWeight={500}>₹ {job.salary}</Typography>
-            </Card>
-          ))}
-        </Box>
+            {filteredJobs.map((job) => (
+              <Card
+                key={job.id}
+                onClick={() => {
+                  setSelectedJob(job);
+                  if (isMobile) setShowDetails(true);
+                }}
+                sx={{
+                  p: { xs: 1.5, md: 2 },
+                  mb: 2,
+                  cursor: "pointer",
+                  border:
+                    selectedJob?.id === job.id
+                      ? "2px solid #1976d2"
+                      : "1px solid #eee",
+                }}
+              >
+                <Typography fontWeight={600}>{job.title}</Typography>
+                <Typography color="text.secondary">
+                  {job.companyName}
+                </Typography>
+                <Typography variant="body2">{job.location}</Typography>
+                <Typography fontWeight={500}>₹ {job.salary}</Typography>
+              </Card>
+            ))}
+          </Box>
+        )}
 
-        {/* RIGHT DETAILS */}
-        <Box width="65%" overflow="auto">
-          {selectedJob ? (
-            <Card sx={{ p: 3 }}>
-              <Typography variant="h5" fontWeight={600}>
+        {/* JOB DETAILS */}
+        {selectedJob && (showDetails || !isMobile) && (
+          <Box width={{ xs: "100%", md: "65%" }} overflow="auto">
+            <Card sx={{ p: { xs: 2, md: 3 } }}>
+              {isMobile && (
+                <Typography
+                  sx={{
+                    mb: 1,
+                    color: "primary.main",
+                    cursor: "pointer",
+                    fontWeight: 500,
+                  }}
+                  onClick={() => setShowDetails(false)}
+                >
+                  ← Back to jobs
+                </Typography>
+              )}
+
+              <Typography variant="h6" fontWeight={600}>
                 {selectedJob.title}
               </Typography>
 
@@ -177,15 +241,15 @@ useEffect(() => {
               <Stack direction="row" spacing={1} my={2}>
                 <MyButton label="Apply now" variant="contained" />
 
-                <IconButton onClick={() => setSaved(!saved)}>
-                  {saved ? (
+                <IconButton
+                  onClick={() => selectedJob.id && toggleSave(selectedJob.id)}
+                >
+                  {selectedJob.id && isSaved(selectedJob.id) ? (
                     <BookmarkIcon color="primary" />
                   ) : (
                     <BookmarkBorderIcon />
                   )}
                 </IconButton>
-
-                
               </Stack>
 
               <Divider sx={{ my: 2 }} />
@@ -205,12 +269,7 @@ useEffect(() => {
 
               <Divider sx={{ my: 2 }} />
 
-              <Typography
-                fontWeight={600}
-                display="flex"
-                justifyContent="left"
-                marginBottom={2}
-              >
+              <Typography fontWeight={600} mb={2}>
                 Job Description
               </Typography>
 
@@ -223,10 +282,8 @@ useEffect(() => {
                   </Typography>
                 ))}
             </Card>
-          ) : (
-            <Typography p={2} color="text.secondary"></Typography>
-          )}
-        </Box>
+          </Box>
+        )}
       </Box>
     </Box>
   );

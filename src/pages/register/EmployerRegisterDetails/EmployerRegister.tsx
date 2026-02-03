@@ -17,11 +17,12 @@ import type { employerRegisterType } from "../../../types/employerRegister";
 import { useEmployerFormHandlers } from "../../../hooks/employer/useEmployerFormHandlers";
 
 import { useNavigate, useParams } from "react-router-dom";
-import { useSnackbar } from "../../../Components/newui/MySnackBar";
+
 import { Box } from "@mui/system";
 import { useEffect } from "react";
 
 import { useUserService } from "../../../hooks/useUserService";
+import { useSnackbar } from "../../../context/SnackbarProvider";
 
 const { getEmployerById, getEmployerByEmail, createUser, updateUser } =
   useUserService();

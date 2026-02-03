@@ -28,6 +28,8 @@ function Home() {
         onSearch={onSearch}
       />
 
+      
+
       {/* Middle Section */}
       <Box
         sx={{
@@ -55,20 +57,22 @@ function Home() {
           Discover jobs tailored to your skills, location, and career goals.
         </Typography>
 
-        <Box mt={3}>
-          <Button
-            variant="contained"
-            color="info"
-            size="medium"
-            sx={{
-              borderRadius: "999px",
-              px: 5,
-              textTransform: "none",
-            }}
-          >
-            Get Started →
-          </Button>
-        </Box>
+      <Box mt={3}>
+  <Button
+    variant="contained"
+    color="secondary"
+    size="medium"
+  
+    sx={{
+      borderRadius: "999px",
+      px: 5,
+      textTransform: "none",
+    }}
+    onClick={() => navigate("/job-seeker-register")}  
+  >
+    Get Started →
+  </Button>
+</Box>
       </Box>
 
       {/* Popular Jobs */}

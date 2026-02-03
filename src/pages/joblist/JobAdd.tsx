@@ -39,7 +39,9 @@ export default function JobAdd() {
     mode: "onChange",
   });
 
-  const { handleSubmit, reset } = methods;
+  const { handleSubmit, reset,watch } = methods;
+
+  const educationSelected = watch("educationQualification");
 
   const { createJob } = useJobService();
 
@@ -130,15 +132,28 @@ export default function JobAdd() {
             </Grid>
 
 
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <MyMultiSelect                       //education multiselect//   
-                name="educationQualification"
-                label="Education Qualification"
-                options={educationOptions}
-                required
-                size="small"
-              />
-            </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+  <MyMultiSelect
+    name="educationQualification"
+    label="Education Qualification"
+    options={educationOptions}
+    required
+    size="small"
+  />
+
+  {/* 👇 SHOW WHEN OTHERS SELECTED */}
+  {educationSelected?.includes("others") && (
+    <Box mt={2}>
+      <MyTextField
+        name="otherEducation"
+        label="Other Qualification"
+        placeholder="Enter qualification"
+        required
+      />
+    </Box>
+  )}
+</Grid>
+
 
             <Grid size={{ xs: 12, sm: 6 }}>
               <MyTextField name="experience" label="Experience" required />

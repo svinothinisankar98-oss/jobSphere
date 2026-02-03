@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import {  useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState, type JSX } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import {
   Drawer,
@@ -10,6 +10,7 @@ import {
   IconButton,
   Box,
   useMediaQuery,
+  Badge,
 } from "@mui/material";
 
 import MenuIcon from "@mui/icons-material/Menu";
@@ -23,13 +24,10 @@ import ApartmentIcon from "@mui/icons-material/Apartment";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
-
-
+import BookmarkIcon from "@mui/icons-material/Bookmark";
 
 const drawerWidth = 250;
 const collapsedWidth = 70;
-
-//role based menu//
 
 type Role = 1 | 2 | 3 | 4;
 
@@ -38,32 +36,20 @@ type MenuItem = {
   path: string;
 };
 
-//routes set//
-
 const MENU_CONFIG: Record<Role, MenuItem[]> = {
-
-  //JobSeeker//
-
   1: [
     { item: "Home", path: "/" },
     { item: "Profile", path: "/profile" },
     { item: "Jobs", path: "/jobs" },
-    // { item: "Logout", path: "/logout" },
+    { item: "Saved Jobs", path: "/saved-jobs" },
   ],
-
-  //employer//
   2: [
     { item: "Home", path: "/" },
     { item: "Profile", path: "/profile" },
     { item: "Company Information", path: "/company-information" },
     { item: "Post a Job", path: "/job-list-add" },
-    // { item: "Logout", path: "/logout" },
   ],
-
-  //admin//
-
   3: [
-    // { item: "Profile", path: "/profile" },
     { item: "Company Information", path: "/company-information" },
     { item: "Company Information List", path: "/company-information-list" },
     { item: "Post a Job", path: "/job-list-add" },
@@ -71,70 +57,50 @@ const MENU_CONFIG: Record<Role, MenuItem[]> = {
     { item: "Employer List", path: "/Employer-List" },
     { item: "Job Seeker", path: "/job-seeker-register" },
     { item: "Employer", path: "/employer-register" },
-    // { item: "Logout", path: "/logout" },
   ],
-
-  //all//
   4: [
-    // { item: "Profile", path: "/profile" },
     { item: "Home", path: "/" },
-    { item: "Company Information", path: "/company-information" },
-    { item: "Company Information List", path: "/company-information-list" },
-    { item: "Post a Job", path: "/job-list-add" },
     { item: "Jobs", path: "/jobs" },
-    { item: "Employer List", path: "/Employer-List" },
+    // { item: "Employer List", path: "/Employer-List" },
     { item: "Job Seeker", path: "/job-seeker-register" },
     { item: "Employer", path: "/employer-register" },
-    // { item: "Logout", path: "/logout" },
   ],
 };
 
-
-//icon mapping//
-
-const ICON_MAP: any = {
+const ICON_MAP: Record<string, JSX.Element> = {
   Home: <HomeIcon htmlColor="blue" />,
   Profile: <AccountCircleIcon htmlColor="blue" />,
   Jobs: <WorkIcon htmlColor="blue" />,
+  "Saved Jobs": <BookmarkIcon htmlColor="blue" />,
   "Post a Job": <ApartmentIcon htmlColor="blue" />,
   "Company Information": <DomainIcon htmlColor="blue" />,
   "Company Information List": <ListAltIcon htmlColor="blue" />,
   "Employer List": <GroupIcon htmlColor="blue" />,
   "Job Seeker": <PersonOutlineIcon htmlColor="blue" />,
   Employer: <AssignmentIndIcon htmlColor="blue" />,
-  Logout: <CloseIcon htmlColor="blue" />,
 };
 
-//component//
 export default function Sidebar() {
-  //mobile deduction//
-
   const isMobile = useMediaQuery("(max-width:768px)");
   const [open, setOpen] = useState(false);
+  const [savedCount, setSavedCount] = useState(0);
 
   const location = useLocation();
   const navigate = useNavigate();
 
-  //User role from localStorage//
+  const authUser = JSON.parse(localStorage.getItem("authUser") || "null");
+  const userType: Role = authUser?.userType || 4;
+  const authUserId = authUser?.id;
 
-  const authUser = JSON.parse(localStorage.getItem("authUser") || "null");    //if login userrole//
-  const userType = authUser?.userType || 4;
-
-  //loads for menu//
-
-  const roleMenu = MENU_CONFIG[userType as 1 | 2 | 3] || [];
-
-  //active menu hightligh//
+  const roleMenu = MENU_CONFIG[userType] || [];
 
   const isActive = (path: string) => location.pathname === path;
+  const [savedJobs, setSavedJobs] = useState<any[]>([]);
 
   useEffect(() => {
     const saved = localStorage.getItem("sidebar-open");
-    if (saved !== null && !isMobile) {
-      setOpen(JSON.parse(saved));
-    } else {
-      setOpen(!isMobile);
-    }
+    if (saved !== null && !isMobile) setOpen(JSON.parse(saved));
+    else setOpen(!isMobile);
   }, [isMobile]);
 
   useEffect(() => {
@@ -143,7 +109,30 @@ export default function Sidebar() {
     }
   }, [open, isMobile]);
 
-  const toggleDrawer = () => setOpen((prev) => !prev);
+  /*  LIVE SAVED COUNT */
+  useEffect(() => {
+    const updateCount = () => {
+      const stored = localStorage.getItem("savedJobs");
+      const list = stored ? JSON.parse(stored) : [];
+      // setSavedJobs(stored ? JSON.parse(stored) : []);
+
+      const getUserSaveJob = list.filter((d: any) => d.id === authUserId);
+
+      setSavedCount(getUserSaveJob.length);
+    };
+
+    updateCount();
+
+    window.addEventListener("storage", updateCount);
+    window.addEventListener("savedJobsUpdated", updateCount);
+
+    return () => {
+      window.removeEventListener("storage", updateCount);
+      window.removeEventListener("savedJobsUpdated", updateCount);
+    };
+  }, [savedJobs,authUserId]); 
+
+  const toggleDrawer = () => setOpen((p) => !p);
 
   const navItemStyle = (active: boolean) => ({
     borderRadius: 2,
@@ -154,15 +143,9 @@ export default function Sidebar() {
       color: "#0f0f0f",
     }),
   });
-//. Navigation logic//
-  const handleMenuClick = (path: string) => {
-    if (path === "/logout") {
-      localStorage.clear();
-      navigate("/login");
-    } else {
-      navigate(path);
-    }
 
+  const handleMenuClick = (path: string) => {
+    navigate(path);
     if (isMobile) setOpen(false);
   };
 
@@ -184,15 +167,12 @@ export default function Sidebar() {
         ModalProps={{ keepMounted: true }}
         sx={{
           width: isMobile ? drawerWidth : open ? drawerWidth : collapsedWidth,
-          flexShrink: 0,
           "& .MuiDrawer-paper": {
             width: isMobile ? drawerWidth : open ? drawerWidth : collapsedWidth,
             transition: "width 0.3s",
-            overflowX: "hidden",
           },
         }}
       >
-        {/* HEADER */}
         <Box
           display="flex"
           alignItems="center"
@@ -206,10 +186,7 @@ export default function Sidebar() {
           </IconButton>
         </Box>
 
-        {/* //Menu rendering// */}
         <List sx={{ px: 0 }}>
-
-          
           {roleMenu.map((menu) => (
             <ListItemButton
               key={menu.item}
@@ -218,7 +195,13 @@ export default function Sidebar() {
               onClick={() => handleMenuClick(menu.path)}
             >
               <ListItemIcon sx={{ minWidth: 36 }}>
-                {ICON_MAP[menu.item]}
+                {menu.item === "Saved Jobs" ? (
+                  <Badge badgeContent={savedCount || null} color="primary">
+                    {ICON_MAP[menu.item]}
+                  </Badge>
+                ) : (
+                  ICON_MAP[menu.item]
+                )}
               </ListItemIcon>
 
               {open && <ListItemText primary={menu.item} />}

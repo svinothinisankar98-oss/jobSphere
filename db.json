@@ -94,7 +94,7 @@
       "description": "Analyze business data\nBuild dashboards\nPrepare reports\nSupport decision making"
     },
     {
-      "id": 1769939402817,
+      "id": "1769939402817",
       "noOfOpenings": 10,
       "educationQualification": [
         "bachelors",
@@ -1265,7 +1265,7 @@
       "createdAt": "2026-01-28T11:53:26.845Z",
       "contact": [
         {
-          "name": "vinojj",
+          "name": "vino",
           "phone": "7894561238",
           "email": "vinoz2jdkd@gmail.com",
           "profileImage": null
@@ -1300,7 +1300,7 @@
               "phone": "7894512547",
               "email": "kavi@gmail.com",
               "Designation": "admin",
-              "designation": "sddddd"
+              "designation": "sdddddkk"
             }
           ]
         }
@@ -1328,13 +1328,19 @@
               "name": "kdldl",
               "phone": "8745125477",
               "email": "vino@gmail.com",
-              "designation": "Admin"
+              "designation": "Admindd"
             },
             {
               "name": "kala",
               "phone": "9874612155",
               "email": "kala@gmail.com",
-              "designation": "kkkk"
+              "designation": "kkkkc"
+            },
+            {
+              "name": "dldld",
+              "phone": "9874612155",
+              "email": "vino@gmail.com",
+              "designation": ""
             }
           ]
         }
@@ -1375,7 +1381,7 @@
               "phone": "9874612156",
               "email": "vino@gmail.com",
               "Designation": "ddddddgg",
-              "designation": "Super Admin"
+              "designation": "Super Admiddn"
             }
           ]
         }
@@ -1415,48 +1421,60 @@
       "createdAt": "2026-01-29T13:42:27.544Z"
     }
   ],
-  "menu":{
-    "1":[
+  "menu": {
+    "1": [
       {
-        "item":"Home"
+        "item": "Home"
       },
       {
-        "item":"Profile"
-        
-    },{
-      "item":"Logout"
-    },{
-      "item":"Job"
-    }],
-    "2":[
-       {
-        "item":"Home"
-      },{
-      "item":"Profile"
-    },{
-      "item":"Logout"
-    },{
-      "item":"Company Information"
-    },{
-      "item":"Post a Job"
-    }],
-    "3":[{
-      "item":"Profile"
-    },{
-      "item":"Logout"
-    },{
-      "item":"Company Information"
-    },{
-      "item":"Company Information List" 
-    }
-    
-    ,{
-      "item":"Post a Job"
-    },{
-      "item":"Job"
-    },{
-      "item":"EMployeer List"
-    }]
-
+        "item": "Profile"
+      },
+      {
+        "item": "Logout"
+      },
+      {
+        "item": "Job"
+      }
+    ],
+    "2": [
+      {
+        "item": "Home"
+      },
+      {
+        "item": "Profile"
+      },
+      {
+        "item": "Logout"
+      },
+      {
+        "item": "Company Information"
+      },
+      {
+        "item": "Post a Job"
+      }
+    ],
+    "3": [
+      {
+        "item": "Profile"
+      },
+      {
+        "item": "Logout"
+      },
+      {
+        "item": "Company Information"
+      },
+      {
+        "item": "Company Information List"
+      },
+      {
+        "item": "Post a Job"
+      },
+      {
+        "item": "Job"
+      },
+      {
+        "item": "EMployeer List"
+      }
+    ]
   }
 }

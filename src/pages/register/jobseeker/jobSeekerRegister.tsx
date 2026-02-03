@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useForm, FormProvider, type SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { Box, Stack, Card, CardContent, Grid } from "@mui/material";
+import { Box, Card, CardContent, Grid } from "@mui/material";
 
 import MyDropDown from "../../../Components/newui/MyDropDown";
 import MyButton from "../../../Components/newui/MyButton";
@@ -9,8 +9,7 @@ import MyHeading from "../../../Components/newui/MyHeading";
 import MyFileUpload from "../../../Components/newui/MyFileupLoad";
 
 import { locationService } from "../../../service/locationService";
-import { userService } from "../../../service/userService";
-import { toastService } from "../../../utils/Toast";
+
 import { fileToBase64 } from "../../../utils/fileTOBse64Convert";
 
 import type { JobSeeker, Option } from "../../../types/jobSeeker";
@@ -19,6 +18,8 @@ import { jobSeekerSchema } from "../../../schemas/jobSeekerSchema";
 import jobseekerDefaultValues from "../jobseeker/defaultvalues/JobSeeker";
 import MyTextField from "../../../Components/newui/MyTextField";
 import { useUserService } from "../../../hooks/useUserService";
+
+import { useSnackbar } from "../../../context/SnackbarProvider";
 
 // const defaultValues: JobSeeker = {
 //   Name: "",
@@ -64,27 +65,28 @@ const JobSeekerRegister = () => {
     fetchLocations();
   }, []);
 
+ const { showSnackbar } = useSnackbar();
+
   // ================= SUBMIT =================
   const onSubmit: SubmitHandler<JobSeeker> = async (data) => {
     try {
       if (data.resume) {
         const base64 = await fileToBase64(data.resume);
         data.resumeBase64 = base64;
-        // toastService.error("Resume is required");
-        // return;
+       
       }
 
       data.userType = 1;
 
       const existingUser = await getUserByEmail(data.email);
       if (existingUser) {
-        toastService.error("Email already exists");
+        showSnackbar("Email already exists","error");
         return;
       }
 
       await createUser(data);
 
-      toastService.success("Registration successful!");
+      showSnackbar("Registration successful!","success");
 
       reset();
       if (fileInputRef.current) fileInputRef.current.value = "";

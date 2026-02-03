@@ -49,23 +49,36 @@ export default function CompanyInfoList() {
         Company & Branches List
       </Typography>
 
-      <Box display="flex" justifyContent="space-between" mb={2} maxWidth={1000} mx="auto">
-        <MyButton
-          label="Add Company Info"
-          icon={<AddIcon />}
-          variant="contained"
-          onClick={() => navigate("/company-information")}
-        />
+     <Box
+  display="flex"
+  justifyContent="space-between"
+  alignItems="center"
+  mb={2}
+  maxWidth={1000}
+  mx="auto"
+  gap={1}
+  flexDirection={{ xs: "column", sm: "row" }}   
+>
+  <MyButton
+    label="Add Company Info"
+    icon={<AddIcon />}
+    variant="contained"
+    onClick={() => navigate("/company-information")}
+    sx={{ width: { xs: "100%", sm: "auto" } }}  
+  />
 
-        <MyTextField
-          size="small"
-          placeholder="company name or email..."
-          value={search}
-          icon={<SearchIcon />}
-          onChange={(e) => setSearch(e.target.value)}
-          sx={{ width: 300 }}
-        />
-      </Box>
+  <MyTextField
+    size="small"
+    placeholder="company name or email..."
+    value={search}
+    icon={<SearchIcon />}
+    onChange={(e) => setSearch(e.target.value)}
+    sx={{ 
+      width: { xs: "100%", sm: 300 }   
+    }}
+  />
+</Box>
+
 
       <TableContainer component={Paper} sx={{ maxWidth: 1000, mx: "auto" }}>
         <Table>

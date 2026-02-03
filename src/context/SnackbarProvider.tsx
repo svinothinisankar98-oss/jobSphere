@@ -13,15 +13,27 @@ const SnackbarContext = createContext<SnackbarContextType | null>(null);
 export const MySnackBar = ({ children }: { children: React.ReactNode }) => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
-  const [severity, setSeverity] = useState<SnackbarSeverity>("success");
+  const [severity, setSeverity] =
+    useState<SnackbarSeverity>("success");
 
   const showSnackbar = (
     msg: string,
     sev: SnackbarSeverity = "success"
   ) => {
-    setMessage(msg);
-    setSeverity(sev);
-    setOpen(true);
+    setOpen(false); // 🔥 reset first so it always reopens
+    setTimeout(() => {
+      setMessage(msg);
+      setSeverity(sev);
+      setOpen(true);
+    }, 50);
+  };
+
+  const handleClose = (
+    _: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") return;
+    setOpen(false);
   };
 
   return (
@@ -31,13 +43,13 @@ export const MySnackBar = ({ children }: { children: React.ReactNode }) => {
       <Snackbar
         open={open}
         autoHideDuration={4000}
-        onClose={() => setOpen(false)}
+        onClose={handleClose}
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
       >
         <Alert
           severity={severity}
           variant="filled"
-          onClose={() => setOpen(false)}
+          onClose={handleClose}
         >
           {message}
         </Alert>
@@ -49,7 +61,7 @@ export const MySnackBar = ({ children }: { children: React.ReactNode }) => {
 export const useSnackbar = () => {
   const ctx = useContext(SnackbarContext);
   if (!ctx) {
-    throw new Error("useSnackbar must be used inside SnackbarProvider");
+    throw new Error("useSnackbar must be used inside MySnackBar");
   }
   return ctx;
 };

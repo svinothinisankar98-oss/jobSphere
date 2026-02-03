@@ -5,8 +5,9 @@ import { ThemeProvider } from "@mui/material/styles";
 import "./index.css";
 import App from "./App";
 
-import { MySnackBar } from "./Components/newui/MySnackBar";
+
 import { theme }from "./config/theme";
+import { MySnackBar } from "./context/SnackbarProvider";
 
 createRoot(document.getElementById("root")!).render(
   <ThemeProvider theme={theme}>

@@ -14,14 +14,7 @@ export const useUserService = () => {
   }
 };
 
-  // const createUser = async (data: Omit<User, "id">): Promise<User | null> => {
-  //   try {
-  //     return await userService.createUser(data);
-  //   } catch (error) {
-  //     console.error("Failed to create user", error);
-  //     return null;
-  //   }
-  // };
+  
 
   const createUser = async (data: CreateUserPayload) => {
     try {

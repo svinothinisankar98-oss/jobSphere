@@ -17,15 +17,18 @@ import EmployerRegister from "./pages/register/employerregisterdetails/EmployerR
 import EmployerList from "./pages/register/employerregisterdetails/EmployerList";
 
 import CompanyInformation from "./pages/companyinformation/CompanyInformation";
-import { MySnackBar } from "./Components/newui/MySnackBar";
+
 import CompanyInformationList from "./pages/companyinformation/CompanyInfoList";
 import JobAdd from "./pages/joblist/JobAdd";
+import SavedJobs from "./pages/joblist/SavedJobs";
+import { MySnackBar } from "./context/SnackbarProvider";
 
 function App() {
   return (
+      <MySnackBar>
     <div className="app-container">
       <Header />
-       <MySnackBar children={undefined} /> 
+       
       <div className="page-content">
         {/* All page content goes here */}
         <Routes>
@@ -53,12 +56,17 @@ function App() {
             element={<CompanyInformationList />}
           />
           <Route path="/job-list-add" element={<JobAdd />} />
+
+          <Route path="/saved-jobs" element={<SavedJobs />} />
         </Routes>
+
+        
       </div>
 
       <Sidebar />
       <Footer />
     </div>
+    </MySnackBar>
   );
 }
 

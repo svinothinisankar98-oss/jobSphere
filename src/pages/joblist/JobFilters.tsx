@@ -8,6 +8,8 @@ type Option = {
   value: string;
 };
 
+//Props coming from JobList//
+
 type Props = {
   jobType: string[];
   setJobType: (v: string[]) => void;
@@ -39,6 +41,9 @@ const salaryOptions: Option[] = [
   { id: 3, item: "₹9 LPA+", value: "900000" },
   { id: 4, item: "₹12 LPA+", value: "1200000" },
 ];
+
+
+//UI//
 
 export default function JobFilters({
   jobType,

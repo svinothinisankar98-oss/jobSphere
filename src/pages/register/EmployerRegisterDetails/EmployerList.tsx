@@ -31,7 +31,7 @@ import {
 
 import { useNavigate } from "react-router-dom";
 import { formatDate } from "../../../utils/dateFormatter";
-import { useSnackbar } from "../../../Components/newui/MySnackBar";
+
 import { useUserService } from "../../../hooks/useUserService";
 import MyDialog from "../../../Components/newui/MyDialog";
 import MyTabs from "../../../Components/newui/MyTab";
@@ -40,6 +40,7 @@ import { useEmployerListHandlers } from "../../../hooks/employer/useEmployerList
 
 
 import { Switch, FormControlLabel } from "@mui/material";
+import { useSnackbar } from "../../../context/SnackbarProvider";
 
 const EmployerList = () => {
   //state variables//
@@ -63,13 +64,7 @@ const EmployerList = () => {
 
   const navigate = useNavigate();
 
-  // //dialog//
-  // const [openConfirm, setOpenConfirm] = useState(false);
-  // const [openDeleteConfirm, setOpenDeleteConfirm] = useState(false);
-
-  // //selected rows//
-  // const [selectedRow, setSelectedRow] = useState<any>(null);
-  // const [rowToDelete, setRowToDelete] = useState<any>(null);
+  
 
   //count for active and inactive//
 
@@ -102,58 +97,7 @@ const EmployerList = () => {
     // loadDefaultData();
   };
 
-  //confirm delete//
-
-  // const handleConfirmDelete = async () => {
-  //   if (!rowToDelete) return;
-
-  //   try {
-  //     const updatedRow = {
-  //       ...rowToDelete,
-  //       isActive: false,
-  //       updatedAt: new Date(),
-  //     };
-
-  //     const id = rowToDelete.id;
-  //     await updateUser(id, updatedRow);
-  //     await handleSearch();
-
-  //     showSnackbar("Employee deleted successfully", "success");
-  //   } catch (error) {
-  //     console.error(error);
-  //     showSnackbar("Failed to delete employee", "error");
-  //   } finally {
-  //     setOpenDeleteConfirm(false);
-  //     setRowToDelete(null);
-  //   }
-  // };
-
-  
-
-  // const handleConfirmActivate = async () => {
-  //   if (!selectedRow) return;
-
-  //   try {
-  //     const updatedRow = {
-  //       ...selectedRow,
-  //       isActive: true,
-  //       updatedAt: new Date(),
-  //     };
-
-  //     const id = selectedRow.id;
-
-  //     await updateUser(id, updatedRow);
-
-  //     showSnackbar("Employee activated successfully", "success");
-  //     handleSearch(); // reload table
-  //   } catch (error) {
-  //     console.error(error);
-  //     showSnackbar("Failed to activate employee", "error");
-  //   } finally {
-  //     setOpenConfirm(false);
-  //   }
-  // };
-
+ 
   //Edit Logic//
 
   const handleEdit = (row: employerRegisterType) => {
@@ -201,20 +145,15 @@ const EmployerList = () => {
         tabFiltered = filtered; // ALL
       } else if (activeTab === 1) {
         tabFiltered = filtered.filter((d) => d.isActive === true);
-        // setActiveCount(tabFiltered.length);
-        // setInactiveCount(tabFiltered.length);
+        
       } else if (activeTab === 2) {
         tabFiltered = filtered.filter((d) => d.isActive === false);
-        //  setActiveCount(tabFiltered.length);
-        // setInactiveCount(tabFiltered.length);
+        
       } else if (activeTab === 3) {
-        tabFiltered = filtered; //filtered.filter((d) => d.isActive === false);
-        //  setActiveCount(tabFiltered.length);
-        // setInactiveCount(tabFiltered.length);
+        tabFiltered = filtered; 
       }
 
-      // const active = response.filter((d) => d.isActive === true);
-      // const inactive = response.filter((d) => d.isActive === false);
+      
 
       setData(tabFiltered);
     } catch (err) {

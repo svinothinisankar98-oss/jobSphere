@@ -1,5 +1,5 @@
 
-import { useState,useEffect } from "react";
+import { useState } from "react";
 import { Box, Typography, IconButton } from "@mui/material";
 
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
@@ -14,6 +14,8 @@ import MyButton from "../../Components/newui/MyButton";
 import MyTable from "../../Components/newui/MyTable";
 
 
+
+
 import { COMPANY_INFORMATION_LIMITS } from "../../constants/CompanyInformationConstant";
 
 //  Branch Contacts//
@@ -26,7 +28,11 @@ export default function BranchContacts({ nestIndex, control, watch }: any) {
 
   const watched = watch(name);
 
+  // const [editingId, setEditingId] = useState<string | null>(null);
+
   const [editingId, setEditingId] = useState<string | null>(null);
+
+  
 
   const [newRowId, setNewRowId] = useState<string | null>(
     fields[0]?.id || null,
@@ -34,11 +40,11 @@ export default function BranchContacts({ nestIndex, control, watch }: any) {
 
   //Auto edit newly added row//
 
-useEffect(() => {
-    if (fields.length && !editingId) {
-      setEditingId(fields[fields.length - 1].id);
-    }
-  }, [fields]);
+// useEffect(() => {
+//     if (fields.length && !editingId) {
+//       setEditingId(fields[fields.length - 1].id);
+//     }
+//   }, [fields]);
 
   const isRowFilled = (row: any) =>
     row?.name?.trim() && row?.phone?.trim() && row?.email?.trim();
@@ -72,12 +78,9 @@ useEffect(() => {
       designation: "",
     });
 
-    const newIndex = fields.length;
-
-    requestAnimationFrame(() => {
-      setEditingId(fields[newIndex]?.id);
-      setNewRowId(fields[newIndex]?.id);
-    });
+   setTimeout(() => {
+    setEditingId(fields[fields.length]?.id);
+  });
   };
 
   //save row//

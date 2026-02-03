@@ -19,10 +19,10 @@ import PersonIcon from "@mui/icons-material/Person";
 import { authStorage } from "../utils/authStorage";
 import MyButton from "../Components/newui/MyButton";
 
-
 type AuthUser = {
   id: number;
-  name: string;
+  email: string;
+  userType: number;
 };
 
 export default function Header() {
@@ -37,16 +37,14 @@ export default function Header() {
 
   const handleProfileClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
-    console.log("wrong working");
     setIsMenuOpen(true);
   };
-
-  console.log(isMenuOpen, "isMenuOpen");
 
   const handleClose = () => {
     setAnchorEl(null);
     setIsMenuOpen(false);
   };
+
   useEffect(() => {
     setUser(authStorage.get());
 
@@ -63,6 +61,7 @@ export default function Header() {
   const handleLogout = () => {
     authStorage.remove();
     setUser(null);
+
     navigate("/login");
     setIsMenuOpen(false);
   };
@@ -70,8 +69,8 @@ export default function Header() {
   return (
     <AppBar position="sticky" color="inherit" elevation={1}>
       <Toolbar sx={{ justifyContent: "space-between" }}>
+        {/* LEFT */}
         <Stack direction="row" alignItems="center" spacing={2} paddingLeft={9}>
-          {/* Logo */}
           <Typography
             mr={10}
             variant="h6"
@@ -87,7 +86,6 @@ export default function Header() {
             JobSphere
           </Typography>
 
-          {/* Desktop Navigation ONLY */}
           <Stack
             direction="row"
             spacing={3}
@@ -112,8 +110,14 @@ export default function Header() {
           </Stack>
         </Stack>
 
-        {/* RIGHT SIDE */}
-        <Box>
+        {/* RIGHT */}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: { xs: 1, md: 2 },
+          }}
+        >
           {!user ? (
             <Stack direction="row" spacing={2}>
               <MyButton
@@ -121,7 +125,12 @@ export default function Header() {
                 icon={<AccountCircleIcon />}
                 onClick={handleLogin}
                 label="Login"
-                sx={{ fontWeight: "600" }}
+                sx={{
+                  minWidth: { xs: 70, md: 120 },
+                  fontSize: { xs: "0.7rem", md: "0.9rem" },
+                  px: { xs: 1.2, md: 3 },
+                  height: { xs: 32, md: 38 },
+                }}
               />
 
               <MyButton
@@ -129,7 +138,12 @@ export default function Header() {
                 icon={<PersonAddIcon />}
                 onClick={(e) => setRegisterAnchor(e.currentTarget)}
                 label="Register"
-                sx={{ fontWeight: "600" }}
+                sx={{
+                  minWidth: { xs: 75, md: 120 },
+                  fontSize: { xs: "0.7rem", md: "0.9rem" },
+                  px: { xs: 1.2, md: 3 },
+                  height: { xs: 32, md: 38 },
+                }}
               />
 
               <Menu
@@ -138,7 +152,6 @@ export default function Header() {
                 onClose={() => setRegisterAnchor(null)}
               >
                 <MenuItem
-                  sx={{ fontWeight: "600" }}
                   component={Link}
                   to="/employer-register"
                   onClick={() => setRegisterAnchor(null)}
@@ -146,7 +159,6 @@ export default function Header() {
                   Employer
                 </MenuItem>
                 <MenuItem
-                  sx={{ fontWeight: "600" }}
                   component={Link}
                   to="/job-seeker-register"
                   onClick={() => setRegisterAnchor(null)}
@@ -162,8 +174,9 @@ export default function Header() {
                 size="small"
                 startIcon={<AccountCircleIcon />}
                 onClick={handleProfileClick}
+                sx={{ textTransform: "none", fontWeight: 600 }}
               >
-                {user.name}
+                {user.email}
               </Button>
 
               <Menu
@@ -174,11 +187,13 @@ export default function Header() {
                 transformOrigin={{ vertical: "top", horizontal: "right" }}
               >
                 <MenuItem component={Link} to="/profile" onClick={handleClose}>
-                  <PersonIcon sx={{ mr: 1 }} /> My Profile
+                  <PersonIcon sx={{ mr: 1 }} />
+                  My Profile
                 </MenuItem>
 
                 <MenuItem onClick={handleLogout} sx={{ color: "red" }}>
-                  <LogoutIcon sx={{ mr: 1 }} /> Logout
+                  <LogoutIcon sx={{ mr: 1 }} />
+                  Logout
                 </MenuItem>
               </Menu>
             </>

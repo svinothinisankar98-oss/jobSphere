@@ -5,7 +5,8 @@ import type { SubmitHandler } from "react-hook-form";
 import type { CompanyInformationType } from "../../types/companyInformation";
 
 import { useCompanyInformation } from "./useCompanyInformation";
-import { useSnackbar } from "../../Components/newui/MySnackBar";
+import { useSnackbar } from "../../context/SnackbarProvider";
+
 
 export function useCompanyInfoHandlers(reset: any) {
   const { id } = useParams();
@@ -39,6 +40,7 @@ export function useCompanyInfoHandlers(reset: any) {
       } else {
         data.createdAt = new Date();
         await createCompanyInformation(data);
+  
         showSnackbar("Company information saved successfully!", "success");
       }
 

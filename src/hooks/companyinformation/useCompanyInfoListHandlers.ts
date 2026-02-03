@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { CompanyInformationType } from "../../types/companyInformation";
 import { useCompanyInformation } from "./useCompanyInformation";
-import { useSnackbar } from "../../Components/newui/MySnackBar";
+import { useSnackbar } from "../../context/SnackbarProvider";
 
 export function useCompanyInfoListHandlers() {
   const [rows, setRows] = useState<CompanyInformationType[]>([]);
