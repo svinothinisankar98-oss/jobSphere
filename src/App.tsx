@@ -21,11 +21,13 @@ import CompanyInformation from "./pages/companyinformation/CompanyInformation";
 import CompanyInformationList from "./pages/companyinformation/CompanyInfoList";
 import JobAdd from "./pages/joblist/JobAdd";
 import SavedJobs from "./pages/joblist/SavedJobs";
-import { MySnackBar } from "./context/SnackbarProvider";
+
+import { UIProvider } from "./context/UIProvider";
 
 function App() {
   return (
-      <MySnackBar>
+      // <MySnackBar>
+        <UIProvider>
     <div className="app-container">
       <Header />
        
@@ -66,7 +68,8 @@ function App() {
       <Sidebar />
       <Footer />
     </div>
-    </MySnackBar>
+    {/* </MySnackBar> */}
+    </UIProvider>
   );
 }
 

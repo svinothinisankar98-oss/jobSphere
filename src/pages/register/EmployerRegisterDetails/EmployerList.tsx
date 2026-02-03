@@ -33,14 +33,15 @@ import { useNavigate } from "react-router-dom";
 import { formatDate } from "../../../utils/dateFormatter";
 
 import { useUserService } from "../../../hooks/useUserService";
-import MyDialog from "../../../Components/newui/MyDialog";
+// import MyDialog from "../../../Components/newui/MyDialog";
 import MyTabs from "../../../Components/newui/MyTab";
 
 import { useEmployerListHandlers } from "../../../hooks/employer/useEmployerListHandlers";
 
 
 import { Switch, FormControlLabel } from "@mui/material";
-import { useSnackbar } from "../../../context/SnackbarProvider";
+
+import { useUI } from "../../../context/UIProvider";
 
 const EmployerList = () => {
   //state variables//
@@ -55,7 +56,7 @@ const EmployerList = () => {
   const [industry, setIndustry] = useState("");
   const [companySize, setCompanySize] = useState("");
   const [loading, setLoading] = useState(false); //api loading//
-  const { showSnackbar } = useSnackbar();
+ const { showSnackbar } = useUI();
 
   const { getRecruiterDetails, updateUser } = useUserService();
 
@@ -75,13 +76,10 @@ const EmployerList = () => {
 
   //actions hooks useemployerlisthandler//
   const {
-    showConfirm,
-    pendingAction,
+   
     handleDeleteClick: handleBulkDelete,
     handleActivateClick: handleBulkActivate,
-    handleConfirmYes,
-    handleConfirmNo,
-    pendingRows,
+   
   } = useEmployerListHandlers(updateUser, showSnackbar);
 
  
@@ -265,7 +263,7 @@ const EmployerList = () => {
               <IconButton
                 size="small"
                 color="error"
-                onClick={() => handleBulkDelete([row])}
+                onClick={() => handleBulkDelete([row],handleSearch)}
               >
                 <DeleteIcon fontSize="small" />
               </IconButton>
@@ -278,7 +276,7 @@ const EmployerList = () => {
               <IconButton
                 size="small"
                 color="success"
-                onClick={() => handleBulkActivate([row])}
+                onClick={() => handleBulkActivate([row],handleSearch)}
               >
                 <CheckCircleIcon fontSize="small" />
               </IconButton>
@@ -383,7 +381,7 @@ const EmployerList = () => {
 
       {/*  Dialogs handler */}
 
-      <MyDialog
+      {/* <MyDialog
         open={showConfirm && pendingAction === "activate"}
         title="Activate Employer"
         
@@ -411,7 +409,7 @@ const EmployerList = () => {
         onConfirm={() => handleConfirmYes(handleSearch)}
         confirmText="Yes, Delete"
         confirmColor="error"
-      />
+      /> */}
 
       {loading && (
         <Box display="flex" justifyContent="center" mt={3}>
@@ -478,7 +476,7 @@ const EmployerList = () => {
                         const rowsToDelete = data.filter(
                           (r) => r.id && ids.includes(r.id)
                         );
-                        handleBulkDelete(rowsToDelete);
+                        handleBulkDelete(rowsToDelete,handleSearch);
                       }}
                     />
                   )}
@@ -515,7 +513,7 @@ const EmployerList = () => {
                         const selectedRows = data.filter(
                           (r) => r.id && ids.includes(r.id)
                         );
-                        handleBulkActivate(selectedRows);
+                        handleBulkActivate(selectedRows,handleSearch);
                       }}
                     />
                   )}

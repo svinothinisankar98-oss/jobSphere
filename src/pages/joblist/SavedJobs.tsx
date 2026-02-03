@@ -16,84 +16,73 @@ import { useJobService } from "../../hooks/joblist/useJobService";
 import type { jobsListType } from "../../types/jobListType";
 import MyButton from "../../Components/newui/MyButton";
 import { authStorage } from "../../utils/authStorage";
+import { userService } from "../../service/userService";
 
 export default function SavedJobs() {
   const { getAllJobs } = useJobService();
 
   const [jobs, setJobs] = useState<jobsListType[]>([]);
-  const [savedJobs, setSavedJobs] = useState<any[]>([]);
+  const [savedJobIds, setSavedJobIds] = useState<number[]>([]);
   const [selectedJob, setSelectedJob] = useState<jobsListType | null>(null);
 
-  // ✅ load jobs
+  const authUser = authStorage.get() || {};
+  const authUserId = authUser?.id;
+
+  /* Load all jobs */
   useEffect(() => {
     getAllJobs().then(setJobs);
   }, []);
 
-  const getAuthUser = authStorage.get() || {};
-  const authUserId = getAuthUser?.id;
-  // ✅ load saved jobs (fix string → number issue)
+  /* Load saved jobs from DB */
   useEffect(() => {
-    const stored = localStorage.getItem("savedJobs");
+    if (!authUserId) return;
 
-    if (!stored) {
-      setSavedJobs([]);
-      return;
-    }
+    const loadSavedJobs = async () => {
+      const user = await userService.getUser(authUser?.email);
+      setSavedJobIds(user?.savedJobs || []);
+    };
 
-    const parsed: number[] = JSON.parse(stored);
+    loadSavedJobs();
+  }, [authUserId]);
 
-    setSavedJobs(parsed);
-  }, []);
-
-  const getJobNumber = Array.isArray(savedJobs)
-    ? savedJobs?.filter((d: any)=>{
-      if(d?.jobId && d?.id == authUserId){
-        return d
-      }
-    })
-    : [];
-  console.log(getJobNumber, "getJobNumber");
-  const gejobId = getJobNumber?.map(d=>d?.jobId)
-  // ✅ filter correctly
+  /* Filter saved jobs */
   const savedJobList = useMemo(() => {
-    // return getJobNumber;
-    return jobs.filter((job) => gejobId?.includes(job?.id));
-  }, [jobs, savedJobs]);
+    return jobs.filter((job) => savedJobIds.includes(job.id!));
+  }, [jobs, savedJobIds]);
 
-  console.log(jobs, "savedJobList", savedJobs);
-
+  /* Auto select first job */
   useEffect(() => {
-    if (savedJobList.length) setSelectedJob(savedJobList[0]);
-    else setSelectedJob(null);
+    if (savedJobList.length) {
+      setSelectedJob(savedJobList[0]);
+    } else {
+      setSelectedJob(null);
+    }
   }, [savedJobList]);
 
-  // ✅ save / unsave
-  const toggleSave = (id: number) => {
-  const authUserId = getAuthUser?.id;
+  /* Toggle save/unsave */
+  const toggleSave = async (jobId: number) => {
+    let updated;
 
-  const alreadySaved = savedJobs.some(
-    (job: any) => job.id === authUserId && job.jobId === id
-  );
+    if (savedJobIds.includes(jobId)) {
+      updated = savedJobIds.filter((id) => id !== jobId);
+    } else {
+      updated = [...savedJobIds, jobId];
+    }
 
-  let savedJobData;
+    setSavedJobIds(updated); // instant UI
 
-  if (alreadySaved) {
-    // 👉 UNSAVE (remove it)
-    savedJobData = savedJobs.filter(
-      (job: any) => !(job.id === authUserId && job.jobId === id)
+    const getUser = await userService.getUser(authUser?.email);
+
+    getUser.savedJobs = updated;
+    await userService.updateUser(authUser?.id, getUser); // persist DB
+
+    // window.dispatchEvent(new Event("savedJobsUpdated"));
+    window.dispatchEvent(
+      new CustomEvent("savedJobsUpdated", {
+        detail: updated.length,
+      }),
     );
-  } else {
-    // 👉 SAVE
-    savedJobData = [
-      ...savedJobs,
-      { id: authUserId, jobId: id }
-    ];
-  }
-
-  setSavedJobs(savedJobData);
-  localStorage.setItem("savedJobs", JSON.stringify(savedJobData));
-};
-
+  };
 
   return (
     <Box height="100vh" px={3} bgcolor="#f7f9fc">
@@ -105,17 +94,13 @@ export default function SavedJobs() {
           alignItems="center"
           justifyContent="center"
         >
-          <Paper
-            sx={{
-              p: 6,
-              textAlign: "center",
-              borderRadius: 3,
-            }}
-          >
+          <Paper sx={{ p: 6, textAlign: "center", borderRadius: 3 }}>
             <BookmarkIcon sx={{ fontSize: 60, mb: 1, color: "#1976d2" }} />
+
             <Typography fontSize={20} fontWeight={600}>
               No saved jobs yet
             </Typography>
+
             <Typography color="text.secondary">
               Save jobs to view them here later
             </Typography>
@@ -147,11 +132,9 @@ export default function SavedJobs() {
                 }}
               >
                 <Typography fontWeight={600}>{job.title}</Typography>
-
                 <Typography color="text.secondary">
                   {job.companyName}
                 </Typography>
-
                 <Typography fontSize={13}>{job.location}</Typography>
 
                 <Typography fontWeight={600} mt={1}>
@@ -181,7 +164,13 @@ export default function SavedJobs() {
                   <MyButton label="Apply now" variant="contained" />
 
                   <IconButton onClick={() => toggleSave(selectedJob.id!)}>
-                    <BookmarkIcon color="primary" />
+                    <BookmarkIcon
+                      color={
+                        savedJobIds.includes(selectedJob.id!)
+                          ? "primary"
+                          : "disabled"
+                      }
+                    />
                   </IconButton>
 
                   <Chip label={selectedJob.jobType} />

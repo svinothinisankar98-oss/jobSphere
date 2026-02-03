@@ -19,6 +19,7 @@ import MyButton from "../../Components/newui/MyButton";
 import SearchSection from "../home/SearchSection";
 import JobFilters from "../joblist/JobFilters";
 import { authStorage } from "../../utils/authStorage";
+import { userService } from "../../service/userService";
 
 export default function JobList() {
   const { getAllJobs } = useJobService();
@@ -26,46 +27,55 @@ export default function JobList() {
 
   const [jobs, setJobs] = useState<jobsListType[]>([]);
   const [selectedJob, setSelectedJob] = useState<jobsListType | null>(null);
-
   const [showDetails, setShowDetails] = useState(false);
 
-  const getAuthUser = authStorage.get() || {};
-  /* SAVED JOBS */
-  const [savedJobs, setSavedJobs] = useState<any[]>(() => {
-    const stored = localStorage.getItem("savedJobs");
-    return stored ? JSON.parse(stored) : [];
-  });
+  const authUser = authStorage.get() || {};
+  const authUserId = authUser?.id;
 
-  const authUserId = getAuthUser?.id;
+  /* ✅ DB SAVED JOB IDS */
+  const [savedJobIds, setSavedJobIds] = useState<number[]>([]);
 
-    console.log(authUserId,'fro')
+  /* Load jobs */
+  useEffect(() => {
+    getAllJobs().then(setJobs);
+  }, []);
 
-  const toggleSave = (id: number) => {
-    // const updated = savedJobs.includes(id)
-    //   ? savedJobs.filter((j) => j !== id)
-    //   : [...savedJobs, id];
+  /* Load saved jobs from DB */
+  useEffect(() => {
+    if (!authUserId) return;
 
-    
+    const loadSavedJobs = async () => {
+      const user = await userService.getUser(authUser?.email);
+      setSavedJobIds(user?.savedJobs || []);
+    };
 
-    const alreadySaved = savedJobs.some(
-      (job: any) => job.id === authUserId && job.jobId === id,
-    );
+    loadSavedJobs();
+  }, [authUserId]);
 
-    let savedJobData = [...savedJobs];
+  /* Toggle save/unsave */
+  const toggleSave = async (jobId: number) => {
+    let updated;
 
-    if (!alreadySaved) {
-      savedJobData.push({
-        id: authUserId,
-        jobId: id,
-      });
+    if (savedJobIds.includes(jobId)) {
+      updated = savedJobIds.filter((id) => id !== jobId);
+    } else {
+      updated = [...savedJobIds, jobId];
     }
 
-    setSavedJobs(savedJobData);
-    localStorage.setItem("savedJobs", JSON.stringify(savedJobData));
-    window.dispatchEvent(new Event("savedJobsUpdated"));
+    setSavedJobIds(updated); // instant UI
+
+    const getUser = await userService.getUser(authUser?.email);
+
+    getUser.savedJobs = updated;
+    await userService.updateUser(authUser?.id, getUser);
+     window.dispatchEvent(
+    new CustomEvent("savedJobsUpdated", {
+      detail: updated.length,
+    })
+  );
   };
 
-  const isSaved = (id: number) => savedJobs.some((d: any) => d?.jobId == id&&d?.id==authUserId);
+  const isSaved = (id: number) => savedJobIds.includes(id);
 
   /* SEARCH */
   const [searchInput, setSearchInput] = useState(location.state?.search || "");
@@ -82,11 +92,6 @@ export default function JobList() {
   const [experience, setExperience] = useState<string[]>([]);
   const [salary, setSalary] = useState<string[]>([]);
 
-  /* FETCH */
-  useEffect(() => {
-    getAllJobs().then(setJobs);
-  }, []);
-
   useEffect(() => {
     setSearchQuery(searchInput);
     setSelectedQuery(selectedInput);
@@ -96,7 +101,7 @@ export default function JobList() {
     window.history.replaceState({}, document.title);
   }, []);
 
-  /* FILTER */
+  /* FILTERED JOBS */
   const filteredJobs = useMemo(() => {
     return jobs.filter((job) => {
       const titleMatch =
@@ -112,7 +117,6 @@ export default function JobList() {
         experience.length === 0 || experience.includes(job.experience);
 
       const jobSalary = job.salary?.replace(/,/g, "") || "0";
-
       const salaryMatch = salary.length === 0 || salary.includes(jobSalary);
 
       return (
@@ -125,6 +129,7 @@ export default function JobList() {
     });
   }, [jobs, searchQuery, selectedQuery, jobType, experience, salary]);
 
+  /* Auto select first job */
   useEffect(() => {
     if (filteredJobs.length) setSelectedJob(filteredJobs[0]);
     else setSelectedJob(null);
@@ -135,7 +140,17 @@ export default function JobList() {
   return (
     <Box height="100vh" display="flex" flexDirection="column">
       {/* SEARCH */}
-      <Box px={{ xs: 1, md: 4 }} py={2}>
+      <Box
+        px={{ xs: 1, md: 4 }}
+        py={2}
+        sx={{
+          background: "#fff",
+          position: "sticky",
+          top: 0,
+          zIndex: 10,
+          boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+        }}
+      >
         <SearchSection
           search={searchInput}
           setSearch={setSearchInput}
@@ -147,17 +162,18 @@ export default function JobList() {
             setSearched(true);
           }}
         />
-      </Box>
 
-      {/* FILTERS */}
-      <JobFilters
-        jobType={jobType}
-        setJobType={setJobType}
-        experience={experience}
-        setExperience={setExperience}
-        salary={salary}
-        setSalary={setSalary}
-      />
+        <Box mt={2}>
+          <JobFilters
+            jobType={jobType}
+            setJobType={setJobType}
+            experience={experience}
+            setExperience={setExperience}
+            salary={salary}
+            setSalary={setSalary}
+          />
+        </Box>
+      </Box>
 
       {/* CONTENT */}
       <Box
@@ -241,10 +257,8 @@ export default function JobList() {
               <Stack direction="row" spacing={1} my={2}>
                 <MyButton label="Apply now" variant="contained" />
 
-                <IconButton
-                  onClick={() => selectedJob.id && toggleSave(selectedJob.id)}
-                >
-                  {selectedJob.id && isSaved(selectedJob.id) ? (
+                <IconButton onClick={() => toggleSave(selectedJob.id!)}>
+                  {isSaved(selectedJob.id!) ? (
                     <BookmarkIcon color="primary" />
                   ) : (
                     <BookmarkBorderIcon />

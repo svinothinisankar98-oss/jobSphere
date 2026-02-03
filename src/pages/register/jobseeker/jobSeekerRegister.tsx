@@ -19,7 +19,9 @@ import jobseekerDefaultValues from "../jobseeker/defaultvalues/JobSeeker";
 import MyTextField from "../../../Components/newui/MyTextField";
 import { useUserService } from "../../../hooks/useUserService";
 
-import { useSnackbar } from "../../../context/SnackbarProvider";
+
+
+import { useUI } from "../../../context/UIProvider";
 
 // const defaultValues: JobSeeker = {
 //   Name: "",
@@ -65,7 +67,7 @@ const JobSeekerRegister = () => {
     fetchLocations();
   }, []);
 
- const { showSnackbar } = useSnackbar();
+ const { showSnackbar } = useUI();
 
   // ================= SUBMIT =================
   const onSubmit: SubmitHandler<JobSeeker> = async (data) => {

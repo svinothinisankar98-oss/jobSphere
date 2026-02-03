@@ -25,6 +25,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
+import { userService } from "../service/userService";
 
 const drawerWidth = 250;
 const collapsedWidth = 70;
@@ -38,18 +39,21 @@ type MenuItem = {
 
 const MENU_CONFIG: Record<Role, MenuItem[]> = {
   1: [
+    //jobseeker//
     { item: "Home", path: "/" },
     { item: "Profile", path: "/profile" },
     { item: "Jobs", path: "/jobs" },
     { item: "Saved Jobs", path: "/saved-jobs" },
   ],
   2: [
+    //Employer//
     { item: "Home", path: "/" },
     { item: "Profile", path: "/profile" },
     { item: "Company Information", path: "/company-information" },
     { item: "Post a Job", path: "/job-list-add" },
   ],
   3: [
+    //admin//
     { item: "Company Information", path: "/company-information" },
     { item: "Company Information List", path: "/company-information-list" },
     { item: "Post a Job", path: "/job-list-add" },
@@ -95,7 +99,6 @@ export default function Sidebar() {
   const roleMenu = MENU_CONFIG[userType] || [];
 
   const isActive = (path: string) => location.pathname === path;
-  const [savedJobs, setSavedJobs] = useState<any[]>([]);
 
   useEffect(() => {
     const saved = localStorage.getItem("sidebar-open");
@@ -109,28 +112,49 @@ export default function Sidebar() {
     }
   }, [open, isMobile]);
 
-  /*  LIVE SAVED COUNT */
+  //LIVE saved jobs counter//
+
+  const getSavedJobData = async () => {
+    const getData = await userService.getUser(authUser?.email);
+    const savedJobs: any[] = getData?.savedJobs || [];
+    setSavedCount(savedJobs?.length);
+  };
+
   useEffect(() => {
     const updateCount = () => {
       const stored = localStorage.getItem("savedJobs");
       const list = stored ? JSON.parse(stored) : [];
       // setSavedJobs(stored ? JSON.parse(stored) : []);
 
-      const getUserSaveJob = list.filter((d: any) => d.id === authUserId);
+      // const getUserSaveJob = list.filter((d: any) => d.id === authUserId);
 
-      setSavedCount(getUserSaveJob.length);
+      // setSavedCount(getUserSaveJob.length);
     };
 
-    updateCount();
+    getSavedJobData();
+
+    // updateCount();
 
     window.addEventListener("storage", updateCount);
     window.addEventListener("savedJobsUpdated", updateCount);
 
+    const handleUpdate = (e: any) => {
+      setSavedCount(e.detail);
+    };
+
+    window.addEventListener("savedJobsUpdated", handleUpdate);
+
+    // return () => {
+    //   window.removeEventListener("savedJobsUpdated", handleUpdate);
+    // };
     return () => {
       window.removeEventListener("storage", updateCount);
-      window.removeEventListener("savedJobsUpdated", updateCount);
+      // window.removeEventListener("savedJobsUpdated", updateCount);
+      window.removeEventListener("savedJobsUpdated", handleUpdate);
     };
-  }, [savedJobs,authUserId]); 
+  }, [authUserId]);
+
+  //active menu hightlight//
 
   const toggleDrawer = () => setOpen((p) => !p);
 

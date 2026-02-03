@@ -85,6 +85,9 @@ export default function SearchSection({
           />
         </Grid>
       </Grid>
+
+      
+      
     </Paper>
   );
 }

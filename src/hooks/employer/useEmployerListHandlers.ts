@@ -1,105 +1,97 @@
-import { useState } from "react";
 import type { employerRegisterType } from "../../types/employerRegister";
+import { useUI } from "../../context/UIProvider";
 
-type PendingAction = "delete" | "activate" | null;
+type PendingAction = "delete" | "activate";
 
 export const useEmployerListHandlers = (
   updateUser: (id: number, data: any) => Promise<any>,
   showSnackbar: (msg: string, type: "success" | "error") => void
 ) => {
-  //State Variables//
+  const { openConfirm } = useUI();
 
-  const [showConfirm, setShowConfirm] = useState(false);
-  //stores current action  delete activate//
-  const [pendingAction, setPendingAction] = useState<PendingAction>(null);
-  //selected employees//
-  const [pendingRows, setPendingRows] = useState<employerRegisterType[]>([]);
-
-  //handleDeleteClick//
-
-  const handleDeleteClick = (rows: employerRegisterType[]) => {
-    setPendingRows(rows);
-    setPendingAction("delete");
-    setShowConfirm(true);
-  };
-
-  //handleActivateClick//
-
-  const handleActivateClick = (rows: employerRegisterType[]) => {
-    const list = Array.isArray(rows) ? rows : [rows];
-    setPendingRows(list);
-    setPendingAction("activate");
-    setShowConfirm(true);
-  };
-
-  //handle confirm yes//
-
-  const handleConfirmYes = async (reload: () => Promise<void>) => {
-    if (!pendingAction || pendingRows.length === 0) return;
-
+  const runAction = async (
+    rows: employerRegisterType[],
+    action: PendingAction,
+    reload: () => Promise<void>
+  ) => {
     try {
       await Promise.all(
-        pendingRows.map((row) => {
-          if (!row.id) return Promise.resolve();
-
-          //api calls//
-
-          return updateUser(row.id, {
-            ...row,
-            isActive: pendingAction === "activate",
-            updatedAt: new Date(),
-          });
-        })
+        rows.map((row) =>
+          row.id
+            ? updateUser(row.id, {
+                ...row,
+                isActive: action === "activate",
+                updatedAt: new Date(),
+              })
+            : Promise.resolve()
+        )
       );
 
-      //Snackbar messages//
+      const count = rows.length;
 
-      const count = pendingRows.length;
-
-      if (pendingAction === "delete") {
+      if (action === "delete") {
         showSnackbar(
           count === 1
             ? "1 employee deleted successfully"
-            : `${count} employer deleted successfully`,
+            : `${count} employees deleted successfully`,
           "success"
         );
       }
 
-      if (pendingAction === "activate") {
+      if (action === "activate") {
         showSnackbar(
           count === 1
             ? "1 employee activated successfully"
-            : `${count} employer activated successfully`,
+            : `${count} employees activated successfully`,
           "success"
         );
       }
 
       await reload();
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
       showSnackbar("Action failed", "error");
-    } finally {
-      setShowConfirm(false);
-      setPendingRows([]);
-      setPendingAction(null);
     }
   };
 
-  //handle confirm no//
+  /* ===== DELETE ===== */
 
-  const handleConfirmNo = () => {
-    setShowConfirm(false);
-    setPendingRows([]);
-    setPendingAction(null);
+  const handleDeleteClick = (
+    rows: employerRegisterType[],
+    reload: () => Promise<void>
+  ) => {
+    openConfirm({
+      title: "Delete Employer",
+      message:
+        rows.length === 1
+          ? "Are you sure you want to delete this employer?"
+          : `Are you sure you want to delete ${rows.length} employers?`,
+      confirmText: "Yes, Delete",
+      confirmColor: "error",
+      onConfirm: () => runAction(rows, "delete", reload),
+    });
+  };
+
+  /* ===== ACTIVATE ===== */
+
+  const handleActivateClick = (
+    rows: employerRegisterType[],
+    reload: () => Promise<void>
+  ) => {
+    openConfirm({
+      title: "Activate Employer",
+      message:
+        rows.length === 1
+          ? "Are you sure you want to activate this employer?"
+          : `Are you sure you want to activate ${rows.length} employers?`,
+      confirmText: "Yes, Activate",
+      confirmColor: "success",
+      onConfirm: () => runAction(rows, "activate", reload),
+    });
   };
 
   return {
-    showConfirm,
-    pendingAction,
-    pendingRows,
     handleDeleteClick,
     handleActivateClick,
-    handleConfirmYes,
-    handleConfirmNo,
   };
 };

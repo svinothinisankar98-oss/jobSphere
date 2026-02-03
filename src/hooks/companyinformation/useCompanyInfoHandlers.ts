@@ -5,7 +5,8 @@ import type { SubmitHandler } from "react-hook-form";
 import type { CompanyInformationType } from "../../types/companyInformation";
 
 import { useCompanyInformation } from "./useCompanyInformation";
-import { useSnackbar } from "../../context/SnackbarProvider";
+
+import { useUI } from "../../context/UIProvider";
 
 
 export function useCompanyInfoHandlers(reset: any) {
@@ -20,7 +21,7 @@ export function useCompanyInfoHandlers(reset: any) {
     updateCompanyInformation,
   } = useCompanyInformation();
 
-  const { showSnackbar } = useSnackbar();
+  const { showSnackbar } = useUI();;
 
   //  Fetch company when editing
   React.useEffect(() => {

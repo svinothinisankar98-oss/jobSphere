@@ -1,5 +1,3 @@
-
-
 import type { employerRegisterType } from "../types/employerRegister";
 import type { JobSeeker } from "../types/jobSeeker";
 import { apiService } from "./apiService";
@@ -11,8 +9,8 @@ export interface User {
   email: string;
   password: string;
   userType: number;
-
-
+  recruiterEmail?: string;
+  savedJobs?: [];
 }
 type CreateUserPayload = employerRegisterType | JobSeeker;
 
@@ -20,17 +18,16 @@ type CreateUserPayload = employerRegisterType | JobSeeker;
 
 export const userService = {
   // GET ALL USERS
-  getUsers: async (data: { keyword: string; }): Promise<User[]> => {
+  getUsers: async (data: { keyword: string }): Promise<User[]> => {
     const response = await apiService.get<User[]>("users");
     return response;
   },
 
   // CREATE USER
 
-  
   createUser: async (data: CreateUserPayload): Promise<User> => {
-    console.log(data,"user service");
-    
+    console.log(data, "user service");
+
     const response = await apiService.post<User>("users", data);
     return response;
   },
@@ -41,27 +38,32 @@ export const userService = {
     return response[0] ?? null;
   },
 
-  getEmployerByEmail:async (recruiterEmail:string): Promise<User | null>=>{
-    const response = await apiService.get<User[]>(`users?recruiterEmail=${recruiterEmail}&userType=2`);
-    return response[0]??null;
+  getUser: async (email: string): Promise<any> => {
+    const response: any = await apiService.get(`users?email=${email}`);
+    return response[0] ?? null;
+  },
+
+  getEmployerByEmail: async (recruiterEmail: string): Promise<User | null> => {
+    const response = await apiService.get<User[]>(
+      `users?recruiterEmail=${recruiterEmail}&userType=2`,
+    );
+    return response[0] ?? null;
   },
   getRecruiterDetails: async (): Promise<employerRegisterType[]> => {
-    const response = await apiService.get<employerRegisterType[]>(
-      `users?userType=2`
-    );
+    const response =
+      await apiService.get<employerRegisterType[]>(`users?userType=2`);
     return response;
   },
 
-
-  updateUser: async (id: number,data:any): Promise<any> => {
+  updateUser: async (id: number, data: any): Promise<any> => {
     // getData.isDelete = true;
-  return apiService.put(`users/${id}`, data);
-},
-getEmployerById: async (id: string): Promise<employerRegisterType | null> => {
-  const response = await apiService.get<employerRegisterType[]>(
-    `users?id=${id}&userType=2`
-  );
+    return apiService.put(`users/${id}`, data);
+  },
+  getEmployerById: async (id: string): Promise<employerRegisterType | null> => {
+    const response = await apiService.get<employerRegisterType[]>(
+      `users?id=${id}&userType=2`,
+    );
 
-  return response[0] ?? null;
-},
+    return response[0] ?? null;
+  },
 };

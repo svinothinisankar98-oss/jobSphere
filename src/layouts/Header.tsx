@@ -46,14 +46,31 @@ export default function Header() {
   };
 
   useEffect(() => {
-    setUser(authStorage.get());
+    const loadUser = () => {
+      const raw = authStorage.get();
 
-    const handleAuthChange = () => {
-      setUser(authStorage.get());
+      if (!raw) {
+        setUser(null);
+        return;
+      }
+
+      const user = typeof raw === "string" ? JSON.parse(raw) : raw;
+
+      // const splitedEmail = user.email?.split("@")[1]?.split(".")[0] || "";
+      const splitedEmail = user.email?.split("@")[0];
+
+      console.log(splitedEmail, 'user.email?.split("@")');
+
+      setUser({
+        ...user,
+        email: splitedEmail,
+      });
     };
 
-    window.addEventListener("auth-change", handleAuthChange);
-    return () => window.removeEventListener("auth-change", handleAuthChange);
+    loadUser();
+
+    window.addEventListener("auth-change", loadUser);
+    return () => window.removeEventListener("auth-change", loadUser);
   }, []);
 
   const handleLogin = () => navigate("/login");

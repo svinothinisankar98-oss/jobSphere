@@ -11,7 +11,8 @@ import MyButton from "../../Components/newui/MyButton";
 
 import { loginSchema } from "../../schemas/loginSchemas";
 import MyTextField from "../../Components/newui/MyTextField";
-import { useSnackbar } from "../../context/SnackbarProvider";
+
+import { useUI } from "../../context/UIProvider";
 
 const { getUserByEmail, getEmployerByEmail } = useUserService();
 
@@ -22,7 +23,7 @@ type LoginForm = {
 
 const Login = () => {
   const navigate = useNavigate();
-  const { showSnackbar } = useSnackbar();
+  const { showSnackbar } = useUI();
 
   //React Hook Form, Yup//
 
@@ -38,9 +39,9 @@ const Login = () => {
 
   const onSubmit = async (form: LoginForm) => {
     try {
-      const user = await getUserByEmail(form.email);    //jobseeker email//              
-      const employer = await getEmployerByEmail(form.email);   //employer emaill//
-      console.log(employer,"employer")
+      const user = await getUserByEmail(form.email); //jobseeker email//
+      const employer = await getEmployerByEmail(form.email); //employer emaill//
+      console.log(employer, "employer");
 
       if (!user && !employer) {
         showSnackbar("User not found", "error");
@@ -56,23 +57,27 @@ const Login = () => {
         showSnackbar("Invalid credentials", "error");
         return;
       }
-//Determine role//
+      //Determine role//
 
       const userType = user?.userType || employer?.userType || 0;
-      
 
-     
+      let LoginEmail = user?.email;
+      if (userType == 2) {
+        // console.log(employer?.recruiterEmail, "user?.recruiterEmail");
+        LoginEmail = employer?.recruiterEmail;
+      }
+
       console.log(userType, "userType");
 
       if (userType === 1 || userType === 2 || userType === 3) {
-       authStorage.set({
-  id: user?.id || employer?.id,
-  email: user?.email || employer?.email,  
-  userType: userType
-});
+        authStorage.set({
+          id: user?.id || employer?.id,
+          email: LoginEmail,
+          userType: userType,
+        });
         showSnackbar("Login successful", "success");
         navigate("/");
-      } 
+      }
     } catch {
       showSnackbar("Something went wrong. Try again.", "error");
     }

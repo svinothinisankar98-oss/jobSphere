@@ -18,29 +18,25 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useNavigate } from "react-router-dom";
 
 import MyButton from "../../Components/newui/MyButton";
-import MyDialog from "../../Components/newui/MyDialog";
 import MyTextField from "../../Components/newui/MyTextField";
 
 import PreviewCompanyInfoList from "./PreviewCompanyInfoList";
 import { CompanyInfoRowList } from "../../pages/companyinformation/CompanyInfoRowList";
 
 import { useCompanyInfoListHandlers } from "../../hooks/companyinformation/useCompanyInfoListHandlers";
+import {  useUI } from "../../context/UIProvider";
 
 export default function CompanyInfoList() {
   const navigate = useNavigate();
+  const {  openCustom  } = useUI();
 
   const {
     rows,
     search,
     setSearch,
-    previewRow,
-    setPreviewRow,
-    openDialog,
-    setOpenDialog,
     expandAll,
     setExpandAll,
-    handleDeleteClick,
-    handleConfirmDelete,
+    handleDelete,
   } = useCompanyInfoListHandlers();
 
   return (
@@ -49,36 +45,33 @@ export default function CompanyInfoList() {
         Company & Branches List
       </Typography>
 
-     <Box
-  display="flex"
-  justifyContent="space-between"
-  alignItems="center"
-  mb={2}
-  maxWidth={1000}
-  mx="auto"
-  gap={1}
-  flexDirection={{ xs: "column", sm: "row" }}   
->
-  <MyButton
-    label="Add Company Info"
-    icon={<AddIcon />}
-    variant="contained"
-    onClick={() => navigate("/company-information")}
-    sx={{ width: { xs: "100%", sm: "auto" } }}  
-  />
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={2}
+        maxWidth={1000}
+        mx="auto"
+        gap={1}
+        flexDirection={{ xs: "column", sm: "row" }}
+      >
+        <MyButton
+          label="Add Company Info"
+          icon={<AddIcon />}
+          variant="contained"
+          onClick={() => navigate("/company-information")}
+          sx={{ width: { xs: "100%", sm: "auto" } }}
+        />
 
-  <MyTextField
-    size="small"
-    placeholder="company name or email..."
-    value={search}
-    icon={<SearchIcon />}
-    onChange={(e) => setSearch(e.target.value)}
-    sx={{ 
-      width: { xs: "100%", sm: 300 }   
-    }}
-  />
-</Box>
-
+        <MyTextField
+          size="small"
+          placeholder="company name or email..."
+          value={search}
+          icon={<SearchIcon />}
+          onChange={(e) => setSearch(e.target.value)}
+          sx={{ width: { xs: "100%", sm: 300 } }}
+        />
+      </Box>
 
       <TableContainer component={Paper} sx={{ maxWidth: 1000, mx: "auto" }}>
         <Table>
@@ -87,7 +80,7 @@ export default function CompanyInfoList() {
               <TableCell width={40}>
                 <IconButton
                   size="small"
-                  onClick={() => setExpandAll(p => !p)}
+                  onClick={() => setExpandAll((p) => !p)}
                   sx={{
                     transform: expandAll ? "rotate(180deg)" : "rotate(0deg)",
                     transition: "0.2s ease",
@@ -107,44 +100,37 @@ export default function CompanyInfoList() {
           <TableBody>
             {rows
               .filter(
-                r =>
-                  r.companyName.toLowerCase().includes(search.toLowerCase()) ||
-                  r.companyEmail.toLowerCase().includes(search.toLowerCase())
+                (r) =>
+                  r.companyName
+                    .toLowerCase()
+                    .includes(search.toLowerCase()) ||
+                  r.companyEmail
+                    .toLowerCase()
+                    .includes(search.toLowerCase())
               )
-              .map(row => (
+              .map((row) => (
                 <CompanyInfoRowList
                   key={row.id}
                   row={row}
                   expandAll={expandAll}
-                  onDelete={handleDeleteClick}
                   onEdit={() =>
                     navigate(`/company-information/edit/${row.id}`)
                   }
-                  onPreview={() => setPreviewRow(row)}
+                  onPreview={() =>
+                    openCustom(
+                      <PreviewCompanyInfoList row={row} />,
+                      "Company Information"
+                    )
+                  }
+                  onDelete={() => handleDelete(row.id!)}
+
+                    
+                  
                 />
               ))}
           </TableBody>
         </Table>
       </TableContainer>
-
-      <MyDialog
-        open={openDialog}
-        title="Delete Company"
-        message="Are you sure you want to delete this company and all related data?"
-        confirmText="Delete"
-        confirmColor="error"
-        onClose={() => setOpenDialog(false)}
-        onConfirm={handleConfirmDelete}
-      />
-
-      <MyDialog
-        open={!!previewRow}
-        title="Company Information"
-        fullWidth
-        onClose={() => setPreviewRow(null)}
-      >
-        {previewRow && <PreviewCompanyInfoList row={previewRow} />}
-      </MyDialog>
     </Box>
   );
 }

@@ -7,14 +7,14 @@ import App from "./App";
 
 
 import { theme }from "./config/theme";
-import { MySnackBar } from "./context/SnackbarProvider";
+import {  UIProvider } from "./context/UIProvider";
 
 createRoot(document.getElementById("root")!).render(
   <ThemeProvider theme={theme}>
     <BrowserRouter>
-      <MySnackBar>
+      <UIProvider>
         <App />
-      </MySnackBar>
+      </UIProvider>
     </BrowserRouter>
   </ThemeProvider>
 );

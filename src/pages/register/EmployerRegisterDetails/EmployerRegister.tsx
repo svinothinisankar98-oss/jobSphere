@@ -22,7 +22,8 @@ import { Box } from "@mui/system";
 import { useEffect } from "react";
 
 import { useUserService } from "../../../hooks/useUserService";
-import { useSnackbar } from "../../../context/SnackbarProvider";
+
+import { useUI } from "../../../context/UIProvider";
 
 const { getEmployerById, getEmployerByEmail, createUser, updateUser } =
   useUserService();
@@ -48,7 +49,7 @@ const stepFields: (keyof employerRegisterType)[][] = [
 
 const EmployerRegister = () => {
   const navigate = useNavigate();
-  const { showSnackbar } = useSnackbar();
+  const { showSnackbar } = useUI();
 
   //Detect Edit Mode//
 

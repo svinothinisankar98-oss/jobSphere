@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import React from "react";
-import { fontSize } from "@mui/system";
+
 
 type CommonConfirmDialogProps = {
   open: boolean;
