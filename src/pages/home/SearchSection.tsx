@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
-import { Grid, Paper, useMediaQuery } from "@mui/material";
+import { Box, Grid, Paper, useMediaQuery } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import { useTheme } from "@mui/material/styles";
 
-import { locationService } from "../../service/locationService";
+
+// import { locationService } from "../../service/locationService";
 import MyButton from "../../Components/newui/MyButton";
 import CommonDropdown from "../../Components/ui/CommonDropdown";
 import CommonTextField from "../../Components/ui/CommonTextField";
+import JobFilters from "../joblist/JobFilters";
+import { getAllLocations } from "../../hooks/useLocationService";
+import ErrorFallback from "../../ErrorFallback";
 
 type Option = {
   id: number;
@@ -20,6 +23,13 @@ type Props = {
   selected: string;
   setSelected: (value: string) => void;
   onSearch: () => void;
+
+  jobType: string[];
+  setJobType: (v: string[]) => void;
+  experience: string[];
+  setExperience: (v: string[]) => void;
+  salary: string[];
+  setSalary: (v: string[]) => void;
 };
 
 export default function SearchSection({
@@ -28,19 +38,29 @@ export default function SearchSection({
   selected,
   setSelected,
   onSearch,
+  jobType,
+  setJobType,
+  experience,
+  setExperience,
+  salary,
+  setSalary,
 }: Props) {
   const [locations, setLocations] = useState<Option[]>([]);
 
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  console.log(isMobile)
+  const [locationError, setLocationError] = useState<any>();
+
+  // const theme = useTheme();
+  // const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  // console.log(isMobile);
 
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const data = await locationService.getLocations();
+        const data = await getAllLocations();
         setLocations(Array.isArray(data) ? data : []);
-      } catch (err) {
+      } catch (err:any) {
+        // err.message='Failed to load locations'
+        setLocationError(err);
         console.error("Failed to load locations", err);
       }
     };
@@ -54,8 +74,7 @@ export default function SearchSection({
       sx={{ p: 2, borderRadius: 2, maxWidth: 1000, mx: "auto" }}
     >
       <Grid container spacing={2} alignItems="center">
-
-        <Grid size={{xs:12 ,md:5} }>
+        <Grid size={{ xs: 12, md: 5 }}>
           <CommonTextField
             name="search"
             value={search}
@@ -65,7 +84,7 @@ export default function SearchSection({
           />
         </Grid>
 
-         <Grid size={{xs:12 ,md:4} }>
+        <Grid size={{ xs: 12, md: 4 }}>
           <CommonDropdown
             name="location"
             value={selected}
@@ -74,9 +93,16 @@ export default function SearchSection({
             placeholder="Select Location"
             startIcon={<LocationOnIcon />}
           />
+
+          {locationError && (
+            <ErrorFallback
+              error={locationError}
+              resetErrorBoundary={() => setLocationError(null)}
+            />
+          )}
         </Grid>
 
-         <Grid size={{xs:12 ,md:3} }>
+        <Grid size={{ xs: 12, md: 3 }}>
           <MyButton
             fullWidth
             variant="contained"
@@ -85,9 +111,18 @@ export default function SearchSection({
           />
         </Grid>
       </Grid>
-
-      
-      
+      {location.pathname.startsWith("/jobs") && (
+        <Box mt={2} marginRight={10}>
+          <JobFilters
+            jobType={jobType}
+            setJobType={setJobType}
+            experience={experience}
+            setExperience={setExperience}
+            salary={salary}
+            setSalary={setSalary}
+          />
+        </Box>
+      )}
     </Paper>
   );
 }

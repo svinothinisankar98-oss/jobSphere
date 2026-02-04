@@ -17,13 +17,18 @@ import { useJobService } from "../../hooks/joblist/useJobService";
 import type { jobsListType } from "../../types/jobListType";
 import MyButton from "../../Components/newui/MyButton";
 import SearchSection from "../home/SearchSection";
-import JobFilters from "../joblist/JobFilters";
+
 import { authStorage } from "../../utils/authStorage";
-import { userService } from "../../service/userService";
+
+import { useUserService } from "../../hooks/useUserService";
+import { useErrorBoundary } from "react-error-boundary";
+import ErrorFallback from "../../ErrorFallback";
+import ScrollToTopButton from "../../Components/newui/ScrollToTopButton";
 
 export default function JobList() {
   const { getAllJobs } = useJobService();
   const location = useLocation();
+  const { getUser, updateUser } = useUserService();
 
   const [jobs, setJobs] = useState<jobsListType[]>([]);
   const [selectedJob, setSelectedJob] = useState<jobsListType | null>(null);
@@ -32,22 +37,36 @@ export default function JobList() {
   const authUser = authStorage.get() || {};
   const authUserId = authUser?.id;
 
-  /* ✅ DB SAVED JOB IDS */
+  /*  DB SAVED JOB IDS */
   const [savedJobIds, setSavedJobIds] = useState<number[]>([]);
 
+  const [jobError, setJobError] = useState<any>();
+
+  const { showBoundary } = useErrorBoundary();
+
   /* Load jobs */
+
+  const loadJobs = async () => {
+    try {
+      const getJobs = await getAllJobs();
+      setJobs(getJobs);
+    } catch (error: any) {
+      setJobError(error);
+    }
+  };
+
   useEffect(() => {
-    getAllJobs().then(setJobs);
+    loadJobs();
   }, []);
 
-  /* Load saved jobs from DB */
+  /* Load saved jobs from DB  for logged user*/
+
+  const loadSavedJobs = async () => {
+    const user = await getUser(authUser?.email);
+    setSavedJobIds(user?.savedJobs || []);
+  };
   useEffect(() => {
     if (!authUserId) return;
-
-    const loadSavedJobs = async () => {
-      const user = await userService.getUser(authUser?.email);
-      setSavedJobIds(user?.savedJobs || []);
-    };
 
     loadSavedJobs();
   }, [authUserId]);
@@ -62,18 +81,23 @@ export default function JobList() {
       updated = [...savedJobIds, jobId];
     }
 
-    setSavedJobIds(updated); // instant UI
+    setSavedJobIds(updated);
 
-    const getUser = await userService.getUser(authUser?.email);
+    const user = await getUser(authUser?.email);
 
-    getUser.savedJobs = updated;
-    await userService.updateUser(authUser?.id, getUser);
-     window.dispatchEvent(
-    new CustomEvent("savedJobsUpdated", {
-      detail: updated.length,
-    })
-  );
+    if (!user) return;
+
+    user.savedJobs = updated;
+    await updateUser(authUser?.id, user);
+    window.dispatchEvent(
+      new CustomEvent("savedJobsUpdated", {
+        //notify for sidebar//
+        detail: updated.length,
+      }),
+    );
   };
+
+  //if the job has already saved by user//
 
   const isSaved = (id: number) => savedJobIds.includes(id);
 
@@ -161,20 +185,20 @@ export default function JobList() {
             setSelectedQuery(selectedInput);
             setSearched(true);
           }}
+          jobType={jobType}
+          setJobType={setJobType}
+          experience={experience}
+          setExperience={setExperience}
+          salary={salary}
+          setSalary={setSalary}
         />
-
-        <Box mt={2}>
-          <JobFilters
-            jobType={jobType}
-            setJobType={setJobType}
-            experience={experience}
-            setExperience={setExperience}
-            salary={salary}
-            setSalary={setSalary}
-          />
-        </Box>
       </Box>
-
+      {jobError && (
+        <ErrorFallback
+          error={jobError}
+          resetErrorBoundary={() => setJobError(null)}
+        />
+      )}
       {/* CONTENT */}
       <Box
         display="flex"
@@ -193,10 +217,18 @@ export default function JobList() {
             mt={{ xs: 1, md: 4 }}
           >
             {searched && filteredJobs.length === 0 && (
-              <Typography p={2}>No jobs found</Typography>
+              <Typography
+                p={2}
+                textAlign="center"
+                color="secondary"
+                marginLeft={30}
+              >
+                No jobs found
+              </Typography>
             )}
 
-            {filteredJobs.map((job) => (
+
+            {filteredJobs?.map((job) => (
               <Card
                 key={job.id}
                 onClick={() => {
@@ -257,7 +289,11 @@ export default function JobList() {
               <Stack direction="row" spacing={1} my={2}>
                 <MyButton label="Apply now" variant="contained" />
 
-                <IconButton onClick={() => toggleSave(selectedJob.id!)}>
+                <IconButton
+                  onClick={() =>
+                    toggleSave(selectedJob.id!).catch(showBoundary)
+                  }
+                >
                   {isSaved(selectedJob.id!) ? (
                     <BookmarkIcon color="primary" />
                   ) : (
@@ -299,6 +335,7 @@ export default function JobList() {
           </Box>
         )}
       </Box>
+      <ScrollToTopButton/>
     </Box>
   );
 }

@@ -846,7 +846,6 @@
       "resume": null,
       "userType": 1,
       "savedJobs": [
-        "1769873428001",
         "1769873428002"
       ]
     },
@@ -1242,6 +1241,62 @@
       "isActive": true,
       "createdAt": "2026-01-14T04:40:21.581Z",
       "updatedAt": null
+    },
+    {
+      "id": "ca95",
+      "Name": "Subathra lakshmi",
+      "email": "subathralakshmi@gmail.com",
+      "password": "123456",
+      "confirmPassword": "123456",
+      "phoneno": "7894561234",
+      "location": "Kerala",
+      "experience": "0–1 Years",
+      "skills": "react",
+      "portfolio": "https://www.ewallhost.com",
+      "resume": null,
+      "userType": 1
+    },
+    {
+      "id": "42c3",
+      "Name": "Subathra Lakshmi",
+      "email": "subathralakshmi01@gmail.com",
+      "password": "123456",
+      "confirmPassword": "123456",
+      "phoneno": "9876543210",
+      "location": "Karnataka",
+      "experience": "Fresher",
+      "skills": "react",
+      "portfolio": "",
+      "resume": null,
+      "userType": 1
+    },
+    {
+      "id": "8659",
+      "Name": "Suresh",
+      "email": "suresh@gmail.com",
+      "password": "123456",
+      "confirmPassword": "123456",
+      "phoneno": "7894561230",
+      "location": "Tamil Nadu",
+      "experience": "Fresher",
+      "skills": "TTT",
+      "portfolio": "",
+      "resume": null,
+      "userType": 1
+    },
+    {
+      "id": "7fc9",
+      "Name": "Mala",
+      "email": "mala@gmail.com",
+      "password": "mala123",
+      "confirmPassword": "mala123",
+      "phoneno": "8546123456",
+      "location": "Kerala",
+      "experience": "Fresher",
+      "skills": "TTT",
+      "portfolio": "",
+      "resume": null,
+      "userType": 1
     }
   ],
   "company-information": [
@@ -1407,61 +1462,6 @@
       "companyName": "noble Private Limited",
       "createdAt": "2026-01-29T13:42:27.544Z"
     }
-  ],
-  "menu": {
-    "1": [
-      {
-        "item": "Home"
-      },
-      {
-        "item": "Profile"
-      },
-      {
-        "item": "Logout"
-      },
-      {
-        "item": "Job"
-      }
-    ],
-    "2": [
-      {
-        "item": "Home"
-      },
-      {
-        "item": "Profile"
-      },
-      {
-        "item": "Logout"
-      },
-      {
-        "item": "Company Information"
-      },
-      {
-        "item": "Post a Job"
-      }
-    ],
-    "3": [
-      {
-        "item": "Profile"
-      },
-      {
-        "item": "Logout"
-      },
-      {
-        "item": "Company Information"
-      },
-      {
-        "item": "Company Information List"
-      },
-      {
-        "item": "Post a Job"
-      },
-      {
-        "item": "Job"
-      },
-      {
-        "item": "EMployeer List"
-      }
-    ]
-  }
+  ]
+  
 }

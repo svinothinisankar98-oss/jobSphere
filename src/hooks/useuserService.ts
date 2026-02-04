@@ -71,6 +71,15 @@ const updateUser = async (id: number, data: employerRegisterType) => {
   }
 };
 
+const getUser = async (email: string): Promise<any> => {
+  try {
+    return await userService.getUser(email);
+  } catch (error) {
+    console.error("Failed to get user by email", error);
+    return null;
+  }
+};
+
 
 
   return {
@@ -81,5 +90,6 @@ const updateUser = async (id: number, data: employerRegisterType) => {
     getEmployerById,
     updateUser,
     getRecruiterDetails,
+    getUser
   };
 };

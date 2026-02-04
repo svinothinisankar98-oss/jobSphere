@@ -112,7 +112,7 @@ export default function Sidebar() {
     }
   }, [open, isMobile]);
 
-  //LIVE saved jobs counter//
+//Fetch saved jobs from backend//
 
   const getSavedJobData = async () => {
     const getData = await userService.getUser(authUser?.email);
@@ -120,22 +120,16 @@ export default function Sidebar() {
     setSavedCount(savedJobs?.length);
   };
 
+  //run login change of other user//
   useEffect(() => {
     const updateCount = () => {
       const stored = localStorage.getItem("savedJobs");
       const list = stored ? JSON.parse(stored) : [];
-      // setSavedJobs(stored ? JSON.parse(stored) : []);
-
-      // const getUserSaveJob = list.filter((d: any) => d.id === authUserId);
-
-      // setSavedCount(getUserSaveJob.length);
     };
 
     getSavedJobData();
 
-    // updateCount();
-
-    window.addEventListener("storage", updateCount);
+    // window.addEventListener("storage", updateCount);
     window.addEventListener("savedJobsUpdated", updateCount);
 
     const handleUpdate = (e: any) => {
@@ -144,12 +138,9 @@ export default function Sidebar() {
 
     window.addEventListener("savedJobsUpdated", handleUpdate);
 
-    // return () => {
-    //   window.removeEventListener("savedJobsUpdated", handleUpdate);
-    // };
     return () => {
-      window.removeEventListener("storage", updateCount);
-      // window.removeEventListener("savedJobsUpdated", updateCount);
+      // window.removeEventListener("storage", updateCount);
+
       window.removeEventListener("savedJobsUpdated", handleUpdate);
     };
   }, [authUserId]);
@@ -220,7 +211,7 @@ export default function Sidebar() {
             >
               <ListItemIcon sx={{ minWidth: 36 }}>
                 {menu.item === "Saved Jobs" ? (
-                  <Badge badgeContent={savedCount || null} color="primary">
+                  <Badge badgeContent={savedCount || null} color="secondary">
                     {ICON_MAP[menu.item]}
                   </Badge>
                 ) : (

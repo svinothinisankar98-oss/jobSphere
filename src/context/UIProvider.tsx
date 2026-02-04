@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState } from "react";
 import { Snackbar, Alert } from "@mui/material";
 import MyDialog from "../Components/newui/MyDialog";
 
-/* ================= TYPES ================= */
+/*  TYPES */
 
 type SnackbarSeverity = "success" | "error" | "warning" | "info";
 
@@ -24,23 +24,23 @@ type UIContextType = {
 
 const UIContext = createContext<UIContextType | null>(null);
 
-/* ================= PROVIDER ================= */
+/*  PROVIDER  */
 
 export const UIProvider = ({ children }: { children: React.ReactNode }) => {
-  /* ---- Snackbar ---- */
+  /*  usestate for snackbar*/
   const [snackOpen, setSnackOpen] = useState(false);
   const [snackMessage, setSnackMessage] = useState("");
   const [snackSeverity, setSnackSeverity] =
     useState<SnackbarSeverity>("success");
 
-  /* ---- Dialog ---- */
+  /*  usestate for dialog */
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogProps, setDialogProps] = useState<DialogOptions>({});
   const [customContent, setCustomContent] =
     useState<React.ReactNode>(null);
   const [dialogTitle, setDialogTitle] = useState("");
 
-  /* ================= SNACKBAR ================= */
+  /* snackbar  */
 
   const showSnackbar = (
     msg: string,
@@ -56,7 +56,7 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
 
   const closeSnackbar = () => setSnackOpen(false);
 
-  /* ================= DIALOG ================= */
+  /*  dialog  */
 
   const closeDialog = () => {
     setDialogOpen(false);
@@ -90,7 +90,7 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
     >
       {children}
 
-      {/* ===== GLOBAL SNACKBAR ===== */}
+      {/*  GLOBAL SNACKBAR  */}
       <Snackbar
         open={snackOpen}
         autoHideDuration={4000}
@@ -106,7 +106,7 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
         </Alert>
       </Snackbar>
 
-      {/* ===== GLOBAL DIALOG ===== */}
+      {/*  GLOBAL DIALOG  */}
       <MyDialog
         open={dialogOpen}
         title={dialogTitle}
@@ -131,7 +131,7 @@ export const UIProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-/* ================= HOOK ================= */
+/*  HOOK  */
 
 export const useUI = () => {
   const ctx = useContext(UIContext);

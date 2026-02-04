@@ -113,6 +113,7 @@ export default function JobFilters({
           }}
         />
       </Stack>
+      
     </Paper>
   );
 }

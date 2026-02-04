@@ -17,9 +17,12 @@ import type { jobsListType } from "../../types/jobListType";
 import MyButton from "../../Components/newui/MyButton";
 import { authStorage } from "../../utils/authStorage";
 import { userService } from "../../service/userService";
+import { useUserService } from "../../hooks/useUserService";
 
 export default function SavedJobs() {
   const { getAllJobs } = useJobService();
+
+  const { getUser ,updateUser} = useUserService();
 
   const [jobs, setJobs] = useState<jobsListType[]>([]);
   const [savedJobIds, setSavedJobIds] = useState<number[]>([]);
@@ -38,7 +41,7 @@ export default function SavedJobs() {
     if (!authUserId) return;
 
     const loadSavedJobs = async () => {
-      const user = await userService.getUser(authUser?.email);
+      const user = await getUser(authUser?.email);
       setSavedJobIds(user?.savedJobs || []);
     };
 
@@ -69,12 +72,12 @@ export default function SavedJobs() {
       updated = [...savedJobIds, jobId];
     }
 
-    setSavedJobIds(updated); // instant UI
+    setSavedJobIds(updated); 
 
-    const getUser = await userService.getUser(authUser?.email);
+    const user = await getUser(authUser?.email);
 
-    getUser.savedJobs = updated;
-    await userService.updateUser(authUser?.id, getUser); // persist DB
+    user.savedJobs = updated;
+    await updateUser(authUser?.id, user); 
 
     // window.dispatchEvent(new Event("savedJobsUpdated"));
     window.dispatchEvent(

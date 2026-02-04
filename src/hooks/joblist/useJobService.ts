@@ -21,7 +21,9 @@ export const useJobService = () => {
       return await jobService.getJobs();
     } catch (error) {
       console.error("Failed to load jobs", error);
-      return [];
+      throw error;
+      
+      
     }
   };
 

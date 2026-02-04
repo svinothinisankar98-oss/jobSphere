@@ -93,13 +93,19 @@ const JobSeekerRegister = () => {
       reset();
       if (fileInputRef.current) fileInputRef.current.value = "";
 
-      setTimeout(() => navigate("/login"), 1200);
+      navigate("/login");
     } catch (error) {
-      console.error(error);
-    }
+     console.error("Register error:", error);
+     showSnackbar(
+      typeof error === "string" ? error : "Registration failed",
+      "error"
+      );
   };
+    }
+    
+    
 
-  // const handleReset = () => reset();
+ 
 
   // ================= UI =================
   return (

@@ -23,53 +23,57 @@ import JobAdd from "./pages/joblist/JobAdd";
 import SavedJobs from "./pages/joblist/SavedJobs";
 
 import { UIProvider } from "./context/UIProvider";
+import { ErrorBoundary } from "react-error-boundary";
+
+import ErrorFallback from "../../jobSphere/src/ErrorFallback";
 
 function App() {
   return (
-      // <MySnackBar>
-        <UIProvider>
-    <div className="app-container">
-      <Header />
-       
-      <div className="page-content">
-        {/* All page content goes here */}
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/jobs" element={<JobList />} />
-          <Route path="/employer-register" element={<EmployerRegister />} />
-          <Route
-            path="/employer-register/edit/:id"
-            element={<EmployerRegister />}
-          />
-          <Route path="/job-list" element={<Joblist />} />
-          <Route path="/job-seeker-register" element={<JobSeekerRegister />} />
-          <Route path="/employer-list" element={<EmployerList />} />
-          <Route
-            path="/company-information/"
-            element={<CompanyInformation />}
-          />
-          <Route
-            path="/company-information/edit/:id"
-            element={<CompanyInformation />}
-          />
-          <Route
-            path="/company-information-list"
-            element={<CompanyInformationList />}
-          />
-          <Route path="/job-list-add" element={<JobAdd />} />
+    <ErrorBoundary FallbackComponent={ErrorFallback}>
+      <UIProvider>
+        <div className="app-container">
+          <Header />
 
-          <Route path="/saved-jobs" element={<SavedJobs />} />
-        </Routes>
+          <div className="page-content">
+            {/* All page content goes here */}
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/jobs" element={<JobList />} />
+              <Route path="/employer-register" element={<EmployerRegister />} />
+              <Route
+                path="/employer-register/edit/:id"
+                element={<EmployerRegister />}
+              />
+              <Route path="/job-list" element={<Joblist />} />
+              <Route
+                path="/job-seeker-register"
+                element={<JobSeekerRegister />}
+              />
+              <Route path="/employer-list" element={<EmployerList />} />
+              <Route
+                path="/company-information/"
+                element={<CompanyInformation />}
+              />
+              <Route
+                path="/company-information/edit/:id"
+                element={<CompanyInformation />}
+              />
+              <Route
+                path="/company-information-list"
+                element={<CompanyInformationList />}
+              />
+              <Route path="/job-list-add" element={<JobAdd />} />
 
-        
-      </div>
+              <Route path="/saved-jobs" element={<SavedJobs />} />
+            </Routes>
+          </div>
 
-      <Sidebar />
-      <Footer />
-    </div>
-    {/* </MySnackBar> */}
-    </UIProvider>
+          <Sidebar />
+          <Footer />
+        </div>
+      </UIProvider>
+    </ErrorBoundary>
   );
 }
 

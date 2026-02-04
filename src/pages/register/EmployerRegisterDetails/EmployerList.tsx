@@ -157,6 +157,7 @@ const EmployerList = () => {
     } catch (err) {
       console.error(err);
       setData([]);
+       showSnackbar("Failed to load employer list", "error");
     } finally {
       setLoading(false);
     }

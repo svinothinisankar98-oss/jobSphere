@@ -56,14 +56,14 @@ export default function Header() {
 
       const user = typeof raw === "string" ? JSON.parse(raw) : raw;
 
-      // const splitedEmail = user.email?.split("@")[1]?.split(".")[0] || "";
-      const splitedEmail = user.email?.split("@")[0];
+      const capitalizeFirst = (text: string) =>
+        text ? text.charAt(0).toUpperCase() + text.slice(1) : "";
 
-      console.log(splitedEmail, 'user.email?.split("@")');
+      const nameFromEmail = capitalizeFirst(user.email?.split("@")[0] || "");
 
       setUser({
         ...user,
-        email: splitedEmail,
+        email: nameFromEmail,
       });
     };
 

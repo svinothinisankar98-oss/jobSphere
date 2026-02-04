@@ -10,7 +10,7 @@ export interface User {
   password: string;
   userType: number;
   recruiterEmail?: string;
-  savedJobs?: [];
+  savedJobs?: any[];
 }
 type CreateUserPayload = employerRegisterType | JobSeeker;
 
@@ -32,7 +32,7 @@ export const userService = {
     return response;
   },
 
-  // GET USER BY EMAIL (json-server compatible)
+  // GET USER BY EMAIL 
   getUserByEmail: async (email: string): Promise<User | null> => {
     const response = await apiService.get<User[]>(`users?email=${email}`);
     return response[0] ?? null;

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 // Base URL
 const API_BASE_URL = "http://localhost:4000";
@@ -11,11 +11,36 @@ const api = axios.create({
   },
 });
 
+//Global Error Interceptors//
+
+api.interceptors.response.use(
+  (response) => response,
+  (error: AxiosError<{ message?: string }>) => {
+    console.group("AXIOS ERROR");
+    console.log("Full error:", error);
+    console.log("Status:", error.response?.status);
+    console.log("Response data:", error.response?.data);
+    console.log("Request:", error.request);
+    console.groupEnd();
+    let message = "Unexpected error occurred";
+
+    if (error.response) {
+      // Backend returned error response
+      message = error.response.data?.message || "Server error occurred";
+    } else if (error.request) {
+      // Request made but no response (network issue)
+      message = "Network error. Please check your internet connection.";
+    }
+
+    return Promise.reject(new Error(message));
+  },
+);
+
 // API service
 export const apiService = {
   async get<T>(url: string, params?: any): Promise<T> {
-    console.log(url,'url',params)
-    const response:any = await api.get<T>(url, { params });
+    console.log(url, "url", params);
+    const response: any = await api.get<T>(url, { params });
     return response.data;
   },
 
@@ -34,4 +59,3 @@ export const apiService = {
     return response.data;
   },
 };
- 

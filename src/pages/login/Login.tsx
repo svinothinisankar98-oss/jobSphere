@@ -111,7 +111,7 @@ const Login = () => {
           mb={3}
           sx={{ color: "#3a2ee3" }}
         >
-          Welcome Back
+      Login
         </Typography>
 
         <FormProvider {...methods}>
