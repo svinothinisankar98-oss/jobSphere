@@ -25,11 +25,18 @@ import SavedJobs from "./pages/joblist/SavedJobs";
 import { UIProvider } from "./context/UIProvider";
 import { ErrorBoundary } from "react-error-boundary";
 
-import ErrorFallback from "../../jobSphere/src/ErrorFallback";
+import ErrorPage from "./pages/error/ErrorPage";
+import PageNotFound from "./pages/error/PageNotFound";
 
 function App() {
   return (
-    <ErrorBoundary FallbackComponent={ErrorFallback}>
+    // <ErrorBoundary FallbackComponent={ErrorFallback} >
+
+    <ErrorBoundary
+      fallbackRender={({ error, resetErrorBoundary }) => (
+        <ErrorPage error={error} resetErrorBoundary={resetErrorBoundary} />
+      )}
+    >
       <UIProvider>
         <div className="app-container">
           <Header />
@@ -66,6 +73,8 @@ function App() {
               <Route path="/job-list-add" element={<JobAdd />} />
 
               <Route path="/saved-jobs" element={<SavedJobs />} />
+
+              <Route path="*" element={<PageNotFound />} />
             </Routes>
           </div>
 

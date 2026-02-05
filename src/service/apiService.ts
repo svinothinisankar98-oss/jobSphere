@@ -16,12 +16,7 @@ const api = axios.create({
 api.interceptors.response.use(
   (response) => response,
   (error: AxiosError<{ message?: string }>) => {
-    console.group("AXIOS ERROR");
-    console.log("Full error:", error);
-    console.log("Status:", error.response?.status);
-    console.log("Response data:", error.response?.data);
-    console.log("Request:", error.request);
-    console.groupEnd();
+   
     let message = "Unexpected error occurred";
 
     if (error.response) {

@@ -1297,6 +1297,48 @@
       "portfolio": "",
       "resume": null,
       "userType": 1
+    },
+    {
+      "id": "f4b8",
+      "Name": "vino",
+      "email": "vino@gmail.com",
+      "password": "123456",
+      "confirmPassword": "123456",
+      "phoneno": "9876543210",
+      "location": "Kerala",
+      "experience": "0–1 Years",
+      "skills": "React",
+      "portfolio": "",
+      "resume": null,
+      "userType": 1
+    },
+    {
+      "id": "f80e",
+      "Name": "vino",
+      "email": "vino@gmail.com",
+      "password": "123456",
+      "confirmPassword": "123456",
+      "phoneno": "9876543210",
+      "location": "Kerala",
+      "experience": "0–1 Years",
+      "skills": "TTT",
+      "portfolio": "",
+      "resume": null,
+      "userType": 1
+    },
+    {
+      "id": "e2fc",
+      "Name": "vino",
+      "email": "vino@gmail.com",
+      "password": "123456",
+      "confirmPassword": "123456",
+      "phoneno": "7894561232",
+      "location": "Tamil Nadu",
+      "experience": "Fresher",
+      "skills": "ddd",
+      "portfolio": "",
+      "resume": null,
+      "userType": 1
     }
   ],
   "company-information": [
@@ -1463,5 +1505,4 @@
       "createdAt": "2026-01-29T13:42:27.544Z"
     }
   ]
-  
 }

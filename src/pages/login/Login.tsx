@@ -40,6 +40,7 @@ const Login = () => {
   const onSubmit = async (form: LoginForm) => {
     try {
       const user = await getUserByEmail(form.email); //jobseeker email//
+      console.log("user",user)
       const employer = await getEmployerByEmail(form.email); //employer emaill//
       console.log(employer, "employer");
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Grid, Paper, useMediaQuery } from "@mui/material";
+import { Box, Grid, Paper } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 
@@ -12,10 +12,18 @@ import JobFilters from "../joblist/JobFilters";
 import { getAllLocations } from "../../hooks/useLocationService";
 import ErrorFallback from "../../ErrorFallback";
 
+import { useLocation } from "react-router-dom";
+import { useErrorBoundary } from "react-error-boundary";
+
+import { handleError } from "../../utils/handleError";
+
+
 type Option = {
   id: number;
   item: string;
 };
+
+//Props//
 
 type Props = {
   search: string;
@@ -45,29 +53,36 @@ export default function SearchSection({
   salary,
   setSalary,
 }: Props) {
+
+  const location = useLocation();
+
+  //location state//
+
   const [locations, setLocations] = useState<Option[]>([]);
+
+//Stores API error if fetch fails//
 
   const [locationError, setLocationError] = useState<any>();
 
-  // const theme = useTheme();
-  // const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  // console.log(isMobile);
+  const { showBoundary } = useErrorBoundary();
 
-  useEffect(() => {
-    const fetchLocations = async () => {
-      try {
-        const data = await getAllLocations();
-        setLocations(Array.isArray(data) ? data : []);
-      } catch (err:any) {
-        // err.message='Failed to load locations'
-        setLocationError(err);
-        console.error("Failed to load locations", err);
-      }
-    };
+  //fetch locations in api//
 
-    fetchLocations();
-  }, []);
+ useEffect(() => {
+  const fetchLocations = async () => {
+    try {
+      const data = await getAllLocations();
+      setLocations(Array.isArray(data) ? data : []);
+    } catch (err: any) {
+      handleError(err, {
+         showBoundary,
+        setLocalError: setLocationError,
+      });
+    }
+  };
 
+  fetchLocations();
+}, []);
   return (
     <Paper
       elevation={3}
@@ -93,8 +108,9 @@ export default function SearchSection({
             placeholder="Select Location"
             startIcon={<LocationOnIcon />}
           />
+          
 
-          {locationError && (
+          {locationError && (                       //Error handling in UI//
             <ErrorFallback
               error={locationError}
               resetErrorBoundary={() => setLocationError(null)}

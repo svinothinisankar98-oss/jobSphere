@@ -30,6 +30,8 @@ export default function JobList() {
   const location = useLocation();
   const { getUser, updateUser } = useUserService();
 
+  //Jobs & selection//
+
   const [jobs, setJobs] = useState<jobsListType[]>([]);
   const [selectedJob, setSelectedJob] = useState<jobsListType | null>(null);
   const [showDetails, setShowDetails] = useState(false);
@@ -37,14 +39,17 @@ export default function JobList() {
   const authUser = authStorage.get() || {};
   const authUserId = authUser?.id;
 
-  /*  DB SAVED JOB IDS */
+  //  DB SAVED JOB IDS //
   const [savedJobIds, setSavedJobIds] = useState<number[]>([]);
 
+  //Error handling state//
   const [jobError, setJobError] = useState<any>();
+
+  //react-error-boundary//
 
   const { showBoundary } = useErrorBoundary();
 
-  /* Load jobs */
+  // Load jobs //
 
   const loadJobs = async () => {
     try {
@@ -71,14 +76,14 @@ export default function JobList() {
     loadSavedJobs();
   }, [authUserId]);
 
-  /* Toggle save/unsave */
+  //Toggle save/unsave //
   const toggleSave = async (jobId: number) => {
     let updated;
 
     if (savedJobIds.includes(jobId)) {
       updated = savedJobIds.filter((id) => id !== jobId);
     } else {
-      updated = [...savedJobIds, jobId];
+      updated = [...savedJobIds, jobId];           //update ui//
     }
 
     setSavedJobIds(updated);
@@ -87,7 +92,7 @@ export default function JobList() {
 
     if (!user) return;
 
-    user.savedJobs = updated;
+    user.savedJobs = updated;                        //update DB//
     await updateUser(authUser?.id, user);
     window.dispatchEvent(
       new CustomEvent("savedJobsUpdated", {
@@ -193,12 +198,7 @@ export default function JobList() {
           setSalary={setSalary}
         />
       </Box>
-      {jobError && (
-        <ErrorFallback
-          error={jobError}
-          resetErrorBoundary={() => setJobError(null)}
-        />
-      )}
+      
       {/* CONTENT */}
       <Box
         display="flex"
@@ -208,6 +208,7 @@ export default function JobList() {
         flex={1}
         overflow="hidden"
       >
+       
         {/* JOB LIST */}
         {(!showDetails || !isMobile) && (
           <Box
@@ -256,6 +257,13 @@ export default function JobList() {
           </Box>
         )}
 
+         {jobError && (
+        <ErrorFallback
+          error={jobError}
+          resetErrorBoundary={() => setJobError(null)}               //set job error//
+        />
+      )}
+
         {/* JOB DETAILS */}
         {selectedJob && (showDetails || !isMobile) && (
           <Box width={{ xs: "100%", md: "65%" }} overflow="auto">
@@ -288,6 +296,7 @@ export default function JobList() {
 
               <Stack direction="row" spacing={1} my={2}>
                 <MyButton label="Apply now" variant="contained" />
+                
 
                 <IconButton
                   onClick={() =>

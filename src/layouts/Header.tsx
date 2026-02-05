@@ -124,6 +124,14 @@ export default function Header() {
             >
               Jobs
             </Button>
+             <Button
+              component={Link}
+              to="/Companies"
+              color="inherit"
+              sx={{ fontWeight: 600 }}
+            >
+              Companies
+            </Button>
           </Stack>
         </Stack>
 

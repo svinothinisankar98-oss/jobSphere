@@ -6,15 +6,13 @@ type CreateUserPayload = employerRegisterType | JobSeeker;
 
 export const useUserService = () => {
   const getAllUsers = async (): Promise<User[]> => {
-  try {
-    return await userService.getUsers({ keyword: "" });
-  } catch (error) {
-    console.error("Failed to get users", error);
-    return [];
-  }
-};
-
-  
+    try {
+      return await userService.getUsers({ keyword: "" });
+    } catch (error) {
+      console.error("Failed to get users", error);
+      return [];
+    }
+  };
 
   const createUser = async (data: CreateUserPayload) => {
     try {
@@ -27,24 +25,26 @@ export const useUserService = () => {
 
   const getUserByEmail = async (email: string): Promise<User | null> => {
     try {
-      return await userService.getUserByEmail(email);
-    } catch (error) {
-      console.error("Failed to get user by email", error);
-      return null;
+      const res = await userService.getUserByEmail(email);
+
+      return res;
+    } catch (error: any) {
+       console.error("Failed to create user", error);
+      // Otherwise real error
+      throw error;
     }
   };
 
   const getRecruiterDetails = async (): Promise<employerRegisterType[]> => {
-  try {
-    return await userService.getRecruiterDetails();
-  } catch (error) {
-    console.error("Failed to get Recruiter details", error);
-    return []; 
-  }
-};
+    try {
+      return await userService.getRecruiterDetails();
+    } catch (error) {
+      console.error("Failed to get Recruiter details", error);
+      return [];
+    }
+  };
 
-  
-  const getEmployerByEmail = async (recruiterEmail: string): Promise<User | null> => {
+  const getEmployerByEmail = async (recruiterEmail: string ): Promise<User | null> => {
     try {
       return await userService.getEmployerByEmail(recruiterEmail);
     } catch (error) {
@@ -53,34 +53,32 @@ export const useUserService = () => {
     }
   };
 
-const getEmployerById = async (id: string): Promise<employerRegisterType | null> => {
-  try {
-    return await userService.getEmployerById(id);
-  } catch (error) {
-    console.error("Failed to get user by id", error);
-    return null;
-  }
-};
+  const getEmployerById = async (id: string,): Promise<employerRegisterType | null> => {
+    try {
+      return await userService.getEmployerById(id);
+    } catch (error) {
+      console.error("Failed to get user by id", error);
+      return null;
+    }
+  };
 
-const updateUser = async (id: number, data: employerRegisterType) => {
-  try {
-    return await userService.updateUser(id, data);
-  } catch (error) {
-    console.error("Failed to update user", error);
-    return null;
-  }
-};
+  const updateUser = async (id: number, data: employerRegisterType) => {
+    try {
+      return await userService.updateUser(id, data);
+    } catch (error) {
+      console.error("Failed to update user", error);
+      return null;
+    }
+  };
 
-const getUser = async (email: string): Promise<any> => {
-  try {
-    return await userService.getUser(email);
-  } catch (error) {
-    console.error("Failed to get user by email", error);
-    return null;
-  }
-};
-
-
+  const getUser = async (email: string): Promise<any> => {
+    try {
+      return await userService.getUser(email);
+    } catch (error) {
+      console.error("Failed to get user by email", error);
+      return null;
+    }
+  };
 
   return {
     getAllUsers,
@@ -90,6 +88,7 @@ const getUser = async (email: string): Promise<any> => {
     getEmployerById,
     updateUser,
     getRecruiterDetails,
-    getUser
+    getUser,
   };
 };
+

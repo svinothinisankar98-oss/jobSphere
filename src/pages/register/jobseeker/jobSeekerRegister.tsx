@@ -19,8 +19,6 @@ import jobseekerDefaultValues from "../jobseeker/defaultvalues/JobSeeker";
 import MyTextField from "../../../Components/newui/MyTextField";
 import { useUserService } from "../../../hooks/useUserService";
 
-
-
 import { useUI } from "../../../context/UIProvider";
 
 // const defaultValues: JobSeeker = {
@@ -67,7 +65,7 @@ const JobSeekerRegister = () => {
     fetchLocations();
   }, []);
 
- const { showSnackbar } = useUI();
+  const { showSnackbar } = useUI();
 
   // ================= SUBMIT =================
   const onSubmit: SubmitHandler<JobSeeker> = async (data) => {
@@ -75,37 +73,30 @@ const JobSeekerRegister = () => {
       if (data.resume) {
         const base64 = await fileToBase64(data.resume);
         data.resumeBase64 = base64;
-       
       }
 
       data.userType = 1;
 
       const existingUser = await getUserByEmail(data.email);
       if (existingUser) {
-        showSnackbar("Email already exists","error");
-        return;
+        // showSnackbar("Email already exists","error");
+        throw new Error("Email already exists"); //Error boundary//
+        // return;
       }
 
       await createUser(data);
 
-      showSnackbar("Registration successful!","success");
+      showSnackbar("Registration successful!", "success");
 
       reset();
       if (fileInputRef.current) fileInputRef.current.value = "";
 
       navigate("/login");
-    } catch (error) {
-     console.error("Register error:", error);
-     showSnackbar(
-      typeof error === "string" ? error : "Registration failed",
-      "error"
-      );
+    } catch (error:any) {
+  showSnackbar(error.message, "error");
+  throw error; // rethrow so boundary still catches
+}
   };
-    }
-    
-    
-
- 
 
   // ================= UI =================
   return (

@@ -122,15 +122,15 @@ export default function Sidebar() {
 
   //run login change of other user//
   useEffect(() => {
-    const updateCount = () => {
-      const stored = localStorage.getItem("savedJobs");
-      const list = stored ? JSON.parse(stored) : [];
-    };
+    // const updateCount = () => {
+    //   const stored = localStorage.getItem("savedJobs");
+    //   const list = stored ? JSON.parse(stored) : [];
+    // };
 
     getSavedJobData();
 
     // window.addEventListener("storage", updateCount);
-    window.addEventListener("savedJobsUpdated", updateCount);
+    // window.addEventListener("savedJobsUpdated", updateCount);
 
     const handleUpdate = (e: any) => {
       setSavedCount(e.detail);

@@ -16,7 +16,7 @@ import { useJobService } from "../../hooks/joblist/useJobService";
 import type { jobsListType } from "../../types/jobListType";
 import MyButton from "../../Components/newui/MyButton";
 import { authStorage } from "../../utils/authStorage";
-import { userService } from "../../service/userService";
+
 import { useUserService } from "../../hooks/useUserService";
 
 export default function SavedJobs() {

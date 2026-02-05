@@ -2,7 +2,10 @@ import { Snackbar, Alert } from "@mui/material";
 
 export default function ErrorFallback({ error, resetErrorBoundary }: any) {
   return (
-    <Snackbar open autoHideDuration={4000} onClose={resetErrorBoundary}>
+    <Snackbar open autoHideDuration={4000} onClose={resetErrorBoundary}
+    anchorOrigin={{ vertical: "top", horizontal: "center" }}
+    
+    >
       <Alert severity="error" onClose={resetErrorBoundary}>
         {error.message}
       </Alert>
