@@ -20,6 +20,7 @@ import MyTextField from "../../../Components/newui/MyTextField";
 import { useUserService } from "../../../hooks/useUserService";
 
 import { useUI } from "../../../context/UIProvider";
+import { useErrorBoundary } from "react-error-boundary";
 
 // const defaultValues: JobSeeker = {
 //   Name: "",
@@ -33,11 +34,13 @@ import { useUI } from "../../../context/UIProvider";
 //   portfolio: "",
 //   resume: null,
 // };
-const { getUserByEmail, createUser } = useUserService();
 
 const JobSeekerRegister = () => {
+   const { showBoundary } = useErrorBoundary();
+  const { getUserByEmail, createUser } = useUserService(showBoundary);
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  
 
   const jobseeker = useForm({
     resolver: yupResolver(jobSeekerSchema),
@@ -47,7 +50,7 @@ const JobSeekerRegister = () => {
     defaultValues: jobseekerDefaultValues,
   });
 
-  const { handleSubmit, reset } = jobseeker;
+  const { handleSubmit, reset,setFocus,setError } = jobseeker;
 
   const [locations, setLocations] = useState<Option[]>([]);
 
@@ -67,36 +70,42 @@ const JobSeekerRegister = () => {
 
   const { showSnackbar } = useUI();
 
-  // ================= SUBMIT =================
+  // SUBMIT //
   const onSubmit: SubmitHandler<JobSeeker> = async (data) => {
-    try {
-      if (data.resume) {
-        const base64 = await fileToBase64(data.resume);
-        data.resumeBase64 = base64;
-      }
+  try {
+    if (data.resume) {
+      const base64 = await fileToBase64(data.resume);
+      data.resumeBase64 = base64;
+    }
 
-      data.userType = 1;
+    data.userType = 1;
 
-      const existingUser = await getUserByEmail(data.email);
-      if (existingUser) {
-        // showSnackbar("Email already exists","error");
-        throw new Error("Email already exists"); //Error boundary//
-        // return;
-      }
+    const existingUser = await getUserByEmail(data.email);
 
-      await createUser(data);
+    if (existingUser) {
+      setError("email", {
+        type: "manual",
+        message: "Email already exists",
+      });
 
-      showSnackbar("Registration successful!", "success");
+      setFocus("email");  //auto focus//
+      showSnackbar("Email already exists", "error");
 
-      reset();
-      if (fileInputRef.current) fileInputRef.current.value = "";
+      return; 
+    }
 
-      navigate("/login");
-    } catch (error:any) {
-  showSnackbar(error.message, "error");
-  throw error; // rethrow so boundary still catches
-}
-  };
+    await createUser(data);
+
+    showSnackbar("Registration successful!", "success");
+
+    reset();
+    navigate("/login");
+  } catch (error: any) {
+    showSnackbar("Something went wrong", "error");
+   
+  }
+};
+
 
   // ================= UI =================
   return (
@@ -209,7 +218,7 @@ const JobSeekerRegister = () => {
                         type="button"
                         variant="contained"
                         color="info"
-                        sx={{ minWidth: 160, height: 45, fontWeight: 600 }}
+                        // sx={{ minWidth: 160, height: 45, fontWeight: 600 }}
                         onClick={() => reset()}
                       />
                     </Grid>
@@ -219,7 +228,7 @@ const JobSeekerRegister = () => {
                         type="submit"
                         variant="contained"
                         color="primary"
-                        sx={{ minWidth: 160, height: 45, fontWeight: 600 }}
+                        // sx={{ minWidth: 160, height: 45, fontWeight: 600 }}
                       />
                     </Grid>
 
@@ -229,7 +238,7 @@ const JobSeekerRegister = () => {
                         type="button"
                         variant="contained"
                         color="error"
-                        sx={{ minWidth: 160, height: 45, fontWeight: 600 }}
+                        // sx={{ minWidth: 160, height: 45, fontWeight: 600 }}
                         onClick={() => navigate("/")}
                       />
                     </Grid>

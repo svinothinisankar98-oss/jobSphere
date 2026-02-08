@@ -4,6 +4,7 @@ import {
   Checkbox,
   ListItemText,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 
 type Option = {
   id: number;
@@ -30,6 +31,7 @@ export default function CommonMultiSelect({
   placeholder,
   sx,
 }: Props) {
+  const theme = useTheme();
 
   const selectedIds = options
     .filter(o => value.includes(o.value))
@@ -61,30 +63,39 @@ export default function CommonMultiSelect({
       }}
       sx={{
         "& .MuiOutlinedInput-root": {
-          borderRadius: "14px",        
-          backgroundColor: "#fff",
+          borderRadius: "14px",
+          backgroundColor: theme.palette.background.paper,
+          color: theme.palette.text.primary,
           transition: "all 0.2s ease",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
+          boxShadow:
+            theme.palette.mode === "dark"
+              ? "0 2px 6px rgba(0,0,0,0.6)"
+              : "0 1px 3px rgba(0,0,0,0.08)",
 
           "& fieldset": {
-            borderColor: "#e0e0e0",
+            borderColor: theme.palette.divider,
           },
 
           "&:hover fieldset": {
-            borderColor: "#1976d2",
+            borderColor: theme.palette.primary.main,
           },
 
           "&.Mui-focused fieldset": {
-            borderColor: "#1976d2",
+            borderColor: theme.palette.primary.main,
             borderWidth: "2px",
           },
         },
 
         "& .MuiInputLabel-root": {
           fontSize: 14,
+          color: theme.palette.text.secondary,
         },
 
-        ...sx,   
+        "& .MuiSvgIcon-root": {
+          color: theme.palette.text.secondary,
+        },
+
+        ...sx,
       }}
     >
       {options.map(option => (

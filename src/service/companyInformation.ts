@@ -23,7 +23,7 @@ export const companyInformationService = {
 
   getCompanyById: async (id: number): Promise<CompanyInformationType> => {
     const response = await apiService.get<CompanyInformationType>(
-      `company-information/${id}`
+      `company-informationsss/${id}`
     );
     return response;
   },

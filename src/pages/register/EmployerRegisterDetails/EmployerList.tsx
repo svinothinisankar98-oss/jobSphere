@@ -38,15 +38,16 @@ import MyTabs from "../../../Components/newui/MyTab";
 
 import { useEmployerListHandlers } from "../../../hooks/employer/useEmployerListHandlers";
 
-
 import { Switch, FormControlLabel } from "@mui/material";
 
 import { useUI } from "../../../context/UIProvider";
+import { useErrorBoundary } from "react-error-boundary";
 
 const EmployerList = () => {
   //state variables//
 
   const [data, setData] = useState<employerRegisterType[]>([]);
+     const { showBoundary } = useErrorBoundary();
 
   //search filters//
   const [companyName, setCompanyName] = useState("");
@@ -56,16 +57,14 @@ const EmployerList = () => {
   const [industry, setIndustry] = useState("");
   const [companySize, setCompanySize] = useState("");
   const [loading, setLoading] = useState(false); //api loading//
- const { showSnackbar } = useUI();
+  const { showSnackbar } = useUI();
 
-  const { getRecruiterDetails, updateUser } = useUserService();
+  const { getRecruiterDetails, updateUser } = useUserService(showBoundary);
 
   //tabs//
   const [activeTab, setActiveTab] = useState(0);
 
   const navigate = useNavigate();
-
-  
 
   //count for active and inactive//
 
@@ -76,13 +75,10 @@ const EmployerList = () => {
 
   //actions hooks useemployerlisthandler//
   const {
-   
     handleDeleteClick: handleBulkDelete,
     handleActivateClick: handleBulkActivate,
-   
   } = useEmployerListHandlers(updateUser, showSnackbar);
 
- 
   // clear//
   const handleClear = async () => {
     setCompanyName("");
@@ -95,7 +91,6 @@ const EmployerList = () => {
     // loadDefaultData();
   };
 
- 
   //Edit Logic//
 
   const handleEdit = (row: employerRegisterType) => {
@@ -130,8 +125,6 @@ const EmployerList = () => {
         );
       });
 
-      
-
       let tabFiltered = [] as any;
 
       const active = filtered.filter((d) => d.isActive === true);
@@ -143,21 +136,17 @@ const EmployerList = () => {
         tabFiltered = filtered; // ALL
       } else if (activeTab === 1) {
         tabFiltered = filtered.filter((d) => d.isActive === true);
-        
       } else if (activeTab === 2) {
         tabFiltered = filtered.filter((d) => d.isActive === false);
-        
       } else if (activeTab === 3) {
-        tabFiltered = filtered; 
+        tabFiltered = filtered;
       }
-
-      
 
       setData(tabFiltered);
     } catch (err) {
       console.error(err);
       setData([]);
-       showSnackbar("Failed to load employer list", "error");
+      //  showSnackbar("Failed to load employer list", "error");
     } finally {
       setLoading(false);
     }
@@ -166,7 +155,12 @@ const EmployerList = () => {
   //tab changes data reloads//
 
   useEffect(() => {
-    handleSearch();
+    try {
+      handleSearch();
+    } catch (error) {
+      console.log("errpr");
+    }
+    console.log("enrt useEffect");
   }, [
     companyName,
     recruiterName,
@@ -264,7 +258,7 @@ const EmployerList = () => {
               <IconButton
                 size="small"
                 color="error"
-                onClick={() => handleBulkDelete([row],handleSearch)}
+                onClick={() => handleBulkDelete([row], handleSearch)}
               >
                 <DeleteIcon fontSize="small" />
               </IconButton>
@@ -277,7 +271,7 @@ const EmployerList = () => {
               <IconButton
                 size="small"
                 color="success"
-                onClick={() => handleBulkActivate([row],handleSearch)}
+                onClick={() => handleBulkActivate([row], handleSearch)}
               >
                 <CheckCircleIcon fontSize="small" />
               </IconButton>
@@ -418,9 +412,7 @@ const EmployerList = () => {
         </Box>
       )}
 
-      <Box sx={{ maxWidth: 1300, mx: "auto", mt: 4 , 
-    
-    }}>
+      <Box sx={{ maxWidth: 1300, mx: "auto", mt: 4 }}>
         <MyTabs
           activeTab={activeTab}
           onTabChange={(index) => setActiveTab(index)}
@@ -446,8 +438,6 @@ const EmployerList = () => {
                       enableColumnGrouping={activeTab === 0}
                       groupBy="companySize"
                       tableSize={dense ? "small" : "medium"}
-
-                     
                     />
                   )}
                 </>
@@ -475,9 +465,9 @@ const EmployerList = () => {
                       tableSize={dense ? "small" : "medium"}
                       onDeleteSelected={(ids) => {
                         const rowsToDelete = data.filter(
-                          (r) => r.id && ids.includes(r.id)
+                          (r) => r.id && ids.includes(r.id),
                         );
-                        handleBulkDelete(rowsToDelete,handleSearch);
+                        handleBulkDelete(rowsToDelete, handleSearch);
                       }}
                     />
                   )}
@@ -512,9 +502,9 @@ const EmployerList = () => {
                       containerSx={{ maxWidth: 1300, mx: "auto" }}
                       onActivateSelected={(ids) => {
                         const selectedRows = data.filter(
-                          (r) => r.id && ids.includes(r.id)
+                          (r) => r.id && ids.includes(r.id),
                         );
-                        handleBulkActivate(selectedRows,handleSearch);
+                        handleBulkActivate(selectedRows, handleSearch);
                       }}
                     />
                   )}
@@ -547,7 +537,7 @@ const EmployerList = () => {
                       groupBy="industry"
                       tableSize={dense ? "small" : "medium"}
                       containerSx={{ maxWidth: 1300, mx: "auto" }}
-                      
+
                       // onActivateSelected={(ids) => {
                       //   const selectedRows = data.filter(
                       //     (r) => r.id && ids.includes(r.id)

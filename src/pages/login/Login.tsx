@@ -156,8 +156,8 @@ const Login = () => {
                 type="submit"
                 variant="contained"
                 sx={{
-                  minWidth: 180,
-                  height: 46,
+                  minWidth: 120,
+                
                   fontWeight: 600,
                   borderRadius: 12,
                   transition: "0.25s",

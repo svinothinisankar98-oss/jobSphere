@@ -1,24 +1,30 @@
 export const handleError = (
   error: any,
   options: {
-    showBoundary?: (err: any) => void;
-    setLocalError?: (err: any) => void;
+    showBoundary?: (err: Error) => void;
+    setLocalError?: (err: Error) => void;
   }
 ) => {
-  // 🌐 No response = server/network down
+
+  // Server/network error
   if (!error?.response) {
     const serverError = new Error("Server loading failed. Please try again.");
-    options.showBoundary?.(serverError);
+
+    if (options.showBoundary) {
+      options.showBoundary(serverError);
+    } else {
+      throw serverError; //  fallback safety
+    }
+
     return;
   }
 
-  // 📛 API message (if exists)
+  // API/ error
   const message =
     error.response?.data?.message ||
     "Something went wrong. Please try again.";
 
   const friendlyError = new Error(message);
 
-  // ⚠️ Small error → snackbar
   options.setLocalError?.(friendlyError);
 };

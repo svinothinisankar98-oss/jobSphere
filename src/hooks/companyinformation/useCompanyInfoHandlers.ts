@@ -25,12 +25,22 @@ export function useCompanyInfoHandlers(reset: any) {
 
   //  Fetch company when editing
   React.useEffect(() => {
-    if (!id) return;
+  if (!id) return;
 
-    getCompanyById(Number(id)).then((data) => {
-      reset(data);
-    });
-  }, [id]);
+  const loadCompany = async () => {
+    try {
+      const data = await getCompanyById(Number(id));
+      if (data) {
+        reset(data);
+      }
+    } catch (error: any) {
+      showSnackbar(error.message,"error"); 
+    }
+  };
+
+  loadCompany();
+}, [id]);
+
 
   //  Submit logic
   const onSubmit: SubmitHandler<CompanyInformationType> = async (data) => {

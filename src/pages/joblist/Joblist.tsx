@@ -25,6 +25,8 @@ import { useErrorBoundary } from "react-error-boundary";
 import ErrorFallback from "../../ErrorFallback";
 import ScrollToTopButton from "../../Components/newui/ScrollToTopButton";
 
+import { handleError } from "../../utils/handleError";
+
 export default function JobList() {
   const { getAllJobs } = useJobService();
   const location = useLocation();
@@ -56,8 +58,8 @@ export default function JobList() {
       const getJobs = await getAllJobs();
       setJobs(getJobs);
     } catch (error: any) {
-      setJobError(error);
-    }
+ 
+}
   };
 
   useEffect(() => {
@@ -173,11 +175,8 @@ export default function JobList() {
         px={{ xs: 1, md: 4 }}
         py={2}
         sx={{
-          background: "#fff",
-          position: "sticky",
-          top: 0,
-          zIndex: 10,
-          boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+          backgroundColor: "background.paper",
+    color: "text.primary",
         }}
       >
         <SearchSection

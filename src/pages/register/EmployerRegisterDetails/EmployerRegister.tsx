@@ -80,6 +80,8 @@ const EmployerRegister = () => {
   const {
     handleSubmit,
     reset,
+    setError,setFocus,
+
     formState: { isValid },
   } = form;
 
@@ -107,8 +109,8 @@ const EmployerRegister = () => {
           ...employer,
         });
       }
-    } catch (err) {
-      showSnackbar("Failed to load employer details", "error");
+    } catch (error: any) {
+      showSnackbar(error.message,"error"); 
     }
   };
 
@@ -125,8 +127,15 @@ const EmployerRegister = () => {
         );
 
         if (existingemployer) {
-          showSnackbar("recruiterEmail  already exists", "error");
-          return;
+          setError("recruiterEmail", {
+        type: "manual",
+        message: "Email already exists",
+      });
+       setFocus("recruiterEmail");  //auto focus//
+      showSnackbar(" recruiter Email already exists", "error");
+
+      return; 
+
         }
         data.createdAt = new Date();
         data.updatedAt = null;
@@ -224,11 +233,11 @@ const EmployerRegister = () => {
                     color="info"
                     type="button"
                     variant="contained"
-                    sx={{
-                      minWidth: 160,
-                      height: 45,
-                      fontWeight: 600,
-                    }}
+                    // sx={{
+                    //   minWidth: 160,
+                    //   height: 45,
+                    //   fontWeight: 600,
+                    // }}
                     onClick={() => {
                       form.reset(employerDefaultValues);
                       form.clearErrors();
@@ -241,11 +250,11 @@ const EmployerRegister = () => {
                     type="submit"
                     variant="contained"
                     color="primary"
-                    sx={{
-                      minWidth: 160,
-                      height: 45,
-                      fontWeight: 600,
-                    }}
+                    // sx={{
+                    //   minWidth: 160,
+                    //   height: 45,
+                    //   fontWeight: 600,
+                    // }}
                     disabled={!isValid}
                   />
 
@@ -254,11 +263,11 @@ const EmployerRegister = () => {
                     color="error"
                     type="button"
                     variant="contained"
-                    sx={{
-                      minWidth: 160,
-                      height: 45,
-                      fontWeight: 600,
-                    }}
+                    // sx={{
+                    //   minWidth: 160,
+                    //   height: 45,
+                    //   fontWeight: 600,
+                    // }}
                      onClick={() => navigate("/login")}
                   />
                 </Grid>

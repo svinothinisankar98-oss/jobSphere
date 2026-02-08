@@ -18,6 +18,10 @@ import PersonIcon from "@mui/icons-material/Person";
 
 import { authStorage } from "../utils/authStorage";
 import MyButton from "../Components/newui/MyButton";
+import { useThemeContext } from "../context/ThemeContext";
+import IconButton from "@mui/material/IconButton";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeIcon from "@mui/icons-material/LightMode";
 
 type AuthUser = {
   id: number;
@@ -29,6 +33,8 @@ export default function Header() {
   const navigate = useNavigate();
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { theme, toggleTheme } = useThemeContext();
+  console.log(theme, "theme");
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [registerAnchor, setRegisterAnchor] = useState<null | HTMLElement>(
@@ -84,7 +90,13 @@ export default function Header() {
   };
 
   return (
-    <AppBar position="sticky" color="inherit" elevation={1}>
+    <AppBar
+      position="sticky"
+      sx={{
+        backgroundColor: "background.paper",
+        color: "text.primary",
+      }}
+    >
       <Toolbar sx={{ justifyContent: "space-between" }}>
         {/* LEFT */}
         <Stack direction="row" alignItems="center" spacing={2} paddingLeft={9}>
@@ -124,9 +136,9 @@ export default function Header() {
             >
               Jobs
             </Button>
-             <Button
+            <Button
               component={Link}
-              to="/Companies"
+              to="/companies"
               color="inherit"
               sx={{ fontWeight: 600 }}
             >
@@ -143,6 +155,11 @@ export default function Header() {
             gap: { xs: 1, md: 2 },
           }}
         >
+          {/* ✅ THEME TOGGLE — ALWAYS VISIBLE */}
+          <IconButton onClick={toggleTheme} color="inherit">
+            {theme === "light" ? <DarkModeIcon /> : <LightModeIcon />}
+          </IconButton>
+
           {!user ? (
             <Stack direction="row" spacing={2}>
               <MyButton
@@ -150,12 +167,6 @@ export default function Header() {
                 icon={<AccountCircleIcon />}
                 onClick={handleLogin}
                 label="Login"
-                sx={{
-                  minWidth: { xs: 70, md: 120 },
-                  fontSize: { xs: "0.7rem", md: "0.9rem" },
-                  px: { xs: 1.2, md: 3 },
-                  height: { xs: 32, md: 38 },
-                }}
               />
 
               <MyButton
@@ -163,12 +174,6 @@ export default function Header() {
                 icon={<PersonAddIcon />}
                 onClick={(e) => setRegisterAnchor(e.currentTarget)}
                 label="Register"
-                sx={{
-                  minWidth: { xs: 75, md: 120 },
-                  fontSize: { xs: "0.7rem", md: "0.9rem" },
-                  px: { xs: 1.2, md: 3 },
-                  height: { xs: 32, md: 38 },
-                }}
               />
 
               <Menu

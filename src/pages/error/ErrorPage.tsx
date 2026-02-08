@@ -44,7 +44,7 @@ export default function ErrorPage({ error, resetErrorBoundary }: any) {
           {error?.message || "Unexpected error occurred"}
         </Typography>
 <Button
-  fullWidth
+ 
   variant="contained"
   sx={{ mt: 4, py: 1.3, borderRadius: 3 }}
   onClick={() => {

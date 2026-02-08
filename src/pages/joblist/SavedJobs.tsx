@@ -88,7 +88,7 @@ export default function SavedJobs() {
   };
 
   return (
-    <Box height="100vh" px={3} bgcolor="#f7f9fc">
+    <Box height="100vh" px={3} >
       {/* EMPTY STATE */}
       {savedJobList.length === 0 && (
         <Box

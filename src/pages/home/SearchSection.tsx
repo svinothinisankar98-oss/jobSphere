@@ -9,7 +9,8 @@ import MyButton from "../../Components/newui/MyButton";
 import CommonDropdown from "../../Components/ui/CommonDropdown";
 import CommonTextField from "../../Components/ui/CommonTextField";
 import JobFilters from "../joblist/JobFilters";
-import { getAllLocations } from "../../hooks/useLocationService";
+// import { getAllLocations } from "../../hooks/useLocationService";
+import { useLocationService} from '../../hooks/useLocationService'
 import ErrorFallback from "../../ErrorFallback";
 
 import { useLocation } from "react-router-dom";
@@ -55,6 +56,7 @@ export default function SearchSection({
 }: Props) {
 
   const location = useLocation();
+  const { getAllLocations } = useLocationService();
 
   //location state//
 
@@ -64,7 +66,7 @@ export default function SearchSection({
 
   const [locationError, setLocationError] = useState<any>();
 
-  const { showBoundary } = useErrorBoundary();
+  // const { showBoundary } = useErrorBoundary();
 
   //fetch locations in api//
 
@@ -73,16 +75,19 @@ export default function SearchSection({
     try {
       const data = await getAllLocations();
       setLocations(Array.isArray(data) ? data : []);
-    } catch (err: any) {
-      handleError(err, {
-         showBoundary,
-        setLocalError: setLocationError,
-      });
+    } 
+    catch (err: any) {
+      // handleError(err, {
+      //    showBoundary,
+      //   setLocalError: setLocationError,
+      // });
     }
   };
 
   fetchLocations();
 }, []);
+
+
   return (
     <Paper
       elevation={3}

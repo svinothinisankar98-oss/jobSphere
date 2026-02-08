@@ -1,7 +1,11 @@
 import type { jobsListType } from "../../types/jobListType";
 import { jobService } from "../../service/jobListService";
+import { handleError } from "../../utils/handleError";
+import { useErrorBoundary } from "react-error-boundary";
 
 export const useJobService = () => {
+
+   const { showBoundary } = useErrorBoundary();
 
   // create job
 
@@ -16,16 +20,16 @@ export const useJobService = () => {
 
   // get all jobs list
 
-  const getAllJobs = async (): Promise<jobsListType[]> => {
+   const getAllJobs = async (): Promise<jobsListType[]> => {
     try {
       return await jobService.getJobs();
-    } catch (error) {
-      console.error("Failed to load jobs", error);
+    } catch (error: any) {
+      handleError(error, {
+        showBoundary,
+      });
       throw error;
-      
-      
     }
-  };
+  }
 
   // get job by id
 
