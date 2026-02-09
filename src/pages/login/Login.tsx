@@ -87,12 +87,7 @@ const Login = () => {
   //ui rendering//
 
   return (
-    <Grid
-      container
-      minHeight="80vh"
-      alignItems="center"
-      justifyContent="center"
-    >
+    <Box>
       <Paper
         elevation={0}
         sx={{
@@ -189,7 +184,7 @@ const Login = () => {
           </Box>
         </FormProvider>
       </Paper>
-    </Grid>
+    </Box>
   );
 };
 

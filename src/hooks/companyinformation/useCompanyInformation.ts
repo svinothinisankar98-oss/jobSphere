@@ -44,7 +44,7 @@ const getAllCompanyInformation = async (): Promise<CompanyInformationType[]> => 
   } catch (error: any) {
     const message =
       error?.response?.data?.message ||
-      " Server Error Failed to fetch company details";
+      " Failed to load company details";
 
     // return controlled failure
     return Promise.reject(new Error(message));

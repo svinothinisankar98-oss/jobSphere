@@ -23,9 +23,12 @@ import ErrorPage from "./pages/error/ErrorPage";
 import PageNotFound from "./pages/error/PageNotFound";
 
 import "./style/global.css";
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
 
 function App() {
   return (
+    <Provider store={store}>
     <ErrorBoundary
       fallbackRender={({ error, resetErrorBoundary }) => (
         <ErrorPage error={error} resetErrorBoundary={resetErrorBoundary} />
@@ -50,7 +53,7 @@ function App() {
               <Route path="/company-information" element={<CompanyInformation />} />
               <Route path="/company-information/edit/:id" element={<CompanyInformation />} />
               <Route path="/company-information-list" element={<CompanyInformationList />} />
-              <Route path="/login" element={<Login />} />
+              {/* <Route path="/login" element={<Login />} /> */}
             </Route>
 
             {/* WITHOUT header / sidebar / footer */}
@@ -62,6 +65,7 @@ function App() {
         </UIProvider>
       </ThemeProvider>
     </ErrorBoundary>
+    </Provider>
   );
 }
 

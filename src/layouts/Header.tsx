@@ -22,6 +22,7 @@ import { useThemeContext } from "../context/ThemeContext";
 import IconButton from "@mui/material/IconButton";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
+import LoginModal from "../pages/login/LoginModal";
 
 type AuthUser = {
   id: number;
@@ -33,6 +34,9 @@ export default function Header() {
   const navigate = useNavigate();
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [openLogin, setOpenLogin] = useState(false);
+  
+  
   const { theme, toggleTheme } = useThemeContext();
   console.log(theme, "theme");
 
@@ -79,13 +83,13 @@ export default function Header() {
     return () => window.removeEventListener("auth-change", loadUser);
   }, []);
 
-  const handleLogin = () => navigate("/login");
+  // const handleLogin = () => navigate("/login");
 
   const handleLogout = () => {
     authStorage.remove();
     setUser(null);
 
-    navigate("/login");
+    navigate("/");
     setIsMenuOpen(false);
   };
 
@@ -155,19 +159,27 @@ export default function Header() {
             gap: { xs: 1, md: 2 },
           }}
         >
-          {/* ✅ THEME TOGGLE — ALWAYS VISIBLE */}
+          {/*  THEME TOGGLE — ALWAYS VISIBLE */}
           <IconButton onClick={toggleTheme} color="inherit">
             {theme === "light" ? <DarkModeIcon /> : <LightModeIcon />}
           </IconButton>
 
           {!user ? (
             <Stack direction="row" spacing={2}>
-              <MyButton
-                variant="contained"
-                icon={<AccountCircleIcon />}
-                onClick={handleLogin}
-                label="Login"
-              />
+                 <>
+      <MyButton
+        variant="contained"
+        icon={<AccountCircleIcon />}
+        label="Login"
+        onClick={() => setOpenLogin(true)}
+      />
+
+      <LoginModal
+        open={openLogin}
+        onClose={() => setOpenLogin(false)}
+      />
+    </>
+
 
               <MyButton
                 variant="contained"

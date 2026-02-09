@@ -27,6 +27,7 @@ import ScrollToTopButton from "../../Components/newui/ScrollToTopButton";
 
 import { handleError } from "../../utils/handleError";
 
+
 export default function JobList() {
   const { getAllJobs } = useJobService();
   const location = useLocation();
