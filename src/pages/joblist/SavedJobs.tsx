@@ -17,36 +17,40 @@ import type { jobsListType } from "../../types/jobListType";
 import MyButton from "../../Components/newui/MyButton";
 import { authStorage } from "../../utils/authStorage";
 
-import { useUserService } from "../../hooks/useUserService";
+/* ✅ REDUX */
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState, AppDispatch } from "../../redux/store";
+import {
+  fetchSavedJobs,
+  toggleSavedJobThunk,
+} from "../../redux/thunks/savedJobsThunk";
 
 export default function SavedJobs() {
   const { getAllJobs } = useJobService();
-
-  const { getUser ,updateUser} = useUserService();
+  const dispatch = useDispatch<AppDispatch>();
 
   const [jobs, setJobs] = useState<jobsListType[]>([]);
-  const [savedJobIds, setSavedJobIds] = useState<number[]>([]);
   const [selectedJob, setSelectedJob] = useState<jobsListType | null>(null);
 
   const authUser = authStorage.get() || {};
   const authUserId = authUser?.id;
+
+  /* ================= REDUX SAVED JOBS ================= */
+
+  const savedJobIds = useSelector(
+    (state: RootState) => state.savedJobs.ids
+  );
 
   /* Load all jobs */
   useEffect(() => {
     getAllJobs().then(setJobs);
   }, []);
 
-  /* Load saved jobs from DB */
+  /* Load saved jobs */
   useEffect(() => {
     if (!authUserId) return;
-
-    const loadSavedJobs = async () => {
-      const user = await getUser(authUser?.email);
-      setSavedJobIds(user?.savedJobs || []);
-    };
-
-    loadSavedJobs();
-  }, [authUserId]);
+    dispatch(fetchSavedJobs(authUserId.toString()));
+  }, [authUserId, dispatch]);
 
   /* Filter saved jobs */
   const savedJobList = useMemo(() => {
@@ -62,33 +66,20 @@ export default function SavedJobs() {
     }
   }, [savedJobList]);
 
-  /* Toggle save/unsave */
-  const toggleSave = async (jobId: number) => {
-    let updated;
+  /* Toggle save / unsave */
+  const toggleSave = (jobId: number) => {
+    if (!authUserId) return;
 
-    if (savedJobIds.includes(jobId)) {
-      updated = savedJobIds.filter((id) => id !== jobId);
-    } else {
-      updated = [...savedJobIds, jobId];
-    }
-
-    setSavedJobIds(updated); 
-
-    const user = await getUser(authUser?.email);
-
-    user.savedJobs = updated;
-    await updateUser(authUser?.id, user); 
-
-    // window.dispatchEvent(new Event("savedJobsUpdated"));
-    window.dispatchEvent(
-      new CustomEvent("savedJobsUpdated", {
-        detail: updated.length,
-      }),
+    dispatch(
+      toggleSavedJobThunk({
+        userId: authUserId.toString(),
+        jobId,
+      })
     );
   };
 
   return (
-    <Box height="100vh" px={3} >
+    <Box height="100vh" px={3}>
       {/* EMPTY STATE */}
       {savedJobList.length === 0 && (
         <Box
@@ -166,7 +157,9 @@ export default function SavedJobs() {
                 <Stack direction="row" spacing={1} mb={3}>
                   <MyButton label="Apply now" variant="contained" />
 
-                  <IconButton onClick={() => toggleSave(selectedJob.id!)}>
+                  <IconButton
+                    onClick={() => toggleSave(selectedJob.id!)}
+                  >
                     <BookmarkIcon
                       color={
                         savedJobIds.includes(selectedJob.id!)

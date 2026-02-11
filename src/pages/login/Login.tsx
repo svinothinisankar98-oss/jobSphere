@@ -4,7 +4,7 @@ import { Grid, Box, Paper, Typography } from "@mui/material";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import { useUserService } from "../../hooks/useUserService";
+import { useUserService } from "../../hooks/useuserService";
 import { authStorage } from "../../utils/authStorage";
 
 import MyButton from "../../Components/newui/MyButton";

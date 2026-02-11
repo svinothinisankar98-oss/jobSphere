@@ -20,106 +20,93 @@ import SearchSection from "../home/SearchSection";
 
 import { authStorage } from "../../utils/authStorage";
 
-import { useUserService } from "../../hooks/useUserService";
 import { useErrorBoundary } from "react-error-boundary";
 import ErrorFallback from "../../ErrorFallback";
 import ScrollToTopButton from "../../Components/newui/ScrollToTopButton";
 
-import { handleError } from "../../utils/handleError";
-
+/* ✅ REDUX */
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState, AppDispatch } from "../../redux/store";
+import {
+  fetchSavedJobs,
+  toggleSavedJobThunk,
+} from "../../redux/thunks/savedJobsThunk";
 
 export default function JobList() {
   const { getAllJobs } = useJobService();
   const location = useLocation();
-  const { getUser, updateUser } = useUserService();
+  const { showBoundary } = useErrorBoundary();
 
-  //Jobs & selection//
+  const dispatch = useDispatch<AppDispatch>();
 
-  const [jobs, setJobs] = useState<jobsListType[]>([]);
-  const [selectedJob, setSelectedJob] = useState<jobsListType | null>(null);
-  const [showDetails, setShowDetails] = useState(false);
+  /* ================= AUTH ================= */
 
   const authUser = authStorage.get() || {};
   const authUserId = authUser?.id;
 
-  //  DB SAVED JOB IDS //
-  const [savedJobIds, setSavedJobIds] = useState<number[]>([]);
+  /* ================= REDUX SAVED JOBS ================= */
 
-  //Error handling state//
+  const savedJobIds = useSelector(
+    (state: RootState) => state.savedJobs.ids
+  );
+
+  /* ================= JOB STATE ================= */
+
+  const [jobs, setJobs] = useState<jobsListType[]>([]);
+  const [selectedJob, setSelectedJob] = useState<jobsListType | null>(null);
+  const [showDetails, setShowDetails] = useState(false);
   const [jobError, setJobError] = useState<any>();
 
-  //react-error-boundary//
-
-  const { showBoundary } = useErrorBoundary();
-
-  // Load jobs //
+  /* ================= LOAD JOBS ================= */
 
   const loadJobs = async () => {
     try {
       const getJobs = await getAllJobs();
       setJobs(getJobs);
-    } catch (error: any) {
- 
-}
+    } catch (error) {
+      setJobError(error);
+    }
   };
 
   useEffect(() => {
     loadJobs();
   }, []);
 
-  /* Load saved jobs from DB  for logged user*/
+  /* ================= LOAD SAVED JOBS ================= */
 
-  const loadSavedJobs = async () => {
-    const user = await getUser(authUser?.email);
-    setSavedJobIds(user?.savedJobs || []);
-  };
   useEffect(() => {
     if (!authUserId) return;
+    dispatch(fetchSavedJobs(authUserId.toString()));
+  }, [authUserId, dispatch]);
 
-    loadSavedJobs();
-  }, [authUserId]);
+  /* ================= TOGGLE SAVE ================= */
 
-  //Toggle save/unsave //
-  const toggleSave = async (jobId: number) => {
-    let updated;
+  const toggleSave = (jobId: number) => {
+    if (!authUserId) return;
 
-    if (savedJobIds.includes(jobId)) {
-      updated = savedJobIds.filter((id) => id !== jobId);
-    } else {
-      updated = [...savedJobIds, jobId];           //update ui//
-    }
-
-    setSavedJobIds(updated);
-
-    const user = await getUser(authUser?.email);
-
-    if (!user) return;
-
-    user.savedJobs = updated;                        //update DB//
-    await updateUser(authUser?.id, user);
-    window.dispatchEvent(
-      new CustomEvent("savedJobsUpdated", {
-        //notify for sidebar//
-        detail: updated.length,
-      }),
+    dispatch(
+      toggleSavedJobThunk({
+        userId: authUserId.toString(),
+        jobId,
+      })
     );
   };
 
-  //if the job has already saved by user//
-
   const isSaved = (id: number) => savedJobIds.includes(id);
 
-  /* SEARCH */
+  /* ================= SEARCH ================= */
+
   const [searchInput, setSearchInput] = useState(location.state?.search || "");
   const [selectedInput, setSelectedInput] = useState(
-    location.state?.selected || "",
+    location.state?.selected || ""
   );
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedQuery, setSelectedQuery] = useState("");
   const [searched, setSearched] = useState(false);
 
-  /* FILTERS */
+  /* ================= FILTERS ================= */
+
   const [jobType, setJobType] = useState<string[]>([]);
   const [experience, setExperience] = useState<string[]>([]);
   const [salary, setSalary] = useState<string[]>([]);
@@ -133,7 +120,8 @@ export default function JobList() {
     window.history.replaceState({}, document.title);
   }, []);
 
-  /* FILTERED JOBS */
+  /* ================= FILTERED JOBS ================= */
+
   const filteredJobs = useMemo(() => {
     return jobs.filter((job) => {
       const titleMatch =
@@ -161,7 +149,8 @@ export default function JobList() {
     });
   }, [jobs, searchQuery, selectedQuery, jobType, experience, salary]);
 
-  /* Auto select first job */
+  /* ================= AUTO SELECT ================= */
+
   useEffect(() => {
     if (filteredJobs.length) setSelectedJob(filteredJobs[0]);
     else setSelectedJob(null);
@@ -172,14 +161,7 @@ export default function JobList() {
   return (
     <Box height="100vh" display="flex" flexDirection="column">
       {/* SEARCH */}
-      <Box
-        px={{ xs: 1, md: 4 }}
-        py={2}
-        sx={{
-          backgroundColor: "background.paper",
-    color: "text.primary",
-        }}
-      >
+      <Box px={{ xs: 1, md: 4 }} py={2}>
         <SearchSection
           search={searchInput}
           setSearch={setSearchInput}
@@ -198,38 +180,18 @@ export default function JobList() {
           setSalary={setSalary}
         />
       </Box>
-      
-      {/* CONTENT */}
-      <Box
-        display="flex"
-        flexDirection={{ xs: "column", md: "row" }}
-        gap={2}
-        px={{ xs: 1, md: 2 }}
-        flex={1}
-        overflow="hidden"
-      >
-       
+
+      <Box display="flex" flex={1} overflow="hidden">
         {/* JOB LIST */}
         {(!showDetails || !isMobile) && (
-          <Box
-            width={{ xs: "100%", md: "40%" }}
-            overflow="auto"
-            ml={{ xs: 0, md: 10 }}
-            mt={{ xs: 1, md: 4 }}
-          >
+          <Box width={{ xs: "100%", md: "40%" }} overflow="auto" ml={{ md: 10 }}>
             {searched && filteredJobs.length === 0 && (
-              <Typography
-                p={2}
-                textAlign="center"
-                color="secondary"
-                marginLeft={30}
-              >
+              <Typography p={2} textAlign="center">
                 No jobs found
               </Typography>
             )}
 
-
-            {filteredJobs?.map((job) => (
+            {filteredJobs.map((job) => (
               <Card
                 key={job.id}
                 onClick={() => {
@@ -237,7 +199,7 @@ export default function JobList() {
                   if (isMobile) setShowDetails(true);
                 }}
                 sx={{
-                  p: { xs: 1.5, md: 2 },
+                  p: 2,
                   mb: 2,
                   cursor: "pointer",
                   border:
@@ -250,38 +212,24 @@ export default function JobList() {
                 <Typography color="text.secondary">
                   {job.companyName}
                 </Typography>
-                <Typography variant="body2">{job.location}</Typography>
-                <Typography fontWeight={500}>₹ {job.salary}</Typography>
+                <Typography>{job.location}</Typography>
+                <Typography>₹ {job.salary}</Typography>
               </Card>
             ))}
           </Box>
         )}
 
-         {jobError && (
-        <ErrorFallback
-          error={jobError}
-          resetErrorBoundary={() => setJobError(null)}               //set job error//
-        />
-      )}
+        {jobError && (
+          <ErrorFallback
+            error={jobError}
+            resetErrorBoundary={() => setJobError(null)}
+          />
+        )}
 
         {/* JOB DETAILS */}
         {selectedJob && (showDetails || !isMobile) && (
           <Box width={{ xs: "100%", md: "65%" }} overflow="auto">
-            <Card sx={{ p: { xs: 2, md: 3 } }}>
-              {isMobile && (
-                <Typography
-                  sx={{
-                    mb: 1,
-                    color: "primary.main",
-                    cursor: "pointer",
-                    fontWeight: 500,
-                  }}
-                  onClick={() => setShowDetails(false)}
-                >
-                  ← Back to jobs
-                </Typography>
-              )}
-
+            <Card sx={{ p: 3 }}>
               <Typography variant="h6" fontWeight={600}>
                 {selectedJob.title}
               </Typography>
@@ -290,18 +238,11 @@ export default function JobList() {
                 {selectedJob.companyName} • {selectedJob.location}
               </Typography>
 
-              <Typography fontWeight={600} mt={1}>
-                ₹ {selectedJob.salary}
-              </Typography>
-
               <Stack direction="row" spacing={1} my={2}>
                 <MyButton label="Apply now" variant="contained" />
-                
 
                 <IconButton
-                  onClick={() =>
-                    toggleSave(selectedJob.id!).catch(showBoundary)
-                  }
+                  onClick={() => toggleSave(selectedJob.id!)}
                 >
                   {isSaved(selectedJob.id!) ? (
                     <BookmarkIcon color="primary" />
@@ -325,26 +266,20 @@ export default function JobList() {
               <Typography>
                 <b>Skills:</b> {selectedJob.tags}
               </Typography>
-
-              <Divider sx={{ my: 2 }} />
-
-              <Typography fontWeight={600} mb={2}>
-                Job Description
-              </Typography>
-
-              {selectedJob.description
-                .split("\n")
-                .filter(Boolean)
-                .map((line, i) => (
-                  <Typography key={i} mb={0.5}>
-                    {line}
-                  </Typography>
-                ))}
+               {selectedJob.description
+                  .split("\n")
+                  .filter(Boolean)
+                  .map((line, i) => (
+                    <Typography key={i} mb={1}>
+                      {line}
+                    </Typography>
+                  ))}
             </Card>
           </Box>
         )}
       </Box>
-      <ScrollToTopButton/>
+
+      <ScrollToTopButton />
     </Box>
   );
 }

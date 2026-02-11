@@ -16,6 +16,11 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import LogoutIcon from "@mui/icons-material/Logout";
 import PersonIcon from "@mui/icons-material/Person";
 
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "../redux/store"; 
+import { fetchSavedJobs } from "../redux/thunks/savedJobsThunk";
+import { setSavedJobs } from "../redux/slices/savedJobsSlice"; 
+
 import { authStorage } from "../utils/authStorage";
 import MyButton from "../Components/newui/MyButton";
 import { useThemeContext } from "../context/ThemeContext";
@@ -32,13 +37,13 @@ type AuthUser = {
 
 export default function Header() {
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [openLogin, setOpenLogin] = useState(false);
-  
-  
+  const [openLogin, setOpenLogin] = useState(false);
+
   const { theme, toggleTheme } = useThemeContext();
-  console.log(theme, "theme");
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [registerAnchor, setRegisterAnchor] = useState<null | HTMLElement>(
@@ -61,34 +66,43 @@ export default function Header() {
 
       if (!raw) {
         setUser(null);
+
+        // ✅ Clear saved jobs on logout
+        dispatch(setSavedJobs([]));
         return;
       }
 
-      const user = typeof raw === "string" ? JSON.parse(raw) : raw;
+      const parsed = typeof raw === "string" ? JSON.parse(raw) : raw;
 
       const capitalizeFirst = (text: string) =>
         text ? text.charAt(0).toUpperCase() + text.slice(1) : "";
 
-      const nameFromEmail = capitalizeFirst(user.email?.split("@")[0] || "");
+      const nameFromEmail = capitalizeFirst(
+        parsed.email?.split("@")[0] || "",
+      );
 
       setUser({
-        ...user,
+        ...parsed,
         email: nameFromEmail,
       });
+
+      // ✅ Fetch saved jobs immediately when user changes
+      dispatch(fetchSavedJobs(String(parsed.id)));
     };
 
     loadUser();
 
     window.addEventListener("auth-change", loadUser);
     return () => window.removeEventListener("auth-change", loadUser);
-  }, []);
-
-  // const handleLogin = () => navigate("/login");
+  }, [dispatch]);
 
   const handleLogout = () => {
     authStorage.remove();
-    setUser(null);
 
+    // ✅ Clear redux state
+    dispatch(setSavedJobs([]));
+
+    setUser(null);
     navigate("/");
     setIsMenuOpen(false);
   };
@@ -159,27 +173,25 @@ export default function Header() {
             gap: { xs: 1, md: 2 },
           }}
         >
-          {/*  THEME TOGGLE — ALWAYS VISIBLE */}
           <IconButton onClick={toggleTheme} color="inherit">
             {theme === "light" ? <DarkModeIcon /> : <LightModeIcon />}
           </IconButton>
 
           {!user ? (
             <Stack direction="row" spacing={2}>
-                 <>
-      <MyButton
-        variant="contained"
-        icon={<AccountCircleIcon />}
-        label="Login"
-        onClick={() => setOpenLogin(true)}
-      />
+              <>
+                <MyButton
+                  variant="contained"
+                  icon={<AccountCircleIcon />}
+                  label="Login"
+                  onClick={() => setOpenLogin(true)}
+                />
 
-      <LoginModal
-        open={openLogin}
-        onClose={() => setOpenLogin(false)}
-      />
-    </>
-
+                <LoginModal
+                  open={openLogin}
+                  onClose={() => setOpenLogin(false)}
+                />
+              </>
 
               <MyButton
                 variant="contained"
