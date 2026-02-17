@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, FormProvider, type SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { Box, Card, CardContent, Grid } from "@mui/material";
@@ -17,29 +17,21 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { jobSeekerSchema } from "../../../schemas/jobSeekerSchema";
 import jobseekerDefaultValues from "../jobseeker/defaultvalues/JobSeeker";
 import MyTextField from "../../../Components/newui/MyTextField";
-import { useUserService } from "../../../hooks/useUserService";
+import { useUserService } from "../../../hooks/useuserService";
 
 import { useUI } from "../../../context/UIProvider";
 import { useErrorBoundary } from "react-error-boundary";
 
-// const defaultValues: JobSeeker = {
-//   Name: "",
-//   email: "",
-//   password: "",
-//   confirmPassword: "",
-//   phoneno: "",
-//   location: "",
-//   experience: "",
-//   skills: "",
-//   portfolio: "",
-//   resume: null,
-// };
+
+
 
 const JobSeekerRegister = () => {
    const { showBoundary } = useErrorBoundary();
   const { getUserByEmail, createUser } = useUserService(showBoundary);
   const navigate = useNavigate();
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+
+
   
 
   const jobseeker = useForm({
@@ -50,7 +42,9 @@ const JobSeekerRegister = () => {
     defaultValues: jobseekerDefaultValues,
   });
 
-  const { handleSubmit, reset,setFocus,setError } = jobseeker;
+  const { handleSubmit, reset,setFocus,setError,formState} = jobseeker;
+  const { isDirty } = formState;
+ 
 
   const [locations, setLocations] = useState<Option[]>([]);
 
@@ -68,7 +62,7 @@ const JobSeekerRegister = () => {
     fetchLocations();
   }, []);
 
-  const { showSnackbar } = useUI();
+  const { showSnackbar,openConfirm } = useUI();
 
   // SUBMIT //
   const onSubmit: SubmitHandler<JobSeeker> = async (data) => {
@@ -99,15 +93,29 @@ const JobSeekerRegister = () => {
     showSnackbar("Registration successful!", "success");
 
     reset();
-    navigate("/login");
+    navigate("/");
+    
   } catch (error: any) {
     showSnackbar("Something went wrong", "error");
    
   }
 };
 
+const handleReset = () => {
+  if (!isDirty) return; 
 
-  // ================= UI =================
+  openConfirm({
+    title: "Reset Form",
+    message: "Are you sure you want to reset all entered data?",
+    confirmText: "Yes, Reset",
+    cancelText: "Cancel",
+    confirmColor: "warning",
+    onConfirm: () => reset()
+  });
+};
+
+
+  // ================= UI =================//
   return (
     <Box display="flex" justifyContent="center" minHeight="100vh" px={2}>
       <Box maxWidth={700} width="100%">
@@ -218,8 +226,8 @@ const JobSeekerRegister = () => {
                         type="button"
                         variant="contained"
                         color="info"
-                        // sx={{ minWidth: 160, height: 45, fontWeight: 600 }}
-                        onClick={() => reset()}
+                       
+                         onClick={handleReset}
                       />
                     </Grid>
                     <Grid>
@@ -228,7 +236,7 @@ const JobSeekerRegister = () => {
                         type="submit"
                         variant="contained"
                         color="primary"
-                        // sx={{ minWidth: 160, height: 45, fontWeight: 600 }}
+                       
                       />
                     </Grid>
 
@@ -242,6 +250,8 @@ const JobSeekerRegister = () => {
                         onClick={() => navigate("/")}
                       />
                     </Grid>
+
+                    
                   </Grid>
                 </Grid>
               </Box>

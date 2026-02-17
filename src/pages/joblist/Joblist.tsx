@@ -20,11 +20,11 @@ import SearchSection from "../home/SearchSection";
 
 import { authStorage } from "../../utils/authStorage";
 
-import { useErrorBoundary } from "react-error-boundary";
+
 import ErrorFallback from "../../ErrorFallback";
 import ScrollToTopButton from "../../Components/newui/ScrollToTopButton";
 
-/* ✅ REDUX */
+/*  REDUX */
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../../redux/store";
 import {
@@ -35,7 +35,7 @@ import {
 export default function JobList() {
   const { getAllJobs } = useJobService();
   const location = useLocation();
-  const { showBoundary } = useErrorBoundary();
+
 
   const dispatch = useDispatch<AppDispatch>();
 

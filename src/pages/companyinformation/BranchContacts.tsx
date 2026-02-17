@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, Typography, IconButton } from "@mui/material";
 
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
@@ -13,63 +12,41 @@ import MyTextField from "../../Components/newui/MyTextField";
 import MyButton from "../../Components/newui/MyButton";
 import MyTable from "../../Components/newui/MyTable";
 
-
-
-
 import { COMPANY_INFORMATION_LIMITS } from "../../constants/CompanyInformationConstant";
 
-//  Branch Contacts//
-
 export default function BranchContacts({ nestIndex, control, watch }: any) {
-
   const name = `branches.${nestIndex}.branchContact`;
 
   const { fields, append, remove } = useFieldArray({ control, name });
 
   const watched = watch(name);
 
-  // const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
 
-  const [editingId, setEditingId] = useState<string | null>(null);
-
-  
-
-  const [newRowId, setNewRowId] = useState<string | null>(
-    fields[0]?.id || null,
-  );
-
-  //Auto edit newly added row//
-
-// useEffect(() => {
-//     if (fields.length && !editingId) {
-//       setEditingId(fields[fields.length - 1].id);
-//     }
-//   }, [fields]);
+  // open first row automatically
+  useEffect(() => {
+    if (fields.length && editingIndex === null) {
+      setEditingIndex(fields.length - 1);
+    }
+  }, [fields]);
 
   const isRowFilled = (row: any) =>
-    row?.name?.trim() && row?.phone?.trim() && row?.email?.trim();
+    row?.name?.trim() &&
+    row?.phone?.trim() &&
+    row?.email?.trim();
 
-  const isLastFilled = () => {
-    if (!watched?.length) 
-        return true;
-    if (watched.length >= COMPANY_INFORMATION_LIMITS.MAX_BRANCH_CONTACTS) 
-        
-        return false;
-    return isRowFilled(watched[watched.length - 1]);
+  // block add until last row saved
+  const canAddNew = () => {
+    if (!watched?.length) return true;
+
+    if (watched.length >= COMPANY_INFORMATION_LIMITS.MAX_BRANCH_CONTACTS)
+      return false;
+
+    const last = watched[watched.length - 1];
+    return isRowFilled(last) && editingIndex === null;
   };
 
-  //row is editmode//
-
-  const isEditingRow = (id: string, index: number) => {
-    const row = watched?.[index];
-    const isEmptyRow =
-      !row?.name?.trim() || !row?.phone?.trim() || !row?.email?.trim();
-
-    return editingId === id || isEmptyRow;
-  };
-
-  //append new row//
-
+  // ADD ROW
   const handleAdd = () => {
     append({
       name: "",
@@ -78,24 +55,19 @@ export default function BranchContacts({ nestIndex, control, watch }: any) {
       designation: "",
     });
 
-   setTimeout(() => {
-    setEditingId(fields[fields.length]?.id);
-  });
+    setEditingIndex(fields.length);
   };
 
-  //save row//
-
+  // SAVE ROW
   const handleSave = () => {
-    setEditingId(null);
-    setNewRowId(null);
+    setEditingIndex(null);
   };
 
-  //handle delete//
-
+  // DELETE ROW
   const handleDelete = (index: number) => {
+    if (fields.length === 1) return;
     remove(index);
-    setEditingId(null);
-    setNewRowId(null);
+    setEditingIndex(null);
   };
 
   const columns = [
@@ -108,7 +80,7 @@ export default function BranchContacts({ nestIndex, control, watch }: any) {
       id: "name",
       label: "Contact Name",
       render: (_: any, i: number) =>
-        isEditingRow(fields[i].id, i) ? (
+        editingIndex === i ? (
           <MyTextField
             name={`${name}.${i}.name`}
             label="Name"
@@ -117,16 +89,14 @@ export default function BranchContacts({ nestIndex, control, watch }: any) {
             hideErrorText
           />
         ) : (
-          <Typography sx={{ textAlign: "left" }}>
-            {watched?.[i]?.name}
-          </Typography>
+          <Typography>{watched?.[i]?.name}</Typography>
         ),
     },
     {
       id: "phone",
       label: "Phone",
       render: (_: any, i: number) =>
-        isEditingRow(fields[i].id, i) ? (
+        editingIndex === i ? (
           <MyTextField
             name={`${name}.${i}.phone`}
             label="Phone"
@@ -142,7 +112,7 @@ export default function BranchContacts({ nestIndex, control, watch }: any) {
       id: "email",
       label: "Email",
       render: (_: any, i: number) =>
-        isEditingRow(fields[i].id, i) ? (
+        editingIndex === i ? (
           <MyTextField
             name={`${name}.${i}.email`}
             label="Email"
@@ -158,27 +128,24 @@ export default function BranchContacts({ nestIndex, control, watch }: any) {
       id: "designation",
       label: "Designation",
       render: (_: any, i: number) =>
-        isEditingRow(fields[i].id, i) ? (
+        editingIndex === i ? (
           <MyTextField
             name={`${name}.${i}.designation`}
             label="Designation"
             fullWidth
           />
         ) : (
-          <Typography> {watched?.[i]?.designation?.trim() || "-"}</Typography>
+          <Typography>{watched?.[i]?.designation || "-"}</Typography>
         ),
     },
     {
       id: "actions",
       label: "Actions",
+      sortable: false,
       render: (_: any, i: number) => {
-        const isNew = newRowId === fields[i].id;
-        const isAnyEmpty =
-          !watched?.[i]?.name?.trim() ||
-          !watched?.[i]?.email?.trim() ||
-          !watched?.[i]?.phone?.trim();
-
-        const isEditing = editingId === fields[i].id || isAnyEmpty;
+        const row = watched?.[i];
+        const filled = isRowFilled(row);
+        const isEditing = editingIndex === i;
 
         return (
           <Box display="flex" justifyContent="center" gap={1}>
@@ -186,7 +153,7 @@ export default function BranchContacts({ nestIndex, control, watch }: any) {
               <IconButton
                 size="small"
                 color="success"
-                disabled={!isRowFilled(watched?.[i])}
+                disabled={!filled}
                 onClick={handleSave}
               >
                 <CheckCircleIcon fontSize="small" />
@@ -197,21 +164,20 @@ export default function BranchContacts({ nestIndex, control, watch }: any) {
               <IconButton
                 size="small"
                 color="primary"
-                onClick={() => setEditingId(fields[i].id)}
+                onClick={() => setEditingIndex(i)}
               >
                 <EditIcon fontSize="small" />
               </IconButton>
             )}
 
-            {!isEditing || !isNew ? (
-              <IconButton
-                size="small"
-                color="error"
-                onClick={() => handleDelete(i)}
-              >
-                <DeleteIcon fontSize="small" />
-              </IconButton>
-            ) : null}
+            <IconButton
+              size="small"
+              color="error"
+              disabled={fields.length === 1}
+              onClick={() => handleDelete(i)}
+            >
+              <DeleteIcon fontSize="small" />
+            </IconButton>
           </Box>
         );
       },
@@ -227,7 +193,7 @@ export default function BranchContacts({ nestIndex, control, watch }: any) {
           icon={<PersonAddAlt1Icon />}
           variant="contained"
           color="primary"
-          disabled={!isLastFilled()}
+          disabled={!canAddNew()}
           onClick={handleAdd}
         />
       </Box>

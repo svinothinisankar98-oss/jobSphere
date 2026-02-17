@@ -9,8 +9,10 @@ import { ThemeProvider } from "./context/ThemeContext";
 
 // import { theme }from "./config/theme";
 import {  UIProvider } from "./context/UIProvider";
+import React from "react";
 
 createRoot(document.getElementById("root")!).render(
+   <React.StrictMode>
   <ThemeProvider>
     <BrowserRouter>
       <UIProvider>
@@ -18,4 +20,5 @@ createRoot(document.getElementById("root")!).render(
       </UIProvider>
     </BrowserRouter>
    </ThemeProvider>
+   </React.StrictMode>
 );

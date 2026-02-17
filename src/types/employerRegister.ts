@@ -1,13 +1,16 @@
 export type employerRegisterType = {
-  id?:number;
+  id?: number;
+
   companyName: string;
   email: string;
   phone: string;
   website: string;
   industry: string;
   companySize: string;
-  foundedYear?:number;
-  serialNo?:number;
+
+  foundedYear?: number;
+
+  serialNo?: number;
 
   address1: string;
   address2?: string;
@@ -23,12 +26,12 @@ export type employerRegisterType = {
 
   password: string;
   confirmPassword: string;
-  remoteopportunity:string;
-  employmentType:string [];
-  userType: number;
-  createdAt?: Date;
-updatedAt?: Date|null;
-// deletedAt?: Date|null;
-isActive?:boolean;
+  remoteopportunity: string;
+  employmentType: string[];
 
+  userType: number;
+
+  createdAt?: Date;
+  updatedAt?: Date | null;
+  isActive?: boolean;
 };

@@ -19,7 +19,7 @@ type CreateUserPayload = employerRegisterType | JobSeeker;
 
 export const userService = {
   // GET ALL USERS
-  getUsers: async (data: { keyword: string }): Promise<User[]> => {
+  getUsers: async (): Promise<User[]> => {
     const response = await apiService.get<User[]>("users");
     return response;
   },

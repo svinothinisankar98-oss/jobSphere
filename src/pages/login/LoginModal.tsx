@@ -2,34 +2,42 @@ import {
   Dialog,
   DialogContent,
   IconButton,
-  Typography,
+  type DialogProps,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import Login from "./Login";
 
-export default function LoginModal({ open, onClose }: any) {
+type LoginModalProps = {
+  open: boolean;
+  onClose: () => void;
+};
+
+export default function LoginModal({ open, onClose }: LoginModalProps) {
+  const handleClose: DialogProps["onClose"] = (_, reason) => {
+    if (reason === "backdropClick") return;
+    onClose();
+  };
+
   return (
     <Dialog
-  open={open}
-  onClose={(event, reason) => {
-    if (reason === "backdropClick") {
-      return; 
-    }
-    onClose(); 
-  }}
-  maxWidth="sm"
-  BackdropProps={{
-    sx: {
-      backgroundColor: "rgba(0,0,0,0.6)",
-    },
-  }}
-  PaperProps={{
-    sx: {
-      borderRadius: 4,
-      p: 2,
-    },
-  }}
->
+      open={open}
+      onClose={handleClose}
+      maxWidth="sm"
+      fullWidth
+      keepMounted
+      disableScrollLock
+      BackdropProps={{
+        sx: {
+          backgroundColor: "rgba(0,0,0,0.6)",
+        },
+      }}
+      PaperProps={{
+        sx: {
+          borderRadius: 4,
+          p: 2,
+        },
+      }}
+    >
       <DialogContent>
         <IconButton
           onClick={onClose}
@@ -38,16 +46,7 @@ export default function LoginModal({ open, onClose }: any) {
           <CloseIcon />
         </IconButton>
 
-        <Typography
-          variant="h5"
-          fontWeight={600}
-          textAlign="center"
-          mb={3}
-        >
-          Login
-        </Typography>
-
-        <Login />
+        <Login onClose={onClose} />
       </DialogContent>
     </Dialog>
   );

@@ -28,6 +28,7 @@ import IconButton from "@mui/material/IconButton";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import LoginModal from "../pages/login/LoginModal";
+import { useUI } from "../context/UIProvider";
 
 type AuthUser = {
   id: number;
@@ -42,6 +43,7 @@ export default function Header() {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openLogin, setOpenLogin] = useState(false);
+  const { showSnackbar } = useUI();
 
   const { theme, toggleTheme } = useThemeContext();
 
@@ -67,7 +69,7 @@ export default function Header() {
       if (!raw) {
         setUser(null);
 
-        // ✅ Clear saved jobs on logout
+        //  Clear saved jobs on logout
         dispatch(setSavedJobs([]));
         return;
       }
@@ -86,7 +88,7 @@ export default function Header() {
         email: nameFromEmail,
       });
 
-      // ✅ Fetch saved jobs immediately when user changes
+      //  Fetch saved jobs immediately when user changes
       dispatch(fetchSavedJobs(String(parsed.id)));
     };
 
@@ -99,12 +101,16 @@ export default function Header() {
   const handleLogout = () => {
     authStorage.remove();
 
-    // ✅ Clear redux state
+    console.log('call or not')
+    // Clear redux state
     dispatch(setSavedJobs([]));
 
+    setOpenLogin(false);
     setUser(null);
-    navigate("/");
     setIsMenuOpen(false);
+    
+    navigate("/");
+    showSnackbar("Loggout Sucessfully",'success')
   };
 
   return (

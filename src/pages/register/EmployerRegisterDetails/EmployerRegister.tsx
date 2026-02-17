@@ -21,7 +21,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
 
-import { useUserService } from "../../../hooks/useUserService";
+import { useUserService } from "../../../hooks/useuserService";
 
 import { useUI } from "../../../context/UIProvider";
 
@@ -45,11 +45,13 @@ const stepFields: (keyof employerRegisterType)[][] = [
   ],
 ];
 
+
+
 //Form Setup//
 
 const EmployerRegister = () => {
   const navigate = useNavigate();
-  const { showSnackbar } = useUI();
+  const { showSnackbar,openConfirm } = useUI();
 
   //Detect Edit Mode//
 
@@ -82,7 +84,7 @@ const EmployerRegister = () => {
     reset,
     setError,setFocus,
 
-    formState: { isValid },
+    formState: { isValid,isDirty },
   } = form;
 
   //Load Data in Edit Mode//
@@ -113,6 +115,31 @@ const EmployerRegister = () => {
       showSnackbar(error.message,"error"); 
     }
   };
+
+  const handleReset = () => {
+  // No changes → reset silently
+  if (!isDirty) {
+    reset(employerDefaultValues);
+    handleResetState();
+    return;
+  }
+
+  // Has changes → ask confirmation
+  openConfirm({
+    title: "Reset Form",
+    message: "Are you sure you want to reset all entered data?",
+    confirmText: "Yes, Reset",
+    cancelText: "Cancel",
+    confirmColor: "warning",
+
+    onConfirm: () => {
+      reset(employerDefaultValues);
+      handleResetState();
+      showSnackbar("Form has been reset", "success");
+    },
+  });
+};
+
 
   //onsubmit//
 
@@ -148,7 +175,7 @@ const EmployerRegister = () => {
 
         reset();
 
-        navigate("/login");
+        navigate("/");
       }
 
       //edit flow//
@@ -238,11 +265,7 @@ const EmployerRegister = () => {
                     //   height: 45,
                     //   fontWeight: 600,
                     // }}
-                    onClick={() => {
-                      form.reset(employerDefaultValues);
-                      form.clearErrors();
-                      handleResetState();
-                    }}
+                     onClick={handleReset}
                   />
 
                   <MyButton
@@ -268,7 +291,7 @@ const EmployerRegister = () => {
                     //   height: 45,
                     //   fontWeight: 600,
                     // }}
-                     onClick={() => navigate("/login")}
+                     onClick={() => navigate("/")}
                   />
                 </Grid>
               </form>

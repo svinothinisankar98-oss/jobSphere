@@ -29,7 +29,6 @@ const educationOptions = [
   { id: "masters", item: "Master's Degree" },
   { id: "phd", item: "PhD" },
   { id: "others", item: "others" },
-  
 ];
 
 export default function JobAdd() {
@@ -39,7 +38,7 @@ export default function JobAdd() {
     mode: "onChange",
   });
 
-  const { handleSubmit, reset,watch } = methods;
+  const { handleSubmit, reset, watch } = methods;
 
   const educationSelected = watch("educationQualification");
 
@@ -131,29 +130,27 @@ export default function JobAdd() {
               />
             </Grid>
 
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <MyMultiSelect
+                name="educationQualification"
+                label="Education Qualification"
+                options={educationOptions}
+                required
+                size="small"
+              />
 
-          <Grid size={{ xs: 12, sm: 6 }}>
-  <MyMultiSelect
-    name="educationQualification"
-    label="Education Qualification"
-    options={educationOptions}
-    required
-    size="small"
-  />
-
-  {/* 👇 SHOW WHEN OTHERS SELECTED */}
-  {educationSelected?.includes("others") && (
-    <Box mt={2}>
-      <MyTextField
-        name="otherEducation"
-        label="Other Qualification"
-        placeholder="Enter qualification"
-        required
-      />
-    </Box>
-  )}
-</Grid>
-
+              {/*  SHOW WHEN OTHERS SELECTED */}
+              {educationSelected?.includes("others") && (
+                <Box mt={2}>
+                  <MyTextField
+                    name="otherEducation"
+                    label="Other Qualification"
+                    placeholder="Enter qualification"
+                    required
+                  />
+                </Box>
+              )}
+            </Grid>
 
             <Grid size={{ xs: 12, sm: 6 }}>
               <MyTextField name="experience" label="Experience" required />
@@ -215,7 +212,7 @@ export default function JobAdd() {
                 type="button"
                 color="error"
                 variant="contained"
-                onClick={() => navigate("/login")}
+                onClick={() => navigate("/")}
               />
             </Grid>
           </Grid>

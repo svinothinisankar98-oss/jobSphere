@@ -26,18 +26,23 @@ import { CompanyInformationdefault } from "./defaultvalues/CompanyInformationdef
 import { companyInformationSchema } from "../../schemas/companyInformationSchema";
 import { yupResolver } from "@hookform/resolvers/yup";
 import React from "react";
+import { useWatch } from "react-hook-form";
 
 import MyAccordion from "../../Components/newui/MyAccordion";
 
 //  use Hook for companyinformation handlers//
 import { useCompanyInfoHandlers } from "../../hooks/companyinformation/useCompanyInfoHandlers";
 import { COMPANY_INFORMATION_LIMITS } from "../../constants/CompanyInformationConstant";
+import { useUI } from "../../context/UIProvider";
 
 
 
 //component//
 
 export default function CompanyInformation() {
+
+
+  
   const methods = useForm<CompanyInformationType>({
     defaultValues: CompanyInformationdefault,
     resolver: yupResolver(companyInformationSchema),
@@ -45,13 +50,37 @@ export default function CompanyInformation() {
   });
 
   // helpers
-  const { control, watch, setFocus, reset } = methods;
-  
+ const {
+  control,
+  watch,
+  setFocus,
+  reset,
+  formState: { errors, isSubmitted, isDirty }
+} = methods;
 
- //is edit and onsubmit for handlers//
+  //is edit and onsubmit for handlers//
   const { isEdit, onSubmit } = useCompanyInfoHandlers(reset);
 
-  
+  //contacts persons watch //
+
+  const contacts = useWatch({
+    control,
+    name: "contact",
+  });
+
+  console.log("contacts", contacts);
+
+  //if delte button is enabled for all fields filled default diasabled//
+
+  const isRowFilled = (row?: any) => {
+    if (!row) return false;
+
+    return (
+      row?.name?.trim() !== "" &&
+      row?.phone?.trim() !== "" &&
+      row?.email?.trim() !== ""
+    );
+  };
 
   //  Prevent adding empty rows  //
 
@@ -61,7 +90,7 @@ export default function CompanyInformation() {
     if (!watchedContacts || watchedContacts.length === 0) return true;
 
     if (
-      watchedContacts.length >= COMPANY_INFORMATION_LIMITS.MAX_COMPANY_CONTACTS    //constants default set//
+      watchedContacts.length >= COMPANY_INFORMATION_LIMITS.MAX_COMPANY_CONTACTS //constants default set//
     ) {
       return false;
     }
@@ -72,7 +101,7 @@ export default function CompanyInformation() {
       last?.name?.trim() && last?.phone?.trim() && last?.email?.trim(),
     );
   };
-  
+
   //watch branches//
 
   const watchedBranches = watch("branches");
@@ -122,12 +151,72 @@ export default function CompanyInformation() {
   const [companyExpanded, setCompanyExpanded] = React.useState(true);
   const [branchesExpanded, setBranchesExpanded] = React.useState(true);
 
+  // AUTO OPEN ACCORDION WHEN VALIDATION FAILS
+React.useEffect(() => {
+  if (!isSubmitted) return;
+
+  // Company section errors
+  if (
+    errors.companyName ||
+    errors.companyEmail ||
+    errors.contact
+  ) {
+    setCompanyExpanded(true);
+  }
+
+  // Branch section errors (including nested contacts)
+  if (errors.branches) {
+    setBranchesExpanded(true);
+  }
+}, [errors, isSubmitted]);
+
+// SCROLL TO FIRST INVALID FIELD
+React.useEffect(() => {
+  if (!isSubmitted) return;
+
+  const firstErrorElement = document.querySelector(
+    '[aria-invalid="true"]'
+  ) as HTMLElement | null;
+
+  if (firstErrorElement) {
+    firstErrorElement.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
+
+    setTimeout(() => firstErrorElement.focus(), 300);
+  }
+}, [errors, isSubmitted]);
+
+
+
   //golobal expand all//
 
   const handleGlobalToggle = () => {
     const next = !(companyExpanded && branchesExpanded);
     setCompanyExpanded(next);
     setBranchesExpanded(next);
+  };
+
+
+
+  const { openConfirm, showSnackbar } = useUI();
+
+  const handleReset = () => {
+    // no changes → do nothing
+    if (!isDirty) return;
+
+    openConfirm({
+      title: "Reset Form",
+      message: "Are you sure you want to reset all entered data?",
+      confirmText: "Yes, Reset",
+      cancelText: "Cancel",
+      confirmColor: "warning",
+      onConfirm: () => {
+        reset();
+        showSnackbar("Form reset successfully", "success");
+      },
+    });
   };
 
   // Render//
@@ -233,6 +322,7 @@ export default function CompanyInformation() {
                     <IconButton
                       size="small"
                       color="error"
+                      disabled={!isRowFilled(contacts?.[index])}
                       onClick={() => removeContactPerson(index)}
                     >
                       <DeleteIcon fontSize="medium" />
@@ -371,8 +461,8 @@ export default function CompanyInformation() {
                 <BranchContacts
                   nestIndex={branchIndex}
                   control={control}
-                  watch={watch}            
-                  />
+                  watch={watch}
+                />
               </Box>
             ))}
           </MyAccordion>
@@ -386,11 +476,11 @@ export default function CompanyInformation() {
               label={isEdit ? "UPDATE" : "SUBMIT"}
             />
             <MyButton
-              type="reset"
+              type="button"
               variant="contained"
               label="RESET"
               color="error"
-              onClick={() => reset()}
+              onClick={handleReset}
             />
           </Stack>
         </Container>
@@ -398,5 +488,3 @@ export default function CompanyInformation() {
     </FormProvider>
   );
 }
-
-

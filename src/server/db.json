@@ -1638,46 +1638,6 @@
       "companyEmail": "noble@noble.com",
       "companyName": "noble Private Limited",
       "createdAt": "2026-01-29T13:42:27.544Z"
-    },
-    {
-      "branches": [
-        {
-          "id": 0,
-          "branchName": "Sugam Private Limited",
-          "branchEmail": "sugam@sugamprivate.com",
-          "branchContact": [
-            {
-              "name": "kdldl",
-              "phone": "6512345789",
-              "email": "vino@gmail.com",
-              "designation": "HR Admin"
-            },
-            {
-              "name": "kalai",
-              "phone": "8945612548",
-              "email": "kalai@gmail.com",
-              "designation": "HR"
-            }
-          ]
-        }
-      ],
-      "contact": [
-        {
-          "name": "vino",
-          "phone": "7894561235",
-          "email": "karthi@gmail.com",
-          "profileImage": null
-        },
-        {
-          "email": "vino@gmail.com",
-          "phone": "7561254788",
-          "name": "Rani"
-        }
-      ],
-      "companyEmail": "sugam@sugam.com",
-      "companyName": "Sugam infotech",
-      "id": "3192",
-      "createdAt": "2026-02-17T10:09:17.558Z"
     }
   ]
 }

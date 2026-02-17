@@ -41,7 +41,6 @@ function CompanyDetails() {
 
       {/* Row 3 */}
       <Grid size={{ xs: 12, md: 6 }}>
-        {/* <MyTextField name="foundedYear" label="Founded Year" /> */}
         <MyYearPicker name="foundedYear" label="Founded Year" pickerType="year" />
       </Grid>
 

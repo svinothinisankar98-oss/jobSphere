@@ -26,6 +26,10 @@ import { CompanyInfoRowList } from "../../pages/companyinformation/CompanyInfoRo
 import { useCompanyInfoListHandlers } from "../../hooks/companyinformation/useCompanyInfoListHandlers";
 import {  useUI } from "../../context/UIProvider";
 
+
+
+
+
 export default function CompanyInfoList() {
   const navigate = useNavigate();
   const {  openCustom  } = useUI();
@@ -127,6 +131,7 @@ export default function CompanyInfoList() {
                     
                   
                 />
+                
               ))}
           </TableBody>
         </Table>

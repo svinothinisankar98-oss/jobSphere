@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Grid, Box, Paper, Typography } from "@mui/material";
+import {  Box, Paper, Typography } from "@mui/material";
 
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -13,29 +13,49 @@ import { loginSchema } from "../../schemas/loginSchemas";
 import MyTextField from "../../Components/newui/MyTextField";
 
 import { useUI } from "../../context/UIProvider";
+import type { LoginForm, LoginProps } from "../../types/loginType"
+import { useEffect } from "react";
 
 const { getUserByEmail, getEmployerByEmail } = useUserService();
 
-type LoginForm = {
-  email: string;
-  password: string;
-};
-
-const Login = () => {
+export default function Login({ onClose }: LoginProps) {
   const navigate = useNavigate();
+
+   
   const { showSnackbar } = useUI();
+
+  const goToRegister = () => {
+  // navigate first
+  navigate("/job-seeker-register");
+
+  // close modal AFTER route starts
+  requestAnimationFrame(() => {
+    onClose?.();
+  });
+};
 
   //React Hook Form, Yup//
 
   const methods = useForm<LoginForm>({
     resolver: yupResolver(loginSchema),
     mode: "onChange",
+    defaultValues: {
+    email: "",
+    password: "",
+  },
   });
 
   const {
-    handleSubmit,
+    handleSubmit, reset,
     formState: {},
   } = methods;
+
+  useEffect(() => {
+  reset({
+    email: "",
+    password: "",
+  });
+}, [reset]);
 
   const onSubmit = async (form: LoginForm) => {
     try {
@@ -77,7 +97,8 @@ const Login = () => {
           userType: userType,
         });
         showSnackbar("Login successful", "success");
-        navigate("/");
+       onClose?.();
+navigate("/");
       }
     } catch {
       showSnackbar("Something went wrong. Try again.", "error");
@@ -92,7 +113,7 @@ const Login = () => {
         elevation={0}
         sx={{
           width: "100%",
-          maxWidth: 460,
+          
           p: { xs: 3, sm: 4 },
           borderRadius: 4,
 
@@ -177,7 +198,7 @@ const Login = () => {
                 mt: 0.5,
                 "&:hover": { textDecoration: "underline" },
               }}
-              onClick={() => navigate("/job-seeker-register")}
+               onClick={goToRegister}
             >
               REGISTER HERE
             </Typography>
@@ -188,4 +209,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+

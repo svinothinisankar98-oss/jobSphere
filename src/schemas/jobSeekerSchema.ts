@@ -8,22 +8,32 @@ import {
   SelectMessage,
   
 } from "../constants/ValidationMessages";
-import { REGEX } from "../constants/Validationregex"
+import { REGEX } from "../constants/ValidationRegex"
 
 
 
 export const jobSeekerSchema = yup.object({
-  Name: yup.string().required(RequiredMessage("Name")),
+ Name: yup
+  .string()
+  .trim()
+  .required(RequiredMessage("Name"))
+  .min(3, "Name must be at least 3 characters")
+  .max(50, "Name must be at most 50 characters")
+  .matches(/^[A-Za-z ]+$/, "Name can contain only letters"),
+
 
   email: yup
-    .string()
-    .email(InvalidEmailMessage)
-    .required(RequiredMessage("Email")),
+  .string()
+  .trim()
+  .required(RequiredMessage("Email"))
+  .matches(REGEX.email, InvalidEmailMessage),
+
 
   password: yup
     .string()
-    .min(6, "Minimum 6 characters")
-    .required(RequiredMessage("Password")),
+    
+    .required(RequiredMessage("Password"))
+     .matches(REGEX.strongpassword, "Password must contain uppercase, lowercase, number, special character and be 6+ characters"),
 
   confirmPassword: yup
     .string()

@@ -17,8 +17,9 @@ export const companyInformationSchema = yup.object({
 
   companyEmail: yup
     .string()
-    .email(InvalidEmailMessage)
+   
     .required(RequiredMessage("Company Email"))
+    .matches(REGEX.email, InvalidEmailMessage)
     .test(
       "is-company-email",
       "Enter your Company Email (not Gmail, Yahoo, Outlook, etc.)",
@@ -73,13 +74,14 @@ export const companyInformationSchema = yup.object({
       yup.object({
         branchName: yup
           .string()
+            .trim()
           .required(RequiredMessage("Branch Name"))
-          .min(2, "Branch name must be at least 3 characters")
+          .min(2, "Branch name must be at least 2 characters")
           .max(50, "Branch name must not exceed 50 characters"),
 
         branchEmail: yup
           .string()
-          .email(InvalidEmailMessage)
+           .matches(REGEX.email, InvalidEmailMessage)
           .required(RequiredMessage("Branch Email"))
           .test(
             "is-company-email",
@@ -107,7 +109,7 @@ export const companyInformationSchema = yup.object({
               name: yup
                 .string()
                 .required(RequiredMessage("Contact Name"))
-                .min(2, "Name must be at least 3 characters")
+                .min(2, "Name must be at least 2 characters")
                 .max(50, "Name must not exceed 50 characters")
                 .matches(REGEX.name, "Only letters allowed"),
 
@@ -117,7 +119,7 @@ export const companyInformationSchema = yup.object({
                 .matches(REGEX.phone, InvalidPhoneMessage),
               email: yup
                 .string()
-                .email(InvalidEmailMessage)
+               .matches(REGEX.email, InvalidEmailMessage)
                 .required(RequiredMessage("Contact Email")),
 
               Designation: yup.string(),

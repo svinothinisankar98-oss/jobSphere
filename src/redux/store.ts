@@ -7,8 +7,8 @@ export const store = configureStore({
   },
 });
 
-/* ✅ RootState */
+
 export type RootState = ReturnType<typeof store.getState>;
 
-/* ✅ ADD THIS */
+
 export type AppDispatch = typeof store.dispatch;

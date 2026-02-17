@@ -41,13 +41,13 @@ const PopularJobs = () => {
                 fontSize: "0.95rem",
                 borderRadius: "14px",
                 fontWeight: 500,
-                backgroundColor: "#fff",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                // backgroundColor: "#fff",
+                boxShadow: "0 4px 12px rgba(227, 217, 217, 0.08)",
                 transition: "all 0.25s ease",
                 "&:hover": {
                   transform: "translateY(-4px)",
                   boxShadow: "0 8px 20px rgba(0,0,0,0.15)",
-                  backgroundColor: "#f5f9ff",
+                  // backgroundColor: "#f5f9ff",
                 },
                 "& .MuiChip-icon": {
                   color: "#1976d2",
