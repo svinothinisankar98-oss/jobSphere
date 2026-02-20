@@ -14,7 +14,7 @@ type ButtonProps = {
   className?: string;
 
   maxWidth?: number;
-  fullWidth?: boolean; // ✅ FIXED casing
+  fullWidth?: boolean; 
 
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   icon?: string | React.ReactNode;

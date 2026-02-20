@@ -1,4 +1,12 @@
-import { Box, Paper, Typography, Grid, Stack, Divider, IconButton } from "@mui/material";
+import {
+  Box,
+  Paper,
+  Typography,
+  Grid,
+  Stack,
+  Divider,
+  IconButton,
+} from "@mui/material";
 import ContactsIcon from "@mui/icons-material/Contacts";
 import BusinessIcon from "@mui/icons-material/Business";
 import DownloadIcon from "@mui/icons-material/Download";
@@ -6,15 +14,16 @@ import DownloadIcon from "@mui/icons-material/Download";
 import MyTable from "../../Components/newui/MyTable";
 import type { CompanyInformationType } from "../../types/companyInformation";
 
-
 import { previewToPdf } from "../../utils/previewToPdf";
+
+//Date Generator//
 
 const getGeneratedDateTime = () => {
   const now = new Date();
   const pad = (n: number) => n.toString().padStart(2, "0");
 
   return `${pad(now.getDate())}-${pad(now.getMonth() + 1)}-${now.getFullYear()} ${pad(
-    now.getHours()
+    now.getHours(),
   )}:${pad(now.getMinutes())}`;
 };
 
@@ -23,35 +32,36 @@ export default function PreviewCompanyInfoList({
 }: {
   row: CompanyInformationType;
 }) {
-
-
-
- const handleDownloadPdf = async () => {
-  await previewToPdf("company-preview", {
-    fileName: row.companyName,
-    orientation: "p",
-    scale: 2,
-    showPageNumber: true,
-  });
-};
-
-  /* ===================== UI ===================== */
+  const handleDownloadPdf = async () => {
+    await previewToPdf("company-preview", {
+      fileName: row.companyName,
+      orientation: "p",
+      scale: 2,
+      showPageNumber: true,
+    });
+  };
 
   return (
     <Box sx={{ maxWidth: 900, mx: "auto", p: { xs: 1, sm: 2 } }}>
-
-      {/* DOWNLOAD ICON */}
+      {/* download Icon */}
       <Box display="flex" justifyContent="flex-end" mb={1}>
         <IconButton color="secondary" size="medium" onClick={handleDownloadPdf}>
           <DownloadIcon />
         </IconButton>
       </Box>
 
-      {/* PDF CAPTURE AREA */}
       <Box id="company-preview">
-
-        {/* REPORT HEADER */}
-        <Paper elevation={0} sx={{ p: 2, mb: 3, borderRadius: 2, border: "1px solid #e0e0e0", backgroundColor: "#fafafa" }}>
+        {/*  Header */}
+        <Paper
+          elevation={0}
+          sx={{
+            p: 2,
+            mb: 3,
+            borderRadius: 2,
+            border: "1px solid #e0e0e0",
+            backgroundColor: "#fafafa",
+          }}
+        >
           <Grid container alignItems="center">
             <Grid size={{ xs: 12, sm: 6 }}>
               <Typography fontSize={18} fontWeight={600}>
@@ -73,7 +83,7 @@ export default function PreviewCompanyInfoList({
           </Grid>
         </Paper>
 
-        {/* COMPANY INFO */}
+        {/* Company Info */}
         <Paper sx={{ p: 3, mb: 3, borderRadius: 2 }}>
           <Grid container spacing={2}>
             <Grid size={{ xs: 12, md: 6 }}>
@@ -88,7 +98,7 @@ export default function PreviewCompanyInfoList({
           </Grid>
         </Paper>
 
-        {/* COMPANY CONTACTS */}
+        {/* Company Contacts */}
         <Paper sx={{ p: 3, mb: 3, borderRadius: 2 }}>
           <Stack direction="row" spacing={1} alignItems="center" mb={2}>
             <ContactsIcon color="primary" />
@@ -109,7 +119,7 @@ export default function PreviewCompanyInfoList({
           />
         </Paper>
 
-        {/* BRANCHES */}
+        {/* Branches */}
         <Paper sx={{ p: 3, borderRadius: 2 }}>
           <Stack direction="row" spacing={1} alignItems="center" mb={3}>
             <BusinessIcon color="primary" />
@@ -120,10 +130,29 @@ export default function PreviewCompanyInfoList({
 
           <Stack spacing={3}>
             {row.branches.map((b, index) => (
-              <Box key={index} sx={{ border: "1px solid #eee", borderRadius: 2, p: 2 }}>
-                <Stack direction={{ xs: "column", sm: "row" }} spacing={5} mb={2} justifyContent="space-between">
+              <Box
+                key={index}
+                sx={{ border: "1px solid #eee", borderRadius: 2, p: 2 }}
+              >
+                <Stack
+                  direction={{ xs: "column", sm: "row" }}
+                  spacing={5}
+                  mb={2}
+                  justifyContent="space-between"
+                >
                   <Typography>
-                    <Box component="span" sx={{ bgcolor: "primary.main", color: "#fff", px: 1, py: 0.3, borderRadius: 1, mr: 1, fontSize: "0.75rem" }}>
+                    <Box
+                      component="span"
+                      sx={{
+                        bgcolor: "primary.main",
+                        color: "#fff",
+                        px: 1,
+                        py: 0.3,
+                        borderRadius: 1,
+                        mr: 1,
+                        fontSize: "0.75rem",
+                      }}
+                    >
                       Branch {index + 1}
                     </Box>
                     {b.branchName}
@@ -149,7 +178,11 @@ export default function PreviewCompanyInfoList({
                     { id: "name", label: "Name", align: "left" },
                     { id: "phone", label: "Phone", align: "center" },
                     { id: "email", label: "Email", align: "left" },
-                    { id: "designation", label: "Designation", align: "center" },
+                    {
+                      id: "designation",
+                      label: "Designation",
+                      align: "center",
+                    },
                   ]}
                 />
               </Box>
@@ -158,8 +191,17 @@ export default function PreviewCompanyInfoList({
         </Paper>
       </Box>
 
-      {/* FOOTER (screen only, not pdf) */}
-      <Box sx={{ mt: 5, pt: 2, borderTop: "1px solid #ddd", textAlign: "center", color: "text.secondary", fontSize: 11 }}>
+      {/* Footer*/}
+      <Box
+        sx={{
+          mt: 5,
+          pt: 2,
+          borderTop: "1px solid #ddd",
+          textAlign: "center",
+          color: "text.secondary",
+          fontSize: 11,
+        }}
+      >
         Confidential Company Document • Generated by JobSphere
       </Box>
     </Box>

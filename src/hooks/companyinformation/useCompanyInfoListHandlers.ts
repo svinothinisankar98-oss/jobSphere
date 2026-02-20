@@ -42,6 +42,8 @@ export function useCompanyInfoListHandlers() {
     });
   };
 
+  
+
   return {
     rows,
     search,
@@ -49,5 +51,6 @@ export function useCompanyInfoListHandlers() {
     expandAll,
     setExpandAll,
     handleDelete,
+    
   };
 }

@@ -8,6 +8,7 @@ import {
   Grid,
   Chip,
   Tooltip,
+  
 } from "@mui/material";
 
 import SearchIcon from "@mui/icons-material/Search";
@@ -42,14 +43,17 @@ import { Switch, FormControlLabel } from "@mui/material";
 
 import { useUI } from "../../../context/UIProvider";
 import { useErrorBoundary } from "react-error-boundary";
+import { buildSummarySheet, downloadExcel, mapToExcelColumns } from "../../../utils/downloadExcel";
 
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
 
 
 const EmployerList = () => {
   //state variables//
 
   const [data, setData] = useState<employerRegisterType[]>([]);
-     const { showBoundary } = useErrorBoundary();
+
+  const { showBoundary } = useErrorBoundary();
 
   //search filters//
   const [companyName, setCompanyName] = useState("");
@@ -218,8 +222,18 @@ const EmployerList = () => {
       label: "Created At",
       align: "center",
       sortable: false,
-      render: (row) => formatDate(row.createdAt),
       group: "Status",
+
+      render: (row: employerRegisterType) => formatDate(row.createdAt),
+
+      //  Excel export formatter
+      excelValue: (row: employerRegisterType) => {
+        const value = row.createdAt;
+
+        if (!value) return "-";
+
+        return new Date(value).toLocaleDateString("en-GB");
+      },
     },
     {
       id: "status",
@@ -236,7 +250,11 @@ const EmployerList = () => {
           variant="filled"
         />
       ),
+       //Excel//
+      excelValue: (row: employerRegisterType) =>
+        row.isActive ? "Active" : "Inactive",
     },
+   
     {
       id: "actions",
       label: "Actions",
@@ -283,6 +301,48 @@ const EmployerList = () => {
       ),
     },
   ];
+
+
+  const summarySheet = buildSummarySheet(
+  "Summary",
+  data,
+  [
+    { label: "Total Employers" }, // no filter = total
+    { label: "Active Employers", filter: r => r.isActive === true },
+    { label: "Inactive Employers", filter: r => r.isActive === false },
+  ]
+);
+  //handle export//
+
+  const handleExport = async () => {
+    const excelColumns = mapToExcelColumns(columns);
+
+    const sheets = [
+
+      summarySheet,
+      {
+        sheetName: "All Employers",
+        columns: excelColumns,
+        data: data,
+      },
+      {
+        sheetName: "Active Employers",
+        columns: excelColumns,
+        data: data.filter((x) => x.isActive === true),
+          excludeColumns: ["status"]
+      },
+      {
+        sheetName: "Inactive Employers",
+        columns: excelColumns,
+        data: data.filter((x) => x?.isActive === false),
+         excludeColumns: ["status"]
+      },
+    ];
+    
+    await downloadExcel(sheets, "Employer_Report");
+   
+  };
+
   // JSX //
   return (
     <Box mt={2}>
@@ -376,45 +436,25 @@ const EmployerList = () => {
         </Grid>
       </Paper>
 
-      {/*  Dialogs handler */}
-
-      {/* <MyDialog
-        open={showConfirm && pendingAction === "activate"}
-        title="Activate Employer"
-        
-        message={
-          pendingRows.length === 1
-            ? "Are you sure you want to activate this employer?"
-            : `Are you sure you want to activate ${pendingRows.length} employer?`
-        }
-        onClose={handleConfirmNo}
-        onConfirm={() => handleConfirmYes(handleSearch)}
-        confirmText="Yes, Activate"
-        confirmColor="success"
-      />
-
-      <MyDialog
-        open={showConfirm && pendingAction === "delete"}
-        title="Delete Employer"
-       
-        message={
-          pendingRows.length === 1
-            ? "Are you sure you want to delete this employer?"
-            : `Are you sure you want to delete ${pendingRows.length} employer?`
-        }
-        onClose={handleConfirmNo}
-        onConfirm={() => handleConfirmYes(handleSearch)}
-        confirmText="Yes, Delete"
-        confirmColor="error"
-      /> */}
-
       {loading && (
         <Box display="flex" justifyContent="center" mt={3}>
           <CircularProgress size={28} />
         </Box>
       )}
 
+     
+
       <Box sx={{ maxWidth: 1300, mx: "auto", mt: 4 }}>
+        <Box display="flex" justifyContent="flex-end" mb={0.5}>         
+          <MyButton
+            variant="contained"
+            color="success"
+            label="Export Excel"
+            icon={<FileDownloadIcon />}
+            onClick={handleExport}
+          />
+        </Box>
+
         <MyTabs
           activeTab={activeTab}
           onTabChange={(index) => setActiveTab(index)}
@@ -487,13 +527,6 @@ const EmployerList = () => {
                   )}
 
                   {!loading && data.length > 0 && (
-                    // <MyTable
-                    //   rows={data}
-                    //   columns={columns}
-                    //   tableSize="small"
-                    //   containerSx={{ width: 1200, mx: "auto" }}
-                    // />
-
                     <MyTable
                       rows={data}
                       columns={columns}
@@ -524,13 +557,6 @@ const EmployerList = () => {
                   )}
 
                   {!loading && data.length > 0 && (
-                    // <MyTable
-                    //   rows={data}
-                    //   columns={columns}
-                    //   tableSize="small"
-                    //   containerSx={{ width: 1200, mx: "auto" }}
-                    // />
-
                     <MyTable
                       rows={data}
                       columns={columns}
@@ -539,13 +565,6 @@ const EmployerList = () => {
                       groupBy="industry"
                       tableSize={dense ? "small" : "medium"}
                       containerSx={{ maxWidth: 1300, mx: "auto" }}
-
-                      // onActivateSelected={(ids) => {
-                      //   const selectedRows = data.filter(
-                      //     (r) => r.id && ids.includes(r.id)
-                      //   );
-                      //   handleBulkActivate(selectedRows);
-                      // }}
                     />
                   )}
                 </>
@@ -553,6 +572,7 @@ const EmployerList = () => {
             },
           ]}
         />
+
         <Box sx={{ maxWidth: 1300, mx: "auto" }}>
           {/* Dense Padding Toggle */}
           <Box display="flex" justifyContent="left">

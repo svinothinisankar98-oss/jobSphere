@@ -36,6 +36,8 @@ export type Column<T> = {
   render?: (row: T, index: number) => React.ReactNode; //Custom UI//
   sortable?: boolean;
   group?: string; //Used for column grouping//
+   excelValue?: (row: T) => any;
+
 };
 
 //table//

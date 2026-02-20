@@ -6,7 +6,7 @@ import MainLayout from "./layouts/MainLayout";
 import BlankLayout from "./layouts/BlankLayout";
 
 import Home from "./pages/home/Home";
-import JobList from "./pages/joblist/Joblist";
+import JobList from "./pages/joblist/JobList";
 import JobSeekerRegister from "./pages/register/jobseeker/jobSeekerRegister";
 import EmployerRegister from "./pages/register/employerregisterdetails/EmployerRegister";
 import EmployerList from "./pages/register/employerregisterdetails/EmployerList";

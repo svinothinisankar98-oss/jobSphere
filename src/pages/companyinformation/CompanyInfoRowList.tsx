@@ -24,12 +24,14 @@ export function CompanyInfoRowList({
   onDelete,
   onEdit,
   onPreview,
+  handleExport,
 }: {
   row: CompanyInformationType;
   expandAll: boolean;
   onDelete: (id: number) => void;
   onEdit: () => void;
   onPreview: () => void;
+  handleExport: (id: any) => void;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -70,6 +72,13 @@ export function CompanyInfoRowList({
             color="error"
             size="small"
             onClick={() => onDelete(row.id!)}
+          >
+            <DeleteIcon />
+          </IconButton>
+          <IconButton
+            color="info"
+            size="small"
+            onClick={() => handleExport(row)}
           >
             <DeleteIcon />
           </IconButton>

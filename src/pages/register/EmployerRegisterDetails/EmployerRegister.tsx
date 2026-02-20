@@ -64,7 +64,7 @@ const EmployerRegister = () => {
     resolver: yupResolver(employerSchema),
     defaultValues: employerDefaultValues,
     mode: "onChange",
-    shouldUnregister: false, //keep tabs data//
+    shouldUnregister: false,
   });
 
   //used for useformhandlers for employers//

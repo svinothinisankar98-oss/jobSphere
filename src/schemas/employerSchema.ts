@@ -11,7 +11,7 @@ import {
 import { REGEX } from "../constants/ValidationRegex";
 
 
-  const currentYear = new Date().getFullYear();
+  
 
 export const employerSchema = yup.object({
 
@@ -42,12 +42,7 @@ export const employerSchema = yup.object({
     .required(RequiredMessage("Website"))
     .matches(REGEX.url, InvalidUrlMessage),
 
-  //   foundedYear: yup
-  // .number()
-  // .typeError("Year must be a valid number")
-  // .required("Founded Year is required")
-  // .min(1900, `Year must be after 1900`)
-  // .max(currentYear, `Year cannot be in the future`),
+ 
 
 
   industry: yup.string().required(SelectMessage("Industry")),

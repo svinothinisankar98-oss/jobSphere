@@ -412,10 +412,10 @@
         "full_time"
       ],
       "userType": 2,
-      "isActive": false,
+      "isActive": true,
       "id": "3454",
       "serialNo": 3,
-      "updatedAt": "2026-01-30T16:13:26.872Z"
+      "updatedAt": "2026-02-19T07:08:55.941Z"
     },
     {
       "id": "8767",
@@ -1519,7 +1519,7 @@
               "phone": "7894512547",
               "email": "kavi@gmail.com",
               "Designation": "admin",
-              "designation": "sdddddkk"
+              "designation": "admin"
             }
           ]
         }
@@ -1678,6 +1678,135 @@
       "companyName": "Sugam infotech",
       "id": "3192",
       "createdAt": "2026-02-17T10:09:17.558Z"
+    },
+    {
+      "branches": [
+        {
+          "id": 0,
+          "branchName": "Pharmnova private Limited",
+          "branchEmail": "hr@pharmnova.com",
+          "branchContact": [
+            {
+              "name": "Bala",
+              "phone": "6512345789",
+              "email": "bala@gmail.com",
+              "designation": "HR"
+            },
+            {
+              "name": "Kala",
+              "phone": "9874612155",
+              "email": "Kala@gmail.com",
+              "designation": "Admin"
+            },
+            {
+              "name": "Suresh",
+              "phone": "7894561235",
+              "email": "suresh@gmail.com",
+              "designation": "Employer"
+            }
+          ]
+        },
+        {
+          "branchName": "Pharm Nova industry",
+          "branchEmail": "pharmnova@pharmnova.com",
+          "branchContact": [
+            {
+              "name": "dldl",
+              "phone": "7845125478",
+              "email": "dd@gmail.com",
+              "designation": "hr"
+            },
+            {
+              "name": "kavi",
+              "phone": "7894512547",
+              "email": "kavi@gmail.com",
+              "designation": "Manager"
+            },
+            {
+              "name": "ddd",
+              "phone": "7894512547",
+              "email": "ddd@gmail.com",
+              "designation": "Admin"
+            }
+          ]
+        },
+        {
+          "branchName": "Pharmnova Pharamacy",
+          "branchEmail": "pharmnova@pharmnovapharach.com",
+          "branchContact": [
+            {
+              "name": "Suresh",
+              "phone": "8945612458",
+              "email": "suresh@gmail.com",
+              "designation": "Admin"
+            },
+            {
+              "name": "Supriya",
+              "phone": "7894561254",
+              "email": "supriya@gmail.com",
+              "designation": "HR"
+            },
+            {
+              "name": "Kavi",
+              "phone": "7894512548",
+              "email": "kavi@gmail.com",
+              "designation": "Employer"
+            }
+          ]
+        },
+        {
+          "branchName": "Pharmanova pharamacy",
+          "branchEmail": "pharmanoava@pharm.com",
+          "branchContact": [
+            {
+              "name": "kalai",
+              "phone": "7894561245",
+              "email": "kalai@gmail.com",
+              "designation": "Manager"
+            },
+            {
+              "name": "Sutha",
+              "phone": "8745612547",
+              "email": "sudha@gmail.com",
+              "designation": "HR"
+            },
+            {
+              "name": "Mala",
+              "phone": "7894512457",
+              "email": "mala@gmail.com",
+              "designation": "Employer"
+            },
+            {
+              "name": "Ravi",
+              "phone": "7841245788",
+              "email": "ravi@gmail.com",
+              "designation": "Admin"
+            }
+          ]
+        }
+      ],
+      "contact": [
+        {
+          "name": "Sasi",
+          "phone": "7894561235",
+          "email": "sasi@gmail.com",
+          "profileImage": null
+        },
+        {
+          "email": "ranipharm@gmail.com",
+          "phone": "7561254788",
+          "name": "Rani"
+        },
+        {
+          "email": "ggkk@gmail.com",
+          "phone": "7894561241",
+          "name": "ggkk"
+        }
+      ],
+      "companyEmail": "admin@pharmnova.com",
+      "companyName": "PharmNova",
+      "id": "8888",
+      "createdAt": "2026-02-18T15:25:40.123Z"
     }
   ]
 }

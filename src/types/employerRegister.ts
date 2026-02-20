@@ -1,4 +1,5 @@
 export type employerRegisterType = {
+  status?: string;
   id?: number;
 
   companyName: string;
@@ -34,4 +35,5 @@ export type employerRegisterType = {
   createdAt?: Date;
   updatedAt?: Date | null;
   isActive?: boolean;
+ 
 };
