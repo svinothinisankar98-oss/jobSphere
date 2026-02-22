@@ -17,6 +17,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
 
 export function CompanyInfoRowList({
   row,
@@ -80,7 +81,7 @@ export function CompanyInfoRowList({
             size="small"
             onClick={() => handleExport(row)}
           >
-            <DeleteIcon />
+            <FileDownloadIcon />
           </IconButton>
         </TableCell>
       </TableRow>

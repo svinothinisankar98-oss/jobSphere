@@ -111,15 +111,15 @@ export default function CompanyInfoList() {
 
   const handleParticularExport = async (row: any) => {
     setExportRow(row);
-
-    // wait React render hidden container
-    await new Promise((resolve) => setTimeout(resolve, 150));
+//Wait for React render//
+    
+    // await new Promise((resolve) => setTimeout(resolve, 150));
 
     await previewToPdf("single-company-export", {
       fileName: `Company_${row.companyName}`,
       orientation: "l",
       scale: 2,
-      singlePage: true, // ⭐ THIS activates your new code
+      singlePage: true, 
     });
 
     setExportRow(null);
@@ -132,14 +132,7 @@ export default function CompanyInfoList() {
       </Typography>
       <Box
         id="single-company-export"
-        sx={{
-          position: "fixed",
-          top: "-10000px",
-          left: "-10000px",
-          width: "1000px",
-          backgroundColor: "#ffffff",
-          padding: 2,
-        }}
+      
       >
         {exportRow && (
           <TableContainer component={Paper}>

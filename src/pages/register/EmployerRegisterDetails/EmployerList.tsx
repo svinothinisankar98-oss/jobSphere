@@ -302,12 +302,12 @@ const EmployerList = () => {
     },
   ];
 
-
+//Summary Sheet//
   const summarySheet = buildSummarySheet(
   "Summary",
   data,
   [
-    { label: "Total Employers" }, // no filter = total
+    { label: "Total Employers" }, 
     { label: "Active Employers", filter: r => r.isActive === true },
     { label: "Inactive Employers", filter: r => r.isActive === false },
   ]

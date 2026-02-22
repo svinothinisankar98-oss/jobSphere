@@ -321,13 +321,12 @@
       "userType": 1
     },
     {
-      "id": "1122",
-      "companyName": "Vinothini  & co",
+      "companyName": "Vinothini",
       "email": "viqqqno@gmail.com",
       "phone": "8745124576",
       "website": "https://www.egrovesys.com/ecommerce-accessibility/",
       "industry": "IT",
-      "companySize": "200+",
+      "companySize": "11–50",
       "foundedYear": 2005,
       "address1": "sasa",
       "address2": "",
@@ -338,9 +337,9 @@
       "recruiterName": "Kumar",
       "recruiterEmail": "kumar@gmail.com",
       "recruiterPhone": "7894512452",
-      "designation": "HR",
-      "password": "112233",
-      "confirmPassword": "112233",
+      "designation": "admin",
+      "password": "Kumar@123",
+      "confirmPassword": "Kumar@123",
       "remoteopportunity": "yes",
       "employmentType": [
         "full_time",
@@ -349,10 +348,11 @@
         "temporary"
       ],
       "userType": 2,
-      "isActive": false,
+      "isActive": true,
+      "id": "1122",
       "serialNo": 1,
       "deletedAt": null,
-      "updatedAt": "2026-02-03T10:50:38.077Z"
+      "updatedAt": "2026-02-21T12:26:35.308Z"
     },
     {
       "id": "1133",
@@ -393,7 +393,7 @@
       "phone": "8745612346",
       "website": "https://www.egrovesys.com/ecommerce-accessibility/",
       "industry": "Finance",
-      "companySize": "1–10",
+      "companySize": "11–50",
       "foundedYear": 0,
       "address1": "ewewe",
       "address2": "",
@@ -405,8 +405,8 @@
       "recruiterEmail": "jhj222jjk@gmail.com",
       "recruiterPhone": "6512457894",
       "designation": "ddd",
-      "password": "112233",
-      "confirmPassword": "112233",
+      "password": "Karthi@123",
+      "confirmPassword": "Karthi@123",
       "remoteopportunity": "yes",
       "employmentType": [
         "full_time"
@@ -415,7 +415,7 @@
       "isActive": true,
       "id": "3454",
       "serialNo": 3,
-      "updatedAt": "2026-02-19T07:08:55.941Z"
+      "updatedAt": "2026-02-22T14:23:16.659Z"
     },
     {
       "id": "8767",
@@ -449,12 +449,11 @@
       "updatedAt": "2026-01-16T07:12:02.313Z"
     },
     {
-      "id": "4344",
       "companyName": "noble",
       "email": "ooso@gmail.com",
       "phone": "7788888888",
       "website": "https://www.egrovesys.com/ecommerce-accessibility/",
-      "industry": "IT",
+      "industry": "Marketing",
       "companySize": "1–10",
       "foundedYear": 2009,
       "address1": "ssssss",
@@ -463,22 +462,23 @@
       "state": "ssssss",
       "country": "India",
       "zip": "111111",
-      "recruiterName": "hhhh",
-      "recruiterEmail": "jhssjjjk@gmail.com",
+      "recruiterName": "Raja",
+      "recruiterEmail": "raja@gmail.com",
       "recruiterPhone": "7894561234",
       "designation": "ddd",
-      "password": "112233",
-      "confirmPassword": "112233",
+      "password": "Raja@123",
+      "confirmPassword": "Raja@123",
       "remoteopportunity": "yes",
       "employmentType": [
         "full_time",
         "part_time"
       ],
       "userType": 2,
+      "isActive": true,
+      "id": "4344",
       "serialNo": 5,
       "isDelete": true,
-      "isActive": true,
-      "updatedAt": "2026-01-30T16:13:18.169Z"
+      "updatedAt": "2026-02-21T16:23:33.455Z"
     },
     {
       "id": "5566",
@@ -737,13 +737,12 @@
       "deletedAt": null
     },
     {
-      "id": "1125",
       "companyName": "RetailNest",
       "email": "hello@retailnest.com",
       "phone": "9090909090",
       "website": "www.retailnest.com",
-      "industry": "Retail",
-      "companySize": "201–500",
+      "industry": "IT",
+      "companySize": "200+",
       "foundedYear": 2016,
       "address1": "Mall Road",
       "address2": "Sector 18",
@@ -755,8 +754,8 @@
       "recruiterEmail": "jobs@retailnest.com",
       "recruiterPhone": "9988112233",
       "designation": "Recruitment Lead",
-      "password": "123456",
-      "confirmPassword": "123456",
+      "password": "Vino@123",
+      "confirmPassword": "Vino@123",
       "remoteopportunity": "yes",
       "employmentType": [
         "full_time",
@@ -764,8 +763,9 @@
       ],
       "userType": 2,
       "isActive": true,
+      "id": "1125",
       "createdAt": "2026-01-03T06:20:00.000Z",
-      "updatedAt": null,
+      "updatedAt": "2026-02-21T12:21:27.759Z",
       "deletedAt": null
     },
     {
@@ -1473,6 +1473,36 @@
       "userType": 2,
       "isActive": true,
       "createdAt": "2026-02-17T04:30:27.003Z",
+      "updatedAt": null
+    },
+    {
+      "id": "1e53",
+      "companyName": "Suji Industry",
+      "email": "suji@suji.com",
+      "phone": "7414512457",
+      "website": "www.suji.com",
+      "industry": "Cyber Security",
+      "companySize": "200+",
+      "foundedYear": 2020,
+      "address1": "67, radha street",
+      "address2": "Chrompet",
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "country": "India",
+      "zip": "600044",
+      "recruiterName": "Suji",
+      "recruiterEmail": "admin@gmail.com",
+      "recruiterPhone": "7894561234",
+      "designation": "Manager",
+      "password": "Suji@123",
+      "confirmPassword": "Suji@123",
+      "remoteopportunity": "yes",
+      "employmentType": [
+        "full_time"
+      ],
+      "userType": 2,
+      "isActive": true,
+      "createdAt": "2026-02-21T11:31:12.694Z",
       "updatedAt": null
     }
   ],

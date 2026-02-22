@@ -41,8 +41,8 @@ type AnyColumn = {
 };
 
 type SummaryRule<T = any> = {
-  label: string;
-  filter?: (row: T) => boolean;
+  label: string;                      //text apperas in excel//
+  filter?: (row: T) => boolean;        //condition//
 };
 
 export const buildSummarySheet = <T>(

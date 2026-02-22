@@ -23,6 +23,7 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import "./style/global.css";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
+import Dashboard from "./pages/dashboard/Dashboard";
 
 function App() {
 
@@ -56,6 +57,8 @@ function App() {
       <Route path="/company-information" element={<CompanyInformation />} />
       <Route path="/company-information/edit/:id" element={<CompanyInformation />} />
       <Route path="/company-information-list" element={<CompanyInformationList />} />
+      <Route path="/dashboard" element={<Dashboard/>}/>
+
     </Route>
 
   </Route>
