@@ -1,20 +1,24 @@
 import { Typography, Box } from "@mui/material";
 import { PieChart } from "@mui/x-charts/PieChart";
 
+/* ---------- TYPES ---------- */
+
 export type PieItem = {
   label: string;
   value: number;
-  color?: string;
 };
 
 type Props = {
   title?: string;
-  data: PieItem[];
-  centerLabel?: string;  //text inside donut
-  centerValue?: number;  //number inside donut
+  data?: PieItem[];
+  centerLabel?: string;
+  centerValue?: number;
   height?: number;
-  showGap?: boolean;      //gap between slice//
+  showGap?: boolean;
+  colors?: string[];
 };
+
+/* ---------- COMPONENT ---------- */
 
 export default function PieChartCommon({
   title,
@@ -22,77 +26,134 @@ export default function PieChartCommon({
   centerLabel,
   centerValue,
   showGap = true,
-  height=260 ,
+  height = 260,
+  colors,
 }: Props) {
+  /* ---------- SAFE DATA ---------- */
 
-  //filtering invalid data//
-  const validData = data.filter((d) => d.value > 0);
+  const validData = Array.isArray(data)
+    ? data.filter((d) => d && d.value > 0)
+    : [];
+
+  const total = validData.reduce((a, b) => a + b.value, 0);
+
+  const isDonut = centerValue !== undefined || centerLabel !== undefined;
 
   return (
-
-     /*title rendering*/
-    <Box sx={{ height: "100%" }}>       
+    <Box sx={{ height: "100%", width: "100%" }}>
+      {/* TITLE */}
       {title && (
-        <Typography variant="h6" gutterBottom textAlign="center">
+        <Typography
+          variant="subtitle1"
+          fontWeight={600}
+          sx={{ mb: 1.5, textAlign: "center" }}
+        >
           {title}
         </Typography>
       )}
 
-      {/*chart*/}
+      {/* CHART CONTAINER */}
       <Box
         sx={{
           position: "relative",
-          width: 290,
-          height: height,
-          mx: "auto",
+          width: "90%",
+          height,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-       {/* pie chart configuration */}
-        <PieChart
-          width={260}
-          height={height}
-          margin={{ top: 0, bottom: 0, left: 0, right: 0 }}
-          series={[
-            {
-              innerRadius: 75,   //makes donut hole//
-              outerRadius: 110,  //overall size//
-              paddingAngle: showGap ? 2 : 0,   //gap between slices// modern chart like gap(true false//
-              startAngle: showGap ? -90 : 0,   //charts starts//
-              endAngle: showGap ? 270 : 360,   //charts ends//
-              data: validData.map((item, i) => ({      //data mapping//
-                id: i,
-                value: item.value,
-                label: item.label,
-                color: item.color,
-              })),
-            },
-          ]}
-        />
+        {/* EMPTY STATE */}
+        {total === 0 ? (
+          <Typography color="text.secondary" variant="body2">
+            No data available
+          </Typography>
+        ) : (
+          <PieChart
+            height={height}
+            margin={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            series={[
+              {
+                innerRadius: isDonut ? 70 : 0,
+                outerRadius: 110,
+                paddingAngle: showGap ? 3 : 0,
+                cornerRadius: 6,
+                startAngle: -90,
+                endAngle: 270,
 
-        {/* center text*/}
-        <Box
-          sx={{
-            position: "absolute",
-            inset: 0,
-            display: "grid",
-            placeItems: "center",
-            pointerEvents: "none",
-          }}
-        >
-          <Box textAlign="center">
-            {centerValue !== undefined && (
-              <Typography variant="h4" fontWeight={700} lineHeight={1}>
-                {centerValue}
-              </Typography>
-            )}
+                data: validData.map((item, i) => ({
+                  id: i,
+                  value: item.value,
+                  label: item.label,
+                })),
+              },
+            ]}
+            colors={colors}
+          />
+        )}
 
-            {centerLabel && (
-              <Typography variant="caption" color="text.secondary">
-                {centerLabel}
+        {/* CENTER TEXT */}
+        {isDonut && total > 0 && (
+          <Box
+            sx={{
+              position: "absolute",
+              textAlign: "left",
+              pointerEvents: "none",
+            }}
+          >
+            <Box
+              sx={{
+                position: "absolute",
+               
+                width: 120, // = innerRadius * 2
+                height: 120,
+                transform: "translate(-80%, -50%)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                pointerEvents: "none",
+              }}
+            >
+              <Typography
+                variant="h5"
+                fontWeight={700}
+                sx={{
+                  // display: "flex",
+                  // alignItems: "center", // <-- fix
+                  // justifyContent: "center",
+                  // gap: 1,
+                  // lineHeight: 1,
+                  textAlign: "center",
+                  lineHeight: 1.1,
+                }}
+              >
+                <Box
+                  sx={{
+                    fontSize: 28,
+                    fontWeight: 700,
+                  }}
+                  component="div"
+                >
+                  {centerValue ?? total}
+                </Box>
+
+                {centerLabel && (
+                  <Box
+                    component="div"
+                    sx={{
+                      fontSize: 14,
+                      fontWeight: 400,
+                      color: "text.secondary",
+                      mt: 0.5,
+                    }}
+                  >
+                    {centerLabel}
+                  </Box>
+                )}
               </Typography>
-            )}
+            </Box>
           </Box>
-        </Box>
+        )}
       </Box>
     </Box>
   );

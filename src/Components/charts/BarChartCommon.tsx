@@ -1,43 +1,18 @@
 import { useMemo } from "react";
 import { Box, Typography } from "@mui/material";
 import { BarChart } from "@mui/x-charts/BarChart";
-import { ChartsTooltip } from "@mui/x-charts/ChartsTooltip";
 
-/* ---------------- TYPES ---------------- */
+// ---------------- TYPES ----------------
 
 type Props<T> = {
-  title?: string;
-  axisLabel?: string;
-  data?: T[];
-  labelKey: keyof T;
-  valueKey: keyof T;
-  valueLabel?: string;
+  title?: string; // chart heading
+  axisLabel?: string; // category axis name
+  data?: T[]; // array of objects
+  labelKey: keyof T; // category field
+  valueKey: keyof T; // numeric field
+  valueLabel?: string; // numeric axis label (Count)
   barColor?: string;
   orientation?: "horizontal" | "vertical";
-};
-
-/* ---------------- TOOLTIP ---------------- */
-
-const CustomTooltip = ({ item, valueLabel }: any) => {
-  if (!item) return null;
-
-  return (
-    <div
-      style={{
-        background: "#1e1e1e",
-        color: "white",
-        padding: "8px 12px",
-        borderRadius: 6,
-        fontSize: 13,
-        boxShadow: "0 4px 14px rgba(0,0,0,0.25)",
-      }}
-    >
-      <div style={{ fontWeight: 600 }}>{item.label}</div>
-      <div>
-        {valueLabel}: {item.value}
-      </div>
-    </div>
-  );
 };
 
 /* ---------------- COMPONENT ---------------- */
@@ -55,28 +30,32 @@ export default function CommonGroupedBarChart<T>({
   const safeData = Array.isArray(data) ? data : [];
   const isVertical = orientation === "vertical";
 
+  // labels
   const labels = useMemo(
     () => safeData.map((d: any) => String(d[labelKey] ?? "")),
     [safeData, labelKey]
   );
 
+  // values
   const values = useMemo(
     () => safeData.map((d: any) => Number(d[valueKey] ?? 0)),
     [safeData, valueKey]
   );
 
+  // max value
   const maxValue = useMemo(() => {
     if (!values.length) return 0;
     return Math.max(...values);
   }, [values]);
 
+  // dynamic left space based on label length
   const dynamicLeft = useMemo(() => {
     if (!labels.length) return 80;
     const maxLength = Math.max(...labels.map((l) => l.length), 10);
     return Math.min(260, maxLength * 7);
   }, [labels]);
 
-  const dynamicTop = Math.min(70, 20 + maxValue * 1.5);
+  // ---------------- AXES ----------------
 
   const numericAxis = {
     min: 0,
@@ -92,50 +71,60 @@ export default function CommonGroupedBarChart<T>({
     data: labels,
     label: axisLabel,
     width: dynamicLeft,
+    tickLabelStyle: { fontSize: 12 },
     valueFormatter: (value: string) =>
       value.length > 22 ? value.slice(0, 22) + "…" : value,
-    tickLabelStyle: { fontSize: 12 },
   };
 
   const xAxisConfig = isVertical ? [categoryAxis] : [numericAxis];
   const yAxisConfig = isVertical ? [numericAxis] : [categoryAxis];
 
   return (
-    <Box sx={{ height: "100%" }}>
+    <Box
+      sx={{
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        minHeight: 0,
+      }}
+    >
       {title && (
-        <Typography variant="h6" mb={2} textAlign="center">
+        <Typography variant="h6" mb={1.5} textAlign="center">
           {title}
         </Typography>
       )}
 
-      <BarChart
-        layout={isVertical ? "vertical" : "horizontal"}
-        height={Math.max(320, labels.length * 45 + maxValue * 2)}
-        margin={{
-          left: dynamicLeft,
-          right: 20,
-          top: dynamicTop,
-          bottom: 35,
-        }}
-        yAxis={yAxisConfig}
-        xAxis={xAxisConfig}
-        series={[
-          {
-            data: values,
-            label: valueLabel,
-            color: barColor,
+      <Box
+        sx={{
+          flex: 1,
+          minHeight: 0,
+          width: "100%",
+          "& .MuiChartsSurface-root": {
+            width: "100% !important",
+            height: "100% !important",
           },
-        ]}
-        slots={{
-          tooltip: (props: any) => (
-            <ChartsTooltip {...props}>
-              {(item: any) => (
-                <CustomTooltip item={item} valueLabel={valueLabel} />
-              )}
-            </ChartsTooltip>
-          ),
         }}
-      />
+      >
+        <BarChart
+          layout={isVertical ? "vertical" : "horizontal"}
+          height={300}
+          margin={{
+            left: isVertical ? 60 : dynamicLeft + 20,
+            right: 30,
+            top: 30,
+            bottom: isVertical ? 60 : 70,
+          }}
+          yAxis={yAxisConfig}
+          xAxis={xAxisConfig}
+          series={[
+            {
+              data: values,
+              label: valueLabel,
+              color: barColor,
+            },
+          ]}
+        />
+      </Box>
     </Box>
   );
 }

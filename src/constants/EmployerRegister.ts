@@ -14,8 +14,8 @@ export const INDUSTRY_OPTIONS = [
   { id: 8, item: "Software Development" },
   { id: 9, item: "Construction" },
   { id: 10, item: "Telecommunications" },
-  // { id: 11, item: "Product Design" },
-  // { id: 12, item: "Architecture & Design" },
+  { id: 11, item: "Retail" },
+   { id: 12, item: "Logistics" },
  
 ];
 

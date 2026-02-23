@@ -25,10 +25,12 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
+import AnalyticsIcon from "@mui/icons-material/Analytics";
 
-/* ✅ ADD Redux */
+/* ADD Redux */
 import { useSelector } from "react-redux";
 import type { RootState } from "../redux/store";
+import Dashboard from "../pages/dashboard/Dashboard";
 
 const drawerWidth = 250;
 const collapsedWidth = 70;
@@ -61,6 +63,7 @@ const MENU_CONFIG: Record<Role, MenuItem[]> = {
     { item: "Employer List", path: "/Employer-List" },
     { item: "Job Seeker", path: "/job-seeker-register" },
     { item: "Employer", path: "/employer-register" },
+    {item:"Reports",path:"/dashboard"},
   ],
   4: [
     { item: "Home", path: "/" },
@@ -81,6 +84,9 @@ const ICON_MAP: Record<string, JSX.Element> = {
   "Employer List": <GroupIcon htmlColor="blue" />,
   "Job Seeker": <PersonOutlineIcon htmlColor="blue" />,
   Employer: <AssignmentIndIcon htmlColor="blue" />,
+  Reports:<AnalyticsIcon htmlColor="blue"/>,
+ 
+  
 };
 
 export default function Sidebar() {
@@ -95,7 +101,7 @@ export default function Sidebar() {
 
   const roleMenu = MENU_CONFIG[userType] || [];
 
-  /* ✅ Redux saved jobs count */
+  /*  Redux saved jobs count */
   const savedCount = useSelector(
     (state: RootState) => state.savedJobs.ids.length
   );
