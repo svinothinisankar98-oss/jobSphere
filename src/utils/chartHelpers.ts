@@ -2,8 +2,9 @@ import {
   INDUSTRY_OPTIONS,
   COMPANY_SIZE_OPTIONS,
 } from "../constants/EmployerRegister";
+import type { User } from "../service/userService";
 
-/* ---------------- TYPES ---------------- */
+//types//
 
 type Option = { item: string };
 
@@ -170,6 +171,41 @@ export function buildYearComparisonLine(employers: any[]) {
 
   return { data: chartData, series };
 }
+//User Monthly Grouped Bar//
+
+export function buildUsersMonthlyStats(users: User[], year?: number) {
+
+  const months = Array.from({ length: 12 }, () => ({
+    jobseeker: 0,
+    employer: 0
+  }));
+
+  users.forEach((u) => {
+    if (!u.createdAt) return;
+
+    const date = new Date(u.createdAt);
+    if (isNaN(date.getTime())) return;
+
+    if (year && date.getFullYear() !== year) return;
+
+    const m = date.getMonth();
+
+    if (u.userType === 1) months[m].jobseeker++;
+    if (u.userType === 2) months[m].employer++;
+  });
+
+  const labels = [
+    "Jan","Feb","Mar","Apr","May","Jun",
+    "Jul","Aug","Sep","Oct","Nov","Dec"
+  ];
+
+  return labels.map((month, i) => ({
+    month,
+    total: months[i].jobseeker + months[i].employer,
+    jobseeker: months[i].jobseeker,
+    employer: months[i].employer
+  }));
+}
 
 //available year dropdown//
 
@@ -183,17 +219,54 @@ export function extractAvailableYears(employers: any[]): number[] {
           const year = new Date(e.createdAt).getFullYear();
           return isNaN(year) ? null : year;
         })
-        //  TYPE GUARD (important)
+       
         .filter((year): year is number => year !== null),
     ),
   ).sort((a, b) => b - a);
 }
+
+//employer and year active and inactive used stacked//
+
+export function buildEmployerYearlyStatus(employers: any[]) {
+
+  const yearMap: Record<number, { active: number; inactive: number }> = {};
+
+  employers.forEach(emp => {
+    if (!emp?.createdAt) return;
+
+    const date = new Date(emp.createdAt);
+    if (isNaN(date.getTime())) return;
+
+    const year = date.getFullYear();
+
+    if (!yearMap[year]) {
+      yearMap[year] = { active: 0, inactive: 0 };
+    }
+
+    if (emp.isActive === true) yearMap[year].active++;
+    else yearMap[year].inactive++;
+  });
+
+  // convert to chart format
+  return Object.keys(yearMap)
+    .sort()
+    .map(year => ({
+      year,
+      active: yearMap[Number(year)].active,
+      inactive: yearMap[Number(year)].inactive
+    }));
+}
+
+
+
+
 
 //main function//
 
 export function buildEmployerCharts(employers: any[], year?: number) {
   const monthly = buildMonthlyRegistrations(employers, year);
   const yearlyComparison = buildYearComparisonLine(employers);
+  
 
   return {
     // grouped bars

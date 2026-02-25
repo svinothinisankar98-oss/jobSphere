@@ -1,10 +1,10 @@
 import { Card, Box, Typography, CircularProgress } from "@mui/material";
 
 type Props = {
-  title: string;
-  value: number;
-  percent: number;
-  color: string;
+  title: string;   //label//
+  value: number;    //main metric//
+  percent: number;  //progress indicator//
+  color: string;    //theme color of card//
   bg?: string;
 };
 

@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import { LineChart } from "@mui/x-charts/LineChart";
 
-/* ---------- TYPES ---------- */
+// line series types//
 
 export type LineSeries<T> = {
   label: string;
@@ -18,8 +18,7 @@ type Props<T> = {
   series: LineSeries<T>[];
   showGrid?: boolean;
 };
-
-/* ---------- COMPONENT ---------- */
+//component//
 
 export default function CommonLineChart<T>({
   title,
@@ -27,17 +26,21 @@ export default function CommonLineChart<T>({
   xKey,
   xLabel,
   yLabel = "Count",
-  height = 300,
+  height = 350,
   series,
   showGrid = true,
 }: Props<T>) {
 
+
+  //Data Preparation Logic//
+  
   const safeData = Array.isArray(data) ? data : [];
 
-  /* ---------- X AXIS ---------- */
+  //x axis labels//
+
   const xLabels = safeData.map((d: any) => String(d?.[xKey] ?? ""));
 
-  /* ---------- SERIES ---------- */
+ //series//
   const chartSeries = series.map((s) => ({
     label: s.label,
     data: safeData.map((d: any) => Number(d?.[s.dataKey] ?? 0)),
@@ -53,16 +56,16 @@ export default function CommonLineChart<T>({
         </Typography>
       )}
 
-      {/* IMPORTANT WRAPPER — prevents axis clipping */}
+    
       <Box
         sx={{
           width: "100%",
-          height: height + 60,   // ⭐ reserve axis space
+         
         }}
       >
         <LineChart
           height={height}
-          xAxis={[
+          xAxis={[                          // xaxis //
             {
               scaleType: "point",
               data: xLabels,
@@ -70,19 +73,19 @@ export default function CommonLineChart<T>({
               tickLabelStyle: { fontSize: 12 },
             },
           ]}
-          yAxis={[
+          yAxis={[                           //y axis//
             {
               label: yLabel,
               min: 0,
               tickLabelStyle: { fontSize: 12 },
             },
           ]}
-          series={chartSeries}
-          grid={{ horizontal: showGrid }}
-          margin={{ left: 60, right: 20, top: 20, bottom: 60 }} // ⭐ bigger bottom
+          series={chartSeries} 
+          grid={{ horizontal: showGrid }}          //Toggle horizontal lines//
+          margin={{ left: 60, right: 20, top : 20, bottom: 60 }} //Margin Fix//
           sx={{
             "& .MuiChartsAxis-bottom .MuiChartsAxis-label": {
-              transform: "translateY(10px)", // ensure visible
+              transform: "translateY(10px)", //  visible
             },
             "& .MuiMarkElement-root": {
               r: 5,

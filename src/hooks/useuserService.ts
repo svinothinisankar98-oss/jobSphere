@@ -3,7 +3,7 @@ import { userService, type User } from "../service/userService";
 import type { employerRegisterType } from "../types/employerRegister";
 import type { JobSeeker } from "../types/jobSeeker";
 import { handleError } from "../utils/handleError";
-import { useErrorBoundary } from "react-error-boundary";
+
 
 
 type CreateUserPayload = employerRegisterType | JobSeeker;
@@ -15,17 +15,17 @@ export const useUserService = ( showBoundary?: (error: any) => void) => {
 
 
   const getAllUsers = async (): Promise<User[]> => {
-    
   try {
     return await userService.getUsers({ keyword: "" });
   } catch (error: any) {
     handleError(error, {
       showBoundary,
-      setLocalError:error
+      setLocalError: error
     });
-    throw error; 
+    throw error;
   }
 };
+
 
   const createUser = async (data: CreateUserPayload) => {
     try {
@@ -101,6 +101,17 @@ export const useUserService = ( showBoundary?: (error: any) => void) => {
       return null;
     }
   };
+  const getUserTypeStats = async (): Promise<{ jobseeker: number; employer: number }> => {
+  try {
+    return await userService.getUserTypeStats();
+  } catch (error: any) {
+    handleError(error, {
+      showBoundary,
+      setLocalError: error,
+    });
+    throw error;
+  }
+};
 
   return {
     getAllUsers,
@@ -111,28 +122,7 @@ export const useUserService = ( showBoundary?: (error: any) => void) => {
     updateUser,
     getRecruiterDetails,
     getUser,
+    getUserTypeStats,
   };
 };
 
-// const getUserByEmail = async (email: string): Promise<apiResponse<any>> => {
-//     try {
-//       const res = await userService.getUserByEmail(email);
-//       console.log("res", res);
-//       if (res) {
-//         return {
-//           success: false,
-//           message: "Register Email Already exists",
-//           data: res,
-//         };
-//       } else {
-//         return {
-//           success: true,
-//           message: "",
-//           data: res,
-//         };
-//       }
-//     } catch (error: any) {
-//       // Otherwise real error
-//       throw error;
-//     }
-//   };

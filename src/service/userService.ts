@@ -11,6 +11,7 @@ export interface User {
   userType: number;
   recruiterEmail?: string;
   savedJobs?: any[];
+   createdAt: string;
 
 }
 type CreateUserPayload = employerRegisterType | JobSeeker;
@@ -19,7 +20,7 @@ type CreateUserPayload = employerRegisterType | JobSeeker;
 
 export const userService = {
   // GET ALL USERS
-  getUsers: async (): Promise<User[]> => {
+  getUsers: async (p0: { keyword: string; }): Promise<User[]> => {
     const response = await apiService.get<User[]>("users");
     return response;
   },
@@ -70,6 +71,20 @@ export const userService = {
 
     
   },
+  // USER TYPE STATS (Jobseeker vs Employer)
+getUserTypeStats: async (): Promise<{ jobseeker: number; employer: number }> => {
+  const users = await apiService.get<User[]>("users");
+
+  let jobseeker = 0;
+  let employer = 0;
+
+  for (const u of users) {
+    if (u.userType === 1) jobseeker++;
+    else if (u.userType === 2) employer++;
+  }
+
+  return { jobseeker, employer };
+},
 
   
 };
