@@ -195,6 +195,7 @@ export default function Dashboard() {
                       centerValue={activeCount + inactiveCount}
                       centerLabel="Employers"
                       showGap
+                      
                     />
                   </CommonCard>
                 </Grid>
@@ -206,6 +207,7 @@ export default function Dashboard() {
                       data={charts.industryPie.data}
                       colors={charts.industryPie.colors}
                       showGap={false}
+                      showLabel
                     />
                   </CommonCard>
                 </Grid>
@@ -220,7 +222,7 @@ export default function Dashboard() {
                       labelKey="label"
                       yLabel="Employers"
                       showLabel
-                      series={[{ label: "Employers", dataKey: "count" }]}
+                      series={[{ label: "Employers", dataKey: "count" ,barLabelPlacement:"outside"}]}
                     />
                   </CommonCard>
                 </Grid>
@@ -329,16 +331,18 @@ export default function Dashboard() {
                       data={userMonthly}
                       labelKey="month"
                       yLabel="Users"
+                      showLabel={true}
                       series={[
                         { label: "Total", dataKey: "total", color: "#6366F1" },
                         {
                           label: "Jobseekers",
-                          dataKey: "jobseeker",
+                          dataKey: "jobseeker",barLabelPlacement:"outside"
+                          
                           
                         },
                         {
                           label: "Employers",
-                          dataKey: "employer",
+                          dataKey: "employer",barLabelPlacement:"outside"
                           
                         },
                       ]}

@@ -4,7 +4,7 @@ import {  Box, Paper, Typography } from "@mui/material";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import { useUserService } from "../../hooks/useuserService";
+
 import { authStorage } from "../../utils/authStorage";
 
 import MyButton from "../../Components/newui/MyButton";
@@ -15,12 +15,15 @@ import MyTextField from "../../Components/newui/MyTextField";
 import { useUI } from "../../context/UIProvider";
 import type { LoginForm, LoginProps } from "../../types/loginType"
 import { useEffect } from "react";
+import { useUserService } from "../../hooks/useuserService";
 
-const { getUserByEmail, getEmployerByEmail } = useUserService();
+
 
 export default function Login({ onClose }: LoginProps) {
-  const navigate = useNavigate();
 
+  
+  const navigate = useNavigate();
+const { getUserByEmail, getEmployerByEmail } = useUserService();
    
   const { showSnackbar } = useUI();
 
@@ -58,6 +61,8 @@ export default function Login({ onClose }: LoginProps) {
 }, [reset]);
 
   const onSubmit = async (form: LoginForm) => {
+
+    console.log("SUBMIT CALLED", form);  
     try {
       const user = await getUserByEmail(form.email); //jobseeker email//
       console.log("user",user)

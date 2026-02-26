@@ -6,8 +6,8 @@ import { BarChart } from "@mui/x-charts/BarChart";
 type SeriesConfig<T> = {
   label: string;
   dataKey: keyof T;
-  color?: string;// show value on bar
-  
+  color?: string; // show value on bar
+  barLabelPlacement?: string;
 };
 
 type Props<T extends Record<string, any>> = {
@@ -19,7 +19,7 @@ type Props<T extends Record<string, any>> = {
   series: SeriesConfig<T>[];
   orientation?: "horizontal" | "vertical";
   height?: number;
-   showLabel?: boolean;
+  showLabel?: boolean;
 };
 
 /* ================= COMPONENT ================= */
@@ -35,40 +35,35 @@ export default function CommonBarChart<T extends Record<string, any>>({
   height = 380,
   showLabel,
 }: Props<T>) {
-
   const isVertical = orientation === "vertical";
 
- //labels//
-  const labels = data.map(d => String(d[labelKey] ?? ""));
-
+  //labels//
+  const labels = data.map((d) => String(d[labelKey] ?? ""));
 
   //series//
-const chartSeries = series.map(s => {
-  const base = {
-    label: s.label,
-    color: s.color,
-    data: data.map(d => Number(d[s.dataKey] ?? 0)),
-  };
-
-  // attach label only when needed
-  if (showLabel) {
-    return {
-      ...base,
-      barLabel: (item: any) => (item.value > 0 ? item.value : ""),
+  const chartSeries: any[] = series.map((s) => {
+    const base = {
+      label: s.label,
+      color: s.color,
+      data: data.map((d) => Number(d[s.dataKey] ?? 0)),
+      barLabelPlacement: "outside",
     };
-  }
 
-  return base;
-});
+    // attach label only when needed
+    if (showLabel) {
+      return {
+        ...base,
+        barLabel: (item: any) => (item.value > 0 ? item.value : ""),
+      };
+    }
 
- //scale//
- const maxValueRaw = Math.max(
-  0,
-  ...chartSeries.flatMap(s => s.data)
-);
+    return base;
+  });
 
+  //scale//
+  const maxValueRaw = Math.max(0, ...chartSeries.flatMap((s) => s.data));
 
-const maxValue = Math.ceil(maxValueRaw * 1.2);
+  const maxValue = Math.ceil(maxValueRaw * 1.2);
 
   const numericAxis = {
     min: 0,
@@ -86,8 +81,6 @@ const maxValue = Math.ceil(maxValueRaw * 1.2);
   const xAxis = isVertical ? [categoryAxis] : [numericAxis];
   const yAxis = isVertical ? [numericAxis] : [categoryAxis];
 
-  
-
   return (
     <Box sx={{ width: "100%" }}>
       {title && (
@@ -102,20 +95,21 @@ const maxValue = Math.ceil(maxValueRaw * 1.2);
         xAxis={xAxis}
         yAxis={yAxis}
         series={chartSeries}
-       slotProps={
-  showLabel
-    ? {
-        barLabel: {
-          style: {
-            fontSize: 12,
-            fontWeight: 700,
-            fill: "#111827",
-            transform: "translateY(-9px)",
-          },
-        },
-      }
-    : undefined
-}
+        // barLabelPlacement="center"
+        slotProps={
+          showLabel
+            ? {
+                barLabel: {
+                  style: {
+                    fontSize: 12,
+                    fontWeight: 700,
+                    fill: "#111827",
+                    transform: "translateY(-9px)",
+                  },
+                },
+              }
+            : undefined
+        }
       />
     </Box>
   );
