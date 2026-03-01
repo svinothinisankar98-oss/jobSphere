@@ -17,7 +17,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { jobSeekerSchema } from "../../../schemas/jobSeekerSchema";
 import jobseekerDefaultValues from "../jobseeker/defaultvalues/JobSeeker";
 import MyTextField from "../../../Components/newui/MyTextField";
-import { useUserService } from "../../../hooks/useuserService";
+import { useUserService } from "../../../hooks/useUserService";
 
 import { useUI } from "../../../context/UIProvider";
 import { useErrorBoundary } from "react-error-boundary";

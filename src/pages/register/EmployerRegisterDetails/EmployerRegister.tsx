@@ -21,7 +21,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
 
-import { useUserService } from "../../../hooks/useuserService";
+import { useUserService } from "../../../hooks/useUserService";
 
 import { useUI } from "../../../context/UIProvider";
 

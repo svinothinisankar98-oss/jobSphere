@@ -1,9 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import {  Box, Paper, Typography } from "@mui/material";
+import { Box, Paper, Typography } from "@mui/material";
 
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-
 
 import { authStorage } from "../../utils/authStorage";
 
@@ -13,29 +12,27 @@ import { loginSchema } from "../../schemas/loginSchemas";
 import MyTextField from "../../Components/newui/MyTextField";
 
 import { useUI } from "../../context/UIProvider";
-import type { LoginForm, LoginProps } from "../../types/loginType"
+import type { LoginForm, LoginProps } from "../../types/loginType";
 import { useEffect } from "react";
-import { useUserService } from "../../hooks/useuserService";
+import { useUserService } from "../../hooks/useUserService"
 
 
 
 export default function Login({ onClose }: LoginProps) {
-
-  
   const navigate = useNavigate();
-const { getUserByEmail, getEmployerByEmail } = useUserService();
-   
+  const { getUserByEmail, getEmployerByEmail } = useUserService();
+
   const { showSnackbar } = useUI();
 
   const goToRegister = () => {
-  // navigate first
-  navigate("/job-seeker-register");
+    // navigate first
+    navigate("/job-seeker-register");
 
-  // close modal AFTER route starts
-  requestAnimationFrame(() => {
-    onClose?.();
-  });
-};
+    // close modal AFTER route starts
+    requestAnimationFrame(() => {
+      onClose?.();
+    });
+  };
 
   //React Hook Form, Yup//
 
@@ -43,29 +40,31 @@ const { getUserByEmail, getEmployerByEmail } = useUserService();
     resolver: yupResolver(loginSchema),
     mode: "onChange",
     defaultValues: {
-    email: "",
-    password: "",
-  },
+      email: "",
+      password: "",
+    },
   });
 
   const {
-    handleSubmit, reset,
+    handleSubmit,
+    reset,
     formState: {},
   } = methods;
 
   useEffect(() => {
-  reset({
-    email: "",
-    password: "",
-  });
-}, [reset]);
+    reset({
+      email: "",
+      password: "",
+    });
+  }, [reset]);
 
   const onSubmit = async (form: LoginForm) => {
-
-    console.log("SUBMIT CALLED", form);  
+    // console.log("SUBMIT CALLED", form);
     try {
       const user = await getUserByEmail(form.email); //jobseeker email//
-      console.log("user",user)
+      console.log("user", user);
+
+        // console.log("TEST USER:", user);
       const employer = await getEmployerByEmail(form.email); //employer emaill//
       console.log(employer, "employer");
 
@@ -95,6 +94,8 @@ const { getUserByEmail, getEmployerByEmail } = useUserService();
 
       console.log(userType, "userType");
 
+    
+
       if (userType === 1 || userType === 2 || userType === 3) {
         authStorage.set({
           id: user?.id || employer?.id,
@@ -102,8 +103,8 @@ const { getUserByEmail, getEmployerByEmail } = useUserService();
           userType: userType,
         });
         showSnackbar("Login successful", "success");
-       onClose?.();
-navigate("/");
+        navigate("/");
+        onClose?.();
       }
     } catch {
       showSnackbar("Something went wrong. Try again.", "error");
@@ -118,7 +119,7 @@ navigate("/");
         elevation={0}
         sx={{
           width: "100%",
-          
+
           p: { xs: 3, sm: 4 },
           borderRadius: 4,
 
@@ -133,7 +134,7 @@ navigate("/");
           mb={3}
           sx={{ color: "#3a2ee3" }}
         >
-      Login
+          Login
         </Typography>
 
         <FormProvider {...methods}>
@@ -178,7 +179,7 @@ navigate("/");
                 variant="contained"
                 sx={{
                   minWidth: 120,
-                
+
                   fontWeight: 600,
                   borderRadius: 12,
                   transition: "0.25s",
@@ -203,7 +204,7 @@ navigate("/");
                 mt: 0.5,
                 "&:hover": { textDecoration: "underline" },
               }}
-               onClick={goToRegister}
+              onClick={goToRegister}
             >
               REGISTER HERE
             </Typography>
@@ -212,6 +213,4 @@ navigate("/");
       </Paper>
     </Box>
   );
-};
-
-
+}

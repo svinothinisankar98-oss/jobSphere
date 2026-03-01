@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Grid, Box, Select, MenuItem, Typography, Stack } from "@mui/material";
 import PieChartCommon from "../../Components/charts/PieChartCommon";
-import { useUserService } from "../../hooks/useuserService";
+import { useUserService } from "../../hooks/useUserService";
 import { useErrorBoundary } from "react-error-boundary";
 
 import {
@@ -331,7 +331,7 @@ export default function Dashboard() {
                       data={userMonthly}
                       labelKey="month"
                       yLabel="Users"
-                      showLabel={true}
+                      showLabel={false}
                       series={[
                         { label: "Total", dataKey: "total", color: "#6366F1" },
                         {

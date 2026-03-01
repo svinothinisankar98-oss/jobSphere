@@ -81,50 +81,49 @@ const MyTextField = ({
 
   return (
     <Controller
-      name={name}
-      control={control}
-      render={({ field }) => (
-        <TextField
-          {...field}
-          fullWidth
-          label={label}
-          type={type}
-          placeholder={placeholder}
-          required={required}
-          inputRef={field.ref}
-          size={size}
-          inputMode={inputMode}
-          multiline={Boolean(rows)}
-          
-          rows={rows}
-          error={!!error}
-          helperText={hideErrorText ? undefined : error?.message}
+  name={name}
+  control={control}
+  defaultValue=""
+  render={({ field }) => (
+    <TextField
+      fullWidth
+      label={label}
+      type={type}
+      placeholder={placeholder}
+      required={required}
+      size={size}
+      inputMode={inputMode}
+      multiline={Boolean(rows)}
+      rows={rows}
 
-          //tooltip error mode//
+      value={field.value ?? ""}
 
-          InputProps={{
-            endAdornment: hideErrorText && error && (
-              <InputAdornment position="end">
-                <Tooltip title={error.message} arrow>
-                  <span onMouseDown={(e) => e.preventDefault()}>
-                    <PriorityHigh
-                      fontSize="small"
-                      color="error"
-                      style={{ cursor: "pointer" }}
-                    />
-                  </span>
-                </Tooltip>
-              </InputAdornment>
-            ),
-          }}
+      onChange={(e) => field.onChange(e.target.value)}
+      onBlur={field.onBlur}
+      inputRef={field.ref}
 
-          sx={{
-            "& .MuiFormLabel-asterisk": { color: "red" },
-            ...sx,
-          }}
-        />
-      )}
+      error={!!error}
+      helperText={hideErrorText ? undefined : error?.message}
+
+      InputProps={{
+        endAdornment: hideErrorText && error && (
+          <InputAdornment position="end">
+            <Tooltip title={error.message} arrow>
+              <span onMouseDown={(e) => e.preventDefault()}>
+                <PriorityHigh fontSize="small" color="error" />
+              </span>
+            </Tooltip>
+          </InputAdornment>
+        ),
+      }}
+
+      sx={{
+        "& .MuiFormLabel-asterisk": { color: "red" },
+        ...sx,
+      }}
     />
+  )}
+/>
   );
 };
 

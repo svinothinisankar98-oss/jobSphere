@@ -33,7 +33,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { formatDate } from "../../../utils/dateFormatter";
 
-import { useUserService } from "../../../hooks/useuserService";
+import { useUserService } from "../../../hooks/useUserService";
 // import MyDialog from "../../../Components/newui/MyDialog";
 import MyTabs from "../../../Components/newui/MyTab";
 
