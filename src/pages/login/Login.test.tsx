@@ -1,4 +1,11 @@
 import { vi } from "vitest";
+import { screen, waitFor } from "@testing-library/react";
+import { customRender } from "../../test-utils";
+
+import userEvent from "@testing-library/user-event";
+import Login from "./Login";
+import { InvalidEmailMessage, RequiredMessage } from "../../constants/ValidationMessages";
+
 
 //Hoisted mocks //
 const {
@@ -16,7 +23,7 @@ const {
 }));
 
 //service mock-api layer//
-vi.mock("./hooks/useUserService", () => ({
+vi.mock("../../hooks/useUserService", () => ({
   useUserService: () => ({
     getUserByEmail: mockGetUser,
     getEmployerByEmail: mockGetEmployer,
@@ -24,8 +31,8 @@ vi.mock("./hooks/useUserService", () => ({
 }));
 
 //snackbar ui context  mock//
-vi.mock("./context/UIProvider", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("./context/UIProvider")>();
+vi.mock("../../context/UIProvider", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../../context/UIProvider")>();
 
   return {
     ...actual,
@@ -38,8 +45,8 @@ vi.mock("./context/UIProvider", async (importOriginal) => {
   };
 });
 
-//Snackbar (UI context) mock//
-vi.mock("./utils/authStorage", () => ({
+//Auth Storage Mock (Session Save)//
+vi.mock("../../utils/authStorage", () => ({
   authStorage: {
     set: mockAuthSet,
   },
@@ -55,18 +62,14 @@ vi.mock("react-router-dom", async () => {
 });
 
 //test imports//
-import { screen, waitFor } from "@testing-library/react";
-import { customRender } from "./test-utils";
-import Login from "./pages/login/Login";
-import userEvent from "@testing-library/user-event";
 
 
 
-//test setup helpers//
 beforeEach(() => {
   vi.clearAllMocks();
 });
 
+//test setup helpers(reusable)//
 function setup() {
   customRender(<Login />);
 
@@ -95,8 +98,8 @@ describe("Login Form Event Trigger", () => {
 
     await userEvent.click(loginBtn);
 
-    expect(await screen.findByText(/email is required/i)).toBeInTheDocument();
-    expect(await screen.findByText(/password is required/i)).toBeInTheDocument();
+    expect(await screen.findByText(RequiredMessage("Email"))).toBeInTheDocument();
+    expect(await screen.findByText(RequiredMessage("Password"))).toBeInTheDocument();
   });
 
   //when valid type error remove//
@@ -106,14 +109,14 @@ describe("Login Form Event Trigger", () => {
 
     await userEvent.click(loginBtn);
 
-    expect(await screen.findByText(/email is required/i)).toBeInTheDocument();
-    expect(await screen.findByText(/password is required/i)).toBeInTheDocument();
+    expect(await screen.findByText(RequiredMessage("Email"))).toBeInTheDocument();
+    expect(await screen.findByText(RequiredMessage("Password"))).toBeInTheDocument();
 
     await userEvent.type(emailInput, "test@gmail.com");
-    expect(screen.queryByText(/email is required/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(RequiredMessage("Email"))).not.toBeInTheDocument();
 
     await userEvent.type(passwordInput, "123456");
-    expect(screen.queryByText(/password is required/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(RequiredMessage("Password"))).not.toBeInTheDocument();
   });
 
   //shows error invalid email format//
@@ -125,7 +128,7 @@ describe("Login Form Event Trigger", () => {
     await userEvent.type(passwordInput, "Test@123");
     await userEvent.click(loginBtn);
 
-    expect(await screen.findByText(/invalid email/i)).toBeInTheDocument();
+    expect(await screen.findByText(InvalidEmailMessage)).toBeInTheDocument();
   });
 
 
@@ -138,10 +141,9 @@ describe("Login Form Event Trigger", () => {
     expect(passwordInput).toHaveValue("");
   });
 
-  //Successful USER login test//
+  ////Successful user(jobseeker) login test//
 
-  test("logs in successfully as user", async () => {
-
+  test("logs in successfully as user jobseeker", async () => {
   mockGetUser.mockResolvedValue({
     id: 7778,
     email: "vino@gmail.com",
@@ -155,28 +157,18 @@ describe("Login Form Event Trigger", () => {
   await userEvent.type(passwordInput, "112233");
   await userEvent.click(loginBtn);
 
-  // wait for FINAL effect (navigation)
+  // wait only final success navigate//
   await waitFor(() => {
     expect(mockNavigate).toHaveBeenCalledWith("/");
   });
 
-  // now all previous effects are guaranteed completed
+  // then store authstorage//
   expect(mockAuthSet).toHaveBeenCalledWith({
     id: 7778,
     email: "vino@gmail.com",
     userType: 1,
   });
-
-   await waitFor(() => {
-      expect(mockAuthSet).toHaveBeenCalledWith({
-        id: 7778,
-        email: "vino@gmail.com",
-        userType: 1,
-      });
-    });
-
-    expect(mockNavigate).toHaveBeenCalledWith("/");
-  });
+});
 
   //wrong password//
 
@@ -195,16 +187,16 @@ describe("Login Form Event Trigger", () => {
     await userEvent.click(loginBtn);
 
     await waitFor(() => {
-      expect(mockShowSnackbar).toHaveBeenCalledWith("Invalid credentials", "error");
+      expect(mockShowSnackbar).toHaveBeenCalledWith("Invalid credentials", "error");  //snackbar error//
     });
 
-    expect(mockNavigate).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();    //no navigation//
   });
 
   //user not found test//
 
   test("shows error if user not found", async () => {
-   mockGetUser.mockResolvedValue(undefined);
+   mockGetUser.mockResolvedValue(undefined);      
 mockGetEmployer.mockResolvedValue(undefined);
 
     const { emailInput, passwordInput, loginBtn } = setup();
@@ -214,16 +206,16 @@ mockGetEmployer.mockResolvedValue(undefined);
     await userEvent.click(loginBtn);
 
     await waitFor(() => {
-      expect(mockShowSnackbar).toHaveBeenCalledWith("User not found", "error");
+      expect(mockShowSnackbar).toHaveBeenCalledWith("User not found", "error");     //snackbar error//
     });
   });
 
-  //Employer login test//
+  // sucessfully Employer login test//
 
   test("logs in successfully as employer", async () => {
     mockGetUser.mockResolvedValue(null);
 
-    mockGetEmployer.mockResolvedValue({
+    mockGetEmployer.mockResolvedValue({              //api get recruiter email//
       id: 2,
       recruiterEmail: "hr@company.com",
       password: "112233",
