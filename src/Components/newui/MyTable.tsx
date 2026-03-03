@@ -129,7 +129,7 @@ function MyTable<T>({
   //States//
 
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
-  const [allExpanded, setAllExpanded] = useState(true);
+  const [, setAllExpanded] = useState(true);
 
   const [orderBy, setOrderBy] = useState<string>("");
   const [order, setOrder] = useState<Order>("asc");

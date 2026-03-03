@@ -47,7 +47,7 @@ export default function JobList() {
   /* ================= REDUX SAVED JOBS ================= */
 
   const savedJobIds = useSelector(
-    (state: RootState) => state.savedJobs.ids
+    (state: RootState) => (state.savedJobs as any).ids
   );
 
   /* ================= JOB STATE ================= */

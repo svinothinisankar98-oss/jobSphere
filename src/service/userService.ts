@@ -62,15 +62,13 @@ export const userService = {
     // getData.isDelete = true;
     return apiService.put(`users/${id}`, data);
   },
-  getEmployerById: async (id: string): Promise<employerRegisterType | null> => {
-    const response = await apiService.get<employerRegisterType[]>(
-      `users?id=${id}&userType=2`,
-    );
+ getEmployerById: async (id: string): Promise<employerRegisterType | null> => {
+  const response = await apiService.get<employerRegisterType>(
+    `users/${id}`
+  );
 
-    return response[0] ?? null;
-
-    
-  },
+  return response;
+},
   // USER TYPE STATS (Jobseeker vs Employer)
 getUserTypeStats: async (): Promise<{ jobseeker: number; employer: number }> => {
   const users = await apiService.get<User[]>("users");

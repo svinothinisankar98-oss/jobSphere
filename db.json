@@ -352,16 +352,15 @@
       "id": "1122",
       "serialNo": 1,
       "deletedAt": null,
-      "updatedAt": "2026-02-23T14:41:35.513Z"
+      "updatedAt": "2026-03-03T09:03:35.333Z"
     },
     {
-      "id": "1133",
       "companyName": "egrove Systems",
       "email": "egrove@gmail.com",
       "phone": "7788888888",
       "website": "https://www.egrovesys.com/",
       "industry": "IT",
-      "companySize": "200+",
+      "companySize": "1–10",
       "foundedYear": 2004,
       "address1": "sasas",
       "address2": "",
@@ -373,8 +372,8 @@
       "recruiterEmail": "hr@egrovesys.com",
       "recruiterPhone": "8745612455",
       "designation": "Manager",
-      "password": "112233",
-      "confirmPassword": "112233",
+      "password": "Mala@123",
+      "confirmPassword": "Mala@123",
       "remoteopportunity": "no",
       "employmentType": [
         "full_time",
@@ -382,13 +381,15 @@
         "contract"
       ],
       "userType": 2,
-      "isActive": false,
+      "isActive": true,
+      "id": "1133",
       "serialNo": 2,
-      "updatedAt": "2026-02-23T14:42:18.097Z",
-      "deletedAt": "2026-01-08T13:48:03.080Z"
+      "updatedAt": "2026-03-03T09:46:21.366Z",
+      "deletedAt": "2026-01-08T13:48:03.080Z",
+      "gstNumber": ""
     },
     {
-      "companyName": "Logic Private Limited dkd",
+      "companyName": "Logic Private Limited ",
       "email": "ooo@gmail.com",
       "phone": "8745612346",
       "website": "https://www.egrovesys.com/ecommerce-accessibility/",
@@ -415,7 +416,8 @@
       "isActive": true,
       "id": "3454",
       "serialNo": 3,
-      "updatedAt": "2026-02-22T14:23:16.659Z"
+      "updatedAt": "2026-03-03T09:55:02.968Z",
+      "gstNumber": ""
     },
     {
       "id": "8767",
@@ -449,10 +451,10 @@
       "deletedAt": null
     },
     {
-      "companyName": "noble",
+      "companyName": "noble privated",
       "email": "ooso@gmail.com",
       "phone": "7788888888",
-      "website": "https://www.egrovesys.com/ecommerce-accessibility/",
+      "website": "www.nobleprivate.com",
       "industry": "Marketing",
       "companySize": "1–10",
       "foundedYear": 2009,
@@ -478,7 +480,8 @@
       "id": "4344",
       "serialNo": 5,
       "isDelete": true,
-      "updatedAt": "2026-02-21T16:23:33.455Z"
+      "updatedAt": "2026-03-03T09:55:37.304Z",
+      "gstNumber": ""
     },
     {
       "id": "5566",
@@ -2835,7 +2838,7 @@
       "updatedAt": null
     },
     {
-      "id": "1e53",
+      "id": "1253",
       "companyName": "Suji Industry",
       "email": "suji@suji.com",
       "phone": "7414512457",
@@ -2862,6 +2865,69 @@
       "userType": 2,
       "isActive": true,
       "createdAt": "2026-02-21T11:31:12.694Z",
+      "updatedAt": null
+    },
+    {
+      "companyName": "TCS",
+      "email": "admin@tcs.com",
+      "phone": "7845124577",
+      "website": "www.tcs.com",
+      "industry": "IT",
+      "companySize": "11–50",
+      "foundedYear": 2000,
+      "address1": "78,radha street",
+      "address2": "thiruvanmaiyur",
+      "city": "chennai",
+      "state": "tamil nadu",
+      "country": "India",
+      "zip": "600044",
+      "recruiterName": "kalai",
+      "recruiterEmail": "kalai@tcs.com",
+      "recruiterPhone": "7841245788",
+      "designation": "HR Admin",
+      "password": "Kalai@123",
+      "confirmPassword": "Kalai@123",
+      "remoteopportunity": "yes",
+      "employmentType": [
+        "full_time",
+        "contract"
+      ],
+      "userType": 2,
+      "isActive": true,
+      "id": "de98",
+      "gstNumber": "",
+      "createdAt": "2026-03-03T07:43:54.608Z",
+      "updatedAt": "2026-03-03T09:00:00.260Z"
+    },
+    {
+      "id": "ff96",
+      "companyName": "Sugam Infotech",
+      "email": "admin@sugam.com",
+      "phone": "8541245788",
+      "website": "www.sugam.com",
+      "industry": "IT",
+      "companySize": "51–200",
+      "foundedYear": 2020,
+      "address1": "9,thiyagu street",
+      "address2": "chrompet",
+      "city": "chennai",
+      "state": "tamilnadu",
+      "country": "India",
+      "zip": "638001",
+      "recruiterName": "suguna",
+      "recruiterEmail": "hr@sugam.com",
+      "recruiterPhone": "7412145788",
+      "designation": "Admin",
+      "password": "Suguna@123",
+      "confirmPassword": "Suguna@123",
+      "remoteopportunity": "yes",
+      "employmentType": [
+        "part_time"
+      ],
+      "userType": 2,
+      "isActive": true,
+      "gstNumber": "",
+      "createdAt": "2026-03-03T09:49:05.629Z",
       "updatedAt": null
     }
   ],

@@ -34,19 +34,19 @@ export function useEmployerFormHandlers(
 
 //Next//
   const handleNext = async () => {
-    const valid = await validateCurrentTab();
+  const valid = await validateCurrentTab();
+  console.log("valid:", valid);
 
-    console.log("valid",valid)
-    // if (!valid) return;
+  if (!valid) return;   
 
-    setActiveTab((prev) =>
-      Math.min(prev + 1, stepFields.length - 1)
-    );
-  };
+  setActiveTab((prev) =>
+    Math.min(prev + 1, stepFields.length - 1)
+  );
+};
 
   //Back//
   const handleBack = async () => {
-    await validateCurrentTab();
+   
     setActiveTab((prev) => Math.max(prev - 1, 0));
   };
 

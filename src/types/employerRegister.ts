@@ -9,7 +9,7 @@ export type employerRegisterType = {
   industry: string;
   companySize: string;
 
-  foundedYear?: number;
+  foundedYear: number;
 
   serialNo?: number;
 

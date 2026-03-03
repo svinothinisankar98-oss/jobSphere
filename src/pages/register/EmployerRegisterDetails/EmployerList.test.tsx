@@ -135,7 +135,7 @@ describe("EmployerList Page", () => {
 
     expect(mockOpenConfirm).toHaveBeenCalled();
 
-    const confirmConfig = mockOpenConfirm.mock.calls[0][0];
+    const confirmConfig = mockOpenConfirm.mock.calls[0][0];       
     await confirmConfig.onConfirm();
 
     await waitFor(() => {

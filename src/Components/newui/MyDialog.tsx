@@ -48,7 +48,7 @@ const MyDialog = ({
   return (
     <Dialog
       open={open}
-      onClose={(event, reason) => {
+      onClose={(reason) => {
         if (reason === "backdropClick") return;
         onClose();
       }}

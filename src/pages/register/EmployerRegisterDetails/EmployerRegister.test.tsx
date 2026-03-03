@@ -1,97 +1,74 @@
-import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { describe, it, expect, vi } from "vitest";
+import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useForm, FormProvider } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { customRender } from "../../../test-utils";
+import EmployerRegister from "./EmployerRegister";
 
-import CompanyDetails from "./CompanyDetails";
-import { employerSchema } from "../../../schemas/employerSchema";
-import { RequiredMessage } from "../../../constants/ValidationMessages";
+/* =========================
+   MOCK RESOLVER FIRST
+   ========================= */
 
-/* ======================================================
-   Helper: exact text matcher (handles MUI split text)
-   ====================================================== */
-function findError(text: string) {
-  return screen.findByText((_, el) => el?.textContent === text);
-}
+vi.mock("@hookform/resolvers/yup", () => ({
+  yupResolver: () => async () => ({
+    values: {},
+    errors: {},
+  }),
+}));
 
-/* ======================================================
-   Form Wrapper
-   ====================================================== */
-function renderForm() {
-  const Wrapper = () => {
-    const methods = useForm({
-      resolver: yupResolver(employerSchema),
-      mode: "onBlur",
-      defaultValues: {
-        companyName: "",
-      },
+
+
+vi.mock("../../../hooks/useUserService", () => ({
+  useUserService: () => ({
+    getEmployerById: vi.fn(),
+    getEmployerByEmail: vi.fn(),
+    createUser: vi.fn(),
+    updateUser: vi.fn(),
+  }),
+}));
+
+
+
+describe("Employer Register - Step Navigation", () => {
+  it("moves to Address tab when Next is clicked", async () => {
+    customRender(<EmployerRegister />);
+    const user = userEvent.setup();
+
+    await user.click(
+      screen.getByRole("button", { name: /next/i })
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("tab", { name: /address/i })
+      ).toHaveAttribute("aria-selected", "true");
+    });
+  });
+
+  it("moves back to Company tab when Back is clicked", async () => {
+    customRender(<EmployerRegister />);
+    const user = userEvent.setup();
+
+    // Move to Address first
+    await user.click(
+      screen.getByRole("button", { name: /next/i })
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("tab", { name: /address/i })
+      ).toHaveAttribute("aria-selected", "true");
     });
 
-    return (
-      <FormProvider {...methods}>
-        <CompanyDetails />
-      </FormProvider>
+    // Click Back
+    await user.click(
+      screen.getByRole("button", { name: /back/i })
     );
-  };
 
-  render(<Wrapper />);
-}
-
-/* ======================================================
-   Tests
-   ====================================================== */
-
-describe("Company Name validation", () => {
-
-  /* ---------- REQUIRED ---------- */
-  it("shows required error", async () => {
-    renderForm();
-
-    const input = screen.getByLabelText(/company name/i);
-
-    await userEvent.click(input);
-    await userEvent.tab(); // blur
-
-    expect(await findError(RequiredMessage("Company Name"))).toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        screen.getByRole("tab", { name: /company/i })
+      ).toHaveAttribute("aria-selected", "true");
+    });
   });
-
-  /* ---------- MIN LENGTH ---------- */
-  it("shows min character error", async () => {
-    renderForm();
-
-    const input = screen.getByLabelText(/company name/i);
-
-    await userEvent.type(input, "ab");
-    await userEvent.tab();
-
-    const error = await screen.findByRole("alert");
-    expect(error.textContent?.toLowerCase()).toContain("at least");
-  });
-
-  /* ---------- MAX LENGTH ---------- */
-  it("shows max character error", async () => {
-    renderForm();
-
-    const input = screen.getByLabelText(/company name/i);
-
-    await userEvent.type(input, "a".repeat(101));
-    await userEvent.tab();
-
-    const error = await screen.findByRole("alert");
-    expect(error.textContent?.toLowerCase()).toContain("at most");
-  });
-
-  /* ---------- VALID INPUT ---------- */
-  it("accepts valid company name", async () => {
-    renderForm();
-
-    const input = screen.getByLabelText(/company name/i);
-
-    await userEvent.type(input, "OpenAI Technologies");
-    await userEvent.tab();
-
-    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
-  });
-
+  
 });

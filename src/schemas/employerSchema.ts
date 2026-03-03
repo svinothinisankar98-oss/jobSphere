@@ -10,20 +10,17 @@ import {
 
 import { REGEX } from "../constants/ValidationRegex";
 
-
-  
-
 export const employerSchema = yup.object({
-
-
   companyName: yup
     .string()
+    .trim()
     .required(RequiredMessage("Company Name"))
-
     .min(3, "Name must be at least 3 characters")
-    .max(50, "Name must be at most 50 characters")
-
-    .matches(/^[A-Za-z ]+$/, "Name can contain only letters"),
+    .max(100, "Name must be at most 100 characters")
+    .matches(
+      /^[A-Za-z0-9 .&()-]+$/,
+      "Company name contains invalid characters",
+    ),
 
   email: yup
     .string()
@@ -41,9 +38,6 @@ export const employerSchema = yup.object({
     .trim()
     .required(RequiredMessage("Website"))
     .matches(REGEX.url, InvalidUrlMessage),
-
- 
-
 
   industry: yup.string().required(SelectMessage("Industry")),
 
@@ -114,4 +108,15 @@ export const employerSchema = yup.object({
     .min(1, SelectMessage(" atleast one Employment type")),
 
   userType: yup.number().required(RequiredMessage("User type")),
+
+ foundedYear: yup
+  .number()
+  .transform((value, originalValue) => {
+    if (originalValue === "") return null;
+    return isNaN(value) ? undefined : value;
+  })
+  .required(RequiredMessage("Founded Year"))
+  .typeError("Founded Year must be numeric")
+  .min(1900, "Year must be after 1900")
+  .max(new Date().getFullYear(), "Year cannot be in the future"),
 });

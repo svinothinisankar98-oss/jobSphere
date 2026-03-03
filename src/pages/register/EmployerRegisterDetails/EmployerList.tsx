@@ -46,6 +46,7 @@ import { useErrorBoundary } from "react-error-boundary";
 import { buildSummarySheet, downloadExcel, mapToExcelColumns } from "../../../utils/downloadExcel";
 
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import {  useKeyboardShortcuts } from "../../../hooks/useKeyboardShortcuts";
 
 
 const EmployerList = () => {
@@ -100,8 +101,11 @@ const EmployerList = () => {
   //Edit Logic//
 
   const handleEdit = (row: employerRegisterType) => {
-    navigate(`/employer-register/edit/${row.id}`);
-  };
+  console.log("Row ID type:", typeof row.id, row.id);
+
+  navigate(`/employer-register/edit/${row.id}`);
+};
+
 
   //  Search logic//
 
@@ -342,6 +346,44 @@ const EmployerList = () => {
     await downloadExcel(sheets, "Employer_Report");
    
   };
+
+ useKeyboardShortcuts([
+  {
+    key: "Enter",                     //Enter-Search//
+    callback: handleSearch,
+  },
+  {
+    key: "r",                        //ALT+R - clear reset
+    alt: true,
+    callback: handleClear,
+  },
+  {
+    key: "a",                       //ALT+A- Add new employer register//
+    alt: true,
+    callback: () => navigate("/employer-register"),
+  },
+  {
+    key: "e",                       //CTRL+E - export excel//
+    ctrl: true,
+    callback: handleExport,
+  },
+  {
+    key: "ArrowRight",             //  tab change//      
+    alt: true,
+    callback: () => {
+      if (activeTab < 3) setActiveTab(activeTab + 1);
+    },
+  },
+  {
+    key: "ArrowLeft",        //tab back//
+    alt: true,
+    callback: () => {
+      if (activeTab > 0) setActiveTab(activeTab - 1);
+    },
+  },
+]);
+
+
 
   // JSX //
   return (

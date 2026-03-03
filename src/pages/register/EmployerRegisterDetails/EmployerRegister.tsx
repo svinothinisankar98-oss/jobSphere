@@ -1,4 +1,4 @@
-import { Grid, Card, CardContent } from "@mui/material";
+import { Grid, Card, CardContent, Tooltip } from "@mui/material";
 import { FormProvider, useForm, type SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
@@ -24,14 +24,20 @@ import { useEffect } from "react";
 import { useUserService } from "../../../hooks/useUserService";
 
 import { useUI } from "../../../context/UIProvider";
-
-const { getEmployerById, getEmployerByEmail, createUser, updateUser } =
-  useUserService();
+import { useKeyboardShortcuts } from "../../../hooks/useKeyboardShortcuts";
 
 //(Tabs Validation)//
 
 const stepFields: (keyof employerRegisterType)[][] = [
-  ["companyName", "email", "phone", "website", "industry", "companySize"],
+  [
+    "companyName",
+    "email",
+    "phone",
+    "website",
+    "industry",
+    "companySize",
+    "foundedYear",
+  ],
   ["address1", "city", "state", "country", "zip"],
   [
     "recruiterName",
@@ -45,13 +51,14 @@ const stepFields: (keyof employerRegisterType)[][] = [
   ],
 ];
 
-
-
 //Form Setup//
 
 const EmployerRegister = () => {
   const navigate = useNavigate();
-  const { showSnackbar,openConfirm } = useUI();
+  const { showSnackbar, openConfirm } = useUI();
+
+  const { getEmployerById, getEmployerByEmail, createUser, updateUser } =
+    useUserService();
 
   //Detect Edit Mode//
 
@@ -82,9 +89,9 @@ const EmployerRegister = () => {
   const {
     handleSubmit,
     reset,
-    setError,setFocus,
-
-    formState: { isValid,isDirty },
+    setError,
+    setFocus,
+    formState: { isValid, isDirty },
   } = form;
 
   //Load Data in Edit Mode//
@@ -112,34 +119,33 @@ const EmployerRegister = () => {
         });
       }
     } catch (error: any) {
-      showSnackbar(error.message,"error"); 
+      showSnackbar(error.message, "error");
     }
   };
 
   const handleReset = () => {
-  // No changes → reset silently
-  if (!isDirty) {
-    reset(employerDefaultValues);
-    handleResetState();
-    return;
-  }
-
-  // Has changes → ask confirmation
-  openConfirm({
-    title: "Reset Form",
-    message: "Are you sure you want to reset all entered data?",
-    confirmText: "Yes, Reset",
-    cancelText: "Cancel",
-    confirmColor: "warning",
-
-    onConfirm: () => {
+    // No changes → reset silently
+    if (!isDirty) {
       reset(employerDefaultValues);
       handleResetState();
-      showSnackbar("Form has been reset", "success");
-    },
-  });
-};
+      return;
+    }
 
+    // Has changes → ask confirmation
+    openConfirm({
+      title: "Reset Form",
+      message: "Are you sure you want to reset all entered data?",
+      confirmText: "Yes, Reset",
+      cancelText: "Cancel",
+      confirmColor: "warning",
+
+      onConfirm: () => {
+        reset(employerDefaultValues);
+        handleResetState();
+        showSnackbar("Form has been reset", "success");
+      },
+    });
+  };
 
   //onsubmit//
 
@@ -150,19 +156,18 @@ const EmployerRegister = () => {
 
       if (!editData) {
         const existingemployer = await getEmployerByEmail(
-          data.recruiterEmail?.trim()?.toLowerCase()
+          data.recruiterEmail?.trim()?.toLowerCase(),
         );
 
         if (existingemployer) {
           setError("recruiterEmail", {
-        type: "manual",
-        message: "Email already exists",
-      });
-       setFocus("recruiterEmail");  //auto focus//
-      showSnackbar(" recruiter Email already exists", "error");
+            type: "manual",
+            message: "Email already exists",
+          });
+          setFocus("recruiterEmail"); //auto focus//
+          showSnackbar(" recruiter Email already exists", "error");
 
-      return; 
-
+          return;
         }
         data.createdAt = new Date();
         data.updatedAt = null;
@@ -199,6 +204,92 @@ const EmployerRegister = () => {
       showSnackbar("Something went wrong. Please try again.", "error");
     }
   };
+
+  useKeyboardShortcuts([
+    {
+      key: "r",            //Alt + R → Reset//
+      alt: true,
+      callback: handleReset,
+    },
+
+    {
+      key: "ArrowRight",    //Ctrl + ArrowRight → Next Tab//
+      ctrl: true,
+      callback: () => {
+        if (activeTab < stepFields.length - 1) {
+          handleNext();
+        }
+      },
+    },
+
+    {
+      key: "ArrowLeft",      //Ctrl + ArrowLeft → Previous Tab//
+      ctrl: true,
+      callback: () => {
+        if (activeTab > 0) {
+          handleBack();
+        }
+      },
+    },
+
+    {
+      key: "Escape",           //Escape → Cancel / Leave Page//
+      callback: () => {
+        if (!isDirty) {
+          navigate("/");
+          return;
+        }
+     
+        openConfirm({              //If form dirty → show confirm dialog//
+          title: "Cancel Changes",
+          message: "You have unsaved changes. Are you sure you want to leave?",
+          confirmText: "Yes, Leave",
+          cancelText: "Stay",
+          confirmColor: "error",
+          onConfirm: () => navigate("/"),
+        });
+      },
+    },
+
+    {
+      key: "s",         //Ctrl + S → Submit (Create Mode)//
+      ctrl: true,
+      callback: () => {
+        if (!editData && isValid) {
+          handleSubmit(onSubmit)();
+        }
+      },
+    },
+    {
+      key: "u",        //Ctrl + U → Update (Edit Mode)
+      ctrl: true,
+      callback: () => {
+        if (editData && isValid) {
+          handleSubmit(onSubmit)();
+        }
+      },
+    },
+
+    {
+      key: "ArrowRight",                 //next button click//
+      ctrl: true,
+      callback: () => {
+        if (activeTab < stepFields.length - 1) {
+          handleNext();
+        }
+      },
+    },
+
+    {
+      key: "b",                    //back button click//
+      ctrl: true,
+      callback: () => {
+        if (activeTab > 0) {
+          handleBack();
+        }
+      },
+    },
+  ]);
 
   return (
     <Grid container justifyContent="center" py={5}>
@@ -238,61 +329,73 @@ const EmployerRegister = () => {
 
                 {/* ---------- NAV ---------- */}
                 <Grid container justifyContent="space-between" mt={2}>
-                  <MyButton
-                    label="Back"
-                    variant="outlined"
-                    onClick={handleBack}
-                    disabled={activeTab === 0}
-                  />
-
-                  <MyButton
-                    label="Next"
-                    variant="contained"
-                    onClick={handleNext}
-                    disabled={activeTab === stepFields.length - 1}
-                  />
+                  <Tooltip title="Press Ctrl + b" arrow>
+                    <span>
+                      <MyButton
+                        label="Back"
+                        color="secondary"
+                        variant="contained"
+                        onClick={handleBack}
+                        disabled={activeTab === 0}
+                      />
+                    </span>
+                  </Tooltip>
+                  <Tooltip title="Press Ctrl + →" arrow>
+                    <span>
+                      <MyButton
+                        label="Next "
+                        type="button"
+                        variant="contained"
+                        onClick={handleNext}
+                        disabled={activeTab === stepFields.length - 1}
+                      />
+                    </span>
+                  </Tooltip>
                 </Grid>
 
-                {/* ---------- ACTIONS ---------- */}
+                {/* Actions */}
                 <Grid container justifyContent="center" spacing={2} mt={3}>
-                  <MyButton
-                    label="Reset"
-                    color="info"
-                    type="button"
-                    variant="contained"
-                    // sx={{
-                    //   minWidth: 160,
-                    //   height: 45,
-                    //   fontWeight: 600,
-                    // }}
-                     onClick={handleReset}
-                  />
+                  <Tooltip title="Press Alt+R to Reset" arrow>
+                    <span>
+                      <MyButton
+                        label="Reset"
+                        color="info"
+                        type="button"
+                        variant="contained"
+                        onClick={handleReset}
+                      />
+                    </span>
+                  </Tooltip>
+                  <Tooltip
+                    title={
+                      !editData
+                        ? "Press Ctrl + S to submit"
+                        : "Press Ctrl + U to update"
+                    }
+                    arrow
+                  >
+                    <span>
+                      <MyButton
+                        label={!editData ? "Register " : "Update "}
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                        disabled={!isValid}
+                      />
+                    </span>
+                  </Tooltip>
 
-                  <MyButton
-                    label={!editData ? "Register" : "Update"}
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    // sx={{
-                    //   minWidth: 160,
-                    //   height: 45,
-                    //   fontWeight: 600,
-                    // }}
-                    disabled={!isValid}
-                  />
-
-                  <MyButton
-                    label="Cancel"
-                    color="error"
-                    type="button"
-                    variant="contained"
-                    // sx={{
-                    //   minWidth: 160,
-                    //   height: 45,
-                    //   fontWeight: 600,
-                    // }}
-                     onClick={() => navigate("/")}
-                  />
+                  <Tooltip title="Press Esc to cancel" arrow>
+                    <span>
+                      <MyButton
+                        label="Cancel"
+                        color="error"
+                        type="button"
+                        variant="contained"
+                        onClick={() => navigate("/")}
+                      />
+                    </span>
+                  </Tooltip>
                 </Grid>
               </form>
             </FormProvider>
