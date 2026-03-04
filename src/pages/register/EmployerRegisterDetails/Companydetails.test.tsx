@@ -10,7 +10,8 @@ import { RequiredMessage } from "../../../constants/ValidationMessages";
 
 //form wrapper//
 function renderForm() {
-  const Wrapper = () => {
+
+  const Wrapper = () => {            //test version for form//
     const methods = useForm({
       resolver: yupResolver(employerSchema),
       mode: "all",
@@ -34,7 +35,9 @@ function renderForm() {
 
 //tests//
 
-describe("Company Name validation", () => {
+describe("Company details tab validation", () => {
+
+  //shows required error for company name//
 
   it("shows required error", async () => {
     renderForm();
@@ -48,6 +51,8 @@ describe("Company Name validation", () => {
      expect(await screen.findByText(RequiredMessage("Company Name"))).toBeInTheDocument();
   });
 
+  //minimum character test//
+
   it("shows min character error", async () => {
     renderForm();
 
@@ -59,6 +64,8 @@ describe("Company Name validation", () => {
       await screen.findByText(/at least 3 characters/i)
     ).toBeInTheDocument();
   });
+
+  //maximum character test//
 
   it("shows max character error", async () => {
     renderForm();
@@ -72,6 +79,8 @@ describe("Company Name validation", () => {
     ).toBeInTheDocument();
   });
 
+  //valid company name //
+
   it("accepts valid company name", async () => {
     renderForm();
 
@@ -84,17 +93,23 @@ describe("Company Name validation", () => {
     ).not.toBeInTheDocument();
   });
 
+  //invalid phone//
+
   it("shows invalid phone error", async () => {
     renderForm();
 
     const input = screen.getByLabelText(/company phone/i);
 
-    await userEvent.type(input, "123");
+    await userEvent.type(input, "874");
 
     expect(
       await screen.findByText(/valid mobile number/i)
     ).toBeInTheDocument();
   });
+
+
+  //valid website url//
+  
 it("shows invalid website url error", async () => {
   renderForm();
   const user = userEvent.setup();

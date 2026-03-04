@@ -1,4 +1,4 @@
-import { Grid, Card, CardContent, Tooltip } from "@mui/material";
+import { Grid, Card, CardContent, Tooltip, IconButton } from "@mui/material";
 import { FormProvider, useForm, type SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
@@ -19,12 +19,17 @@ import { useEmployerFormHandlers } from "../../../hooks/employer/useEmployerForm
 import { useNavigate, useParams } from "react-router-dom";
 
 import { Box } from "@mui/system";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { useUserService } from "../../../hooks/useUserService";
 
 import { useUI } from "../../../context/UIProvider";
 import { useKeyboardShortcuts } from "../../../hooks/useKeyboardShortcuts";
+
+import { useHotkeys } from "react-hotkeys-hook";                  //keyboard shortcut //
+import MyDialog from "../../../Components/newui/MyDialog";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import ShortCutSheet from "../../../shortcutkey/ShortCutSheet";
 
 //(Tabs Validation)//
 
@@ -54,6 +59,8 @@ const stepFields: (keyof employerRegisterType)[][] = [
 //Form Setup//
 
 const EmployerRegister = () => {
+
+  const [openHotkeys, setOpenHotkeys] = useState(false);      //hotkey open dialog state//
   const navigate = useNavigate();
   const { showSnackbar, openConfirm } = useUI();
 
@@ -124,15 +131,12 @@ const EmployerRegister = () => {
   };
 
   const handleReset = () => {
-    // No changes → reset silently
+    // No changes → reset 
     if (!isDirty) {
       reset(employerDefaultValues);
       handleResetState();
       return;
-    }
-
-    // Has changes → ask confirmation
-    openConfirm({
+    }openConfirm({
       title: "Reset Form",
       message: "Are you sure you want to reset all entered data?",
       confirmText: "Yes, Reset",
@@ -188,14 +192,12 @@ const EmployerRegister = () => {
       console.log(data, "data", employerId);
       if (editData) {
         data.updatedAt = new Date();
-        // data.deletedAt = null;
-        const id: any = employerId;
+       const id: any = employerId;
         const updateuser = updateUser(id, data);
         console.log("upate user", updateuser);
-        // await userService.updateUser(id, data);
+        
         showSnackbar("Employee Details Updated.", "success");
-
-        reset();
+       reset();
 
         navigate("/employer-list");
       }
@@ -205,44 +207,24 @@ const EmployerRegister = () => {
     }
   };
 
-  useKeyboardShortcuts([
-    {
-      key: "r",            //Alt + R → Reset//
-      alt: true,
-      callback: handleReset,
-    },
+  //Keyboard Shortcuts//
+
+  const shortcuts = [
+    { keys: "alt+r", handler: handleReset },
+    { keys: "ctrl+arrowright", handler: handleNext },
+    { keys: "ctrl+arrowleft", handler: handleBack },
 
     {
-      key: "ArrowRight",    //Ctrl + ArrowRight → Next Tab//
-      ctrl: true,
-      callback: () => {
-        if (activeTab < stepFields.length - 1) {
-          handleNext();
-        }
-      },
-    },
-
-    {
-      key: "ArrowLeft",      //Ctrl + ArrowLeft → Previous Tab//
-      ctrl: true,
-      callback: () => {
-        if (activeTab > 0) {
-          handleBack();
-        }
-      },
-    },
-
-    {
-      key: "Escape",           //Escape → Cancel / Leave Page//
-      callback: () => {
+      keys: "escape",
+      handler: () => {
         if (!isDirty) {
           navigate("/");
           return;
         }
-     
-        openConfirm({              //If form dirty → show confirm dialog//
+
+        openConfirm({
           title: "Cancel Changes",
-          message: "You have unsaved changes. Are you sure you want to leave?",
+          message: "Are you sure you want to leave?",
           confirmText: "Yes, Leave",
           cancelText: "Stay",
           confirmColor: "error",
@@ -252,44 +234,58 @@ const EmployerRegister = () => {
     },
 
     {
-      key: "s",         //Ctrl + S → Submit (Create Mode)//
-      ctrl: true,
-      callback: () => {
-        if (!editData && isValid) {
-          handleSubmit(onSubmit)();
-        }
-      },
-    },
-    {
-      key: "u",        //Ctrl + U → Update (Edit Mode)
-      ctrl: true,
-      callback: () => {
-        if (editData && isValid) {
-          handleSubmit(onSubmit)();
-        }
+      keys: "ctrl+s",
+      handler: (e?: KeyboardEvent) => {
+        e?.preventDefault();
+        if (!editData && isValid) handleSubmit(onSubmit)();
       },
     },
 
     {
-      key: "ArrowRight",                 //next button click//
-      ctrl: true,
-      callback: () => {
-        if (activeTab < stepFields.length - 1) {
-          handleNext();
-        }
+      keys: "ctrl+u",
+      handler: (e?: KeyboardEvent) => {
+        e?.preventDefault();
+        if (editData && isValid) handleSubmit(onSubmit)();
+      },
+    },
+    {
+      keys: "ctrl+b",
+      handler: (e?: KeyboardEvent) => {
+        e?.preventDefault();
+        if (activeTab > 0) handleBack();
       },
     },
 
+    // page up
     {
-      key: "b",                    //back button click//
-      ctrl: true,
-      callback: () => {
-        if (activeTab > 0) {
-          handleBack();
-        }
+      keys: "shift+arrowup",
+      handler: () => {
+        window.scrollBy({ top: -400, behavior: "smooth" });
       },
     },
-  ]);
+
+    // page down
+    {
+      keys: "shift+arrowdown",
+      handler: () => {
+        window.scrollBy({ top: 400, behavior: "smooth" });
+      },
+    },
+  ];
+  useKeyboardShortcuts(shortcuts);
+
+  //Hotkey Help Dialog//
+  useHotkeys(
+    "ctrl+K",
+    (e) => {
+      e.preventDefault();
+      setOpenHotkeys(true);
+    },
+    {
+      enableOnFormTags: true,
+      preventDefault: true,
+    },
+  );
 
   return (
     <Grid container justifyContent="center" py={5}>
@@ -355,7 +351,7 @@ const EmployerRegister = () => {
 
                 {/* Actions */}
                 <Grid container justifyContent="center" spacing={2} mt={3}>
-                  <Tooltip title="Press Alt+R to Reset" arrow>
+                  <Tooltip title="Reset (Alt+R)" arrow>
                     <span>
                       <MyButton
                         label="Reset"
@@ -397,8 +393,20 @@ const EmployerRegister = () => {
                     </span>
                   </Tooltip>
                 </Grid>
+                
+
+                <MyDialog                                  //Keyboard Shortcuts Dialog opens//
+                  open={openHotkeys}
+                  onClose={() => setOpenHotkeys(false)}
+                  title="Keyboard Shortcuts"
+                >
+                  <ShortCutSheet />
+                </MyDialog>
               </form>
             </FormProvider>
+            <IconButton onClick={() => setOpenHotkeys(true)} color="info">          
+              <HelpOutlineIcon />
+            </IconButton>
           </CardContent>
         </Card>
       </Grid>

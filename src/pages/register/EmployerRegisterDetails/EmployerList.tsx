@@ -8,7 +8,6 @@ import {
   Grid,
   Chip,
   Tooltip,
-  
 } from "@mui/material";
 
 import SearchIcon from "@mui/icons-material/Search";
@@ -43,11 +42,14 @@ import { Switch, FormControlLabel } from "@mui/material";
 
 import { useUI } from "../../../context/UIProvider";
 import { useErrorBoundary } from "react-error-boundary";
-import { buildSummarySheet, downloadExcel, mapToExcelColumns } from "../../../utils/downloadExcel";
+import {
+  buildSummarySheet,
+  downloadExcel,
+  mapToExcelColumns,
+} from "../../../utils/downloadExcel";
 
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
-import {  useKeyboardShortcuts } from "../../../hooks/useKeyboardShortcuts";
-
+import { useKeyboardShortcuts } from "../../../hooks/useKeyboardShortcuts";
 
 const EmployerList = () => {
   //state variables//
@@ -101,11 +103,10 @@ const EmployerList = () => {
   //Edit Logic//
 
   const handleEdit = (row: employerRegisterType) => {
-  console.log("Row ID type:", typeof row.id, row.id);
+    console.log("Row ID type:", typeof row.id, row.id);
 
-  navigate(`/employer-register/edit/${row.id}`);
-};
-
+    navigate(`/employer-register/edit/${row.id}`);
+  };
 
   //  Search logic//
 
@@ -254,11 +255,11 @@ const EmployerList = () => {
           variant="filled"
         />
       ),
-       //Excel//
+      //Excel//
       excelValue: (row: employerRegisterType) =>
         row.isActive ? "Active" : "Inactive",
     },
-   
+
     {
       id: "actions",
       label: "Actions",
@@ -306,23 +307,18 @@ const EmployerList = () => {
     },
   ];
 
-//Summary Sheet//
-  const summarySheet = buildSummarySheet(
-  "Summary",
-  data,
-  [
-    { label: "Total Employers" }, 
-    { label: "Active Employers", filter: r => r.isActive === true },
-    { label: "Inactive Employers", filter: r => r.isActive === false },
-  ]
-);
+  //Summary Sheet//
+  const summarySheet = buildSummarySheet("Summary", data, [
+    { label: "Total Employers" },
+    { label: "Active Employers", filter: (r) => r.isActive === true },
+    { label: "Inactive Employers", filter: (r) => r.isActive === false },
+  ]);
   //handle export//
 
   const handleExport = async () => {
     const excelColumns = mapToExcelColumns(columns);
 
     const sheets = [
-
       summarySheet,
       {
         sheetName: "All Employers",
@@ -333,56 +329,53 @@ const EmployerList = () => {
         sheetName: "Active Employers",
         columns: excelColumns,
         data: data.filter((x) => x.isActive === true),
-          excludeColumns: ["status"]
+        excludeColumns: ["status"],
       },
       {
         sheetName: "Inactive Employers",
         columns: excelColumns,
         data: data.filter((x) => x?.isActive === false),
-         excludeColumns: ["status"]
+        excludeColumns: ["status"],
       },
     ];
-    
+
     await downloadExcel(sheets, "Employer_Report");
-   
   };
 
- useKeyboardShortcuts([
+  //use keyborad shortcut keys//
+
+  const shortcuts = [
   {
-    key: "Enter",                     //Enter-Search//
-    callback: handleSearch,
+    keys: "Enter", // Enter - Search
+    handler: handleSearch,
   },
   {
-    key: "r",                        //ALT+R - clear reset
-    alt: true,
-    callback: handleClear,
+    keys: "alt+r", // ALT + R - Clear / Reset
+    handler: handleClear,
   },
   {
-    key: "a",                       //ALT+A- Add new employer register//
-    alt: true,
-    callback: () => navigate("/employer-register"),
+    keys: "alt+a", // ALT + A - Add Employer Register
+    handler: () => navigate("/employer-register"),
   },
   {
-    key: "e",                       //CTRL+E - export excel//
-    ctrl: true,
-    callback: handleExport,
+    keys: "ctrl+e", // CTRL + E - Export Excel
+    handler: handleExport,
   },
   {
-    key: "ArrowRight",             //  tab change//      
-    alt: true,
-    callback: () => {
+    keys: "ctrl+arrowright", // Next Tab
+    handler: () => {
       if (activeTab < 3) setActiveTab(activeTab + 1);
     },
   },
   {
-    key: "ArrowLeft",        //tab back//
-    alt: true,
-    callback: () => {
+    keys: "ctrl+arrowleft", // Previous Tab
+    handler: () => {
       if (activeTab > 0) setActiveTab(activeTab - 1);
     },
   },
-]);
+];
 
+useKeyboardShortcuts(shortcuts);
 
 
   // JSX //
@@ -484,10 +477,8 @@ const EmployerList = () => {
         </Box>
       )}
 
-     
-
       <Box sx={{ maxWidth: 1300, mx: "auto", mt: 4 }}>
-        <Box display="flex" justifyContent="flex-end" mb={0.5}>         
+        <Box display="flex" justifyContent="flex-end" mb={0.5}>
           <MyButton
             variant="contained"
             color="success"

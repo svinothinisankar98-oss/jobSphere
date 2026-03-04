@@ -4,9 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { customRender } from "../../../test-utils";
 import EmployerRegister from "./EmployerRegister";
 
-/* =========================
-   MOCK RESOLVER FIRST
-   ========================= */
+//mock resolver//
 
 vi.mock("@hookform/resolvers/yup", () => ({
   yupResolver: () => async () => ({
@@ -15,7 +13,7 @@ vi.mock("@hookform/resolvers/yup", () => ({
   }),
 }));
 
-
+//mock api//
 
 vi.mock("../../../hooks/useUserService", () => ({
   useUserService: () => ({
@@ -26,9 +24,10 @@ vi.mock("../../../hooks/useUserService", () => ({
   }),
 }));
 
+//test suite//
 
+describe("Employer Register Tab  Navigation", () => {
 
-describe("Employer Register - Step Navigation", () => {
   it("moves to Address tab when Next is clicked", async () => {
     customRender(<EmployerRegister />);
     const user = userEvent.setup();
@@ -64,7 +63,7 @@ describe("Employer Register - Step Navigation", () => {
       screen.getByRole("button", { name: /back/i })
     );
 
-    await waitFor(() => {
+    await waitFor(() => {                         //wait for state update //
       expect(
         screen.getByRole("tab", { name: /company/i })
       ).toHaveAttribute("aria-selected", "true");
