@@ -325,8 +325,8 @@ const EmployerRegister = () => {
 
                 {/* ---------- NAV ---------- */}
                 <Grid container justifyContent="space-between" mt={2}>
-                  <Tooltip title="Press Ctrl + b" arrow>
-                    <span>
+                  
+                  
                       <MyButton
                         label="Back"
                         color="secondary"
@@ -334,10 +334,9 @@ const EmployerRegister = () => {
                         onClick={handleBack}
                         disabled={activeTab === 0}
                       />
-                    </span>
-                  </Tooltip>
-                  <Tooltip title="Press Ctrl + →" arrow>
-                    <span>
+                 
+                  
+                 
                       <MyButton
                         label="Next "
                         type="button"
@@ -345,8 +344,7 @@ const EmployerRegister = () => {
                         onClick={handleNext}
                         disabled={activeTab === stepFields.length - 1}
                       />
-                    </span>
-                  </Tooltip>
+                   
                 </Grid>
 
                 {/* Actions */}
@@ -398,9 +396,9 @@ const EmployerRegister = () => {
                 <MyDialog                                  //Keyboard Shortcuts Dialog opens//
                   open={openHotkeys}
                   onClose={() => setOpenHotkeys(false)}
-                  title="Keyboard Shortcuts"
+                  title="Keyboard Shortcuts"                 
                 >
-                  <ShortCutSheet />
+                  <ShortCutSheet />                                            
                 </MyDialog>
               </form>
             </FormProvider>

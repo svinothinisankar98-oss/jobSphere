@@ -10,9 +10,12 @@ function Home() {
 
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState("");
+  const [jobType, setJobType] = useState<string[]>([]);
+const [experience, setExperience] = useState<string[]>([]);
+const [salary, setSalary] = useState<string[]>([]);
 
   const onSearch = () => {
-    navigate("/job-list", {
+    navigate("/jobs", {
       state: { search, selected },
     });
   };
@@ -21,12 +24,19 @@ function Home() {
     <Container maxWidth="lg" sx={{ my: { xs: 2, md: 4 } }}>
       {/* Search Section */}
       <SearchSection
-        search={search}
-        setSearch={setSearch}
-        selected={selected}
-        setSelected={setSelected}
-        onSearch={onSearch}
-      />
+  search={search}
+  setSearch={setSearch}
+  selected={selected}
+  setSelected={setSelected}
+  onSearch={onSearch}
+
+  jobType={jobType}
+  setJobType={setJobType}
+  experience={experience}
+  setExperience={setExperience}
+  salary={salary}
+  setSalary={setSalary}
+/>
 
       
 

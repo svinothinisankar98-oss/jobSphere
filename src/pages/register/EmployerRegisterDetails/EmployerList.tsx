@@ -346,29 +346,29 @@ const EmployerList = () => {
 
   const shortcuts = [
   {
-    keys: "Enter", // Enter - Search
+    keys: "Enter",            // Enter - Search
     handler: handleSearch,
   },
   {
-    keys: "alt+r", // ALT + R - Clear / Reset
+    keys: "alt+r",            // ALT + R - Clear / Reset
     handler: handleClear,
   },
   {
-    keys: "alt+a", // ALT + A - Add Employer Register
+    keys: "alt+a",               // ALT + A - Add Employer Register
     handler: () => navigate("/employer-register"),
   },
   {
-    keys: "ctrl+e", // CTRL + E - Export Excel
+    keys: "ctrl+e",               // CTRL + E - Export Excel
     handler: handleExport,
   },
   {
-    keys: "ctrl+arrowright", // Next Tab
+    keys: "ctrl+arrowright",         // Next Tab
     handler: () => {
       if (activeTab < 3) setActiveTab(activeTab + 1);
     },
   },
   {
-    keys: "ctrl+arrowleft", // Previous Tab
+    keys: "ctrl+arrowleft",                 // Previous Tab
     handler: () => {
       if (activeTab > 0) setActiveTab(activeTab - 1);
     },
